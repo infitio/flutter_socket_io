@@ -21,15 +21,17 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
 
     List<AdharaSocket> instances;
     final MethodChannel channel;
+    final Registrar registrar;
 
-    AdharaSocketIoPlugin(MethodChannel channel) {
+    AdharaSocketIoPlugin(Registrar registrar, MethodChannel channel) {
         this.instances = new ArrayList();
         this.channel = channel;
+        this.registrar = registrar;
     }
 
     public static void registerWith(Registrar registrar) {
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "adhara_socket_io");
-        channel.setMethodCallHandler(new AdharaSocketIoPlugin(channel));
+        channel.setMethodCallHandler(new AdharaSocketIoPlugin(registrar, channel));
     }
 
     @Override
@@ -44,44 +46,12 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
         switch (call.method) {
             case "newInstance": {
                 try{
-                    this.instances.add(new AdharaSocket((String)call.argument("uri")));
-                    result.success(this.instances.size() - 1);
+                    int newIndex = instances.size();
+                    this.instances.add(AdharaSocket.getInstance(registrar, (String)call.argument("uri"), newIndex));
+                    result.success(newIndex);
                 }catch (URISyntaxException use){
                     result.error(use.toString(), null, null);
                 }
-            }
-            case "on": {
-                final String eventName = (String)call.argument("eventName");
-                adharaSocket.socket.on(eventName, new Emitter.Listener() {
-
-                    @Override
-                    public void call(Object... args) {
-                        Map<String, Object> arguments = new HashMap();
-                        arguments.put("eventName", eventName);
-                        arguments.put("args", args);
-                        channel.invokeMethod("data", arguments);
-                    }
-
-                });
-                result.success(null);
-            }
-            case "off": {
-                final String eventName = (String)call.argument("eventName");
-                adharaSocket.socket.off(eventName);
-                result.success(null);
-            }
-            case "emit": {
-                final String eventName = (String)call.argument("eventName");
-                final List data = (List)call.argument("data");
-                adharaSocket.socket.emit(eventName, data);
-                result.success(null);
-            }
-            case "isConnected": {
-                result.success(adharaSocket.socket.connected());
-            }
-            case "disconnect": {
-                adharaSocket.socket.disconnect();
-                result.success(null);
             }
             default: {
                 result.notImplemented();
