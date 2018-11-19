@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/services.dart';
+import 'dart:convert';
 import 'package:adhara_socket_io/adhara_socket_io.dart';
 
 void main() => runApp(new MyApp());
@@ -12,43 +10,39 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  List<String> toPrint = ["trying to conenct"];
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-    init();
+    initSocket();
   }
 
-  init() async {
-    SocketIO socket = await SocketIOManager().newInstance('http://192.168.43.168:7000/');
+  initSocket() async {
+    SocketIO socket = await SocketIOManager().newInstance('http://192.168.43.78:7000/');
     socket.on("connect", (data){
-      print("connected...");print(data);
+      pprint("connected...");
+      pprint(data);
     });
+    socket.on('connect_error', (error) => pprint(error));
+    socket.on('connect_timeout', (timeout) => pprint(timeout));
+    socket.on('error', (timeout) => pprint(timeout));
+    socket.on('disconnect', (timeout) => pprint(timeout));
     socket.on("news", (data){
-      print("news");print(data);
+      pprint("news");
+      pprint(data);
     });
     socket.emit("message", [1,2,3]);
+    socket.connect();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-//      platformVersion = await AdharaSocketIo.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
+  pprint(data){
+    setState((){
+      if(data is Map){
+        toPrint.add(json.encode(data));
+      }else{
+        toPrint.add(data);
+      }
     });
   }
 
@@ -60,7 +54,7 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: new Center(
-          child: new Text('Running on: $_platformVersion\n'),
+          child: new Text(toPrint.join('\n')),
         ),
       ),
     );
