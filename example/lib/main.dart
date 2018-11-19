@@ -19,7 +19,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   initSocket() async {
-    SocketIO socket = await SocketIOManager().newInstance('http://192.168.43.168:7000/');
+    SocketIO socket = await SocketIOManager().createInstance('http://192.168.43.168:7000/');
     socket.onConnect((data){
       pprint("connected...");
       pprint(data);
