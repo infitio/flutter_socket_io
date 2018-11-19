@@ -13,13 +13,12 @@ class SocketIOManager {
   Future<SocketIO> createInstance(String uri) async {
     int index = await _channel.invokeMethod('newInstance', {'uri': uri});
     SocketIO socket = SocketIO(index);
-    print("index>>>"); print(index);
     sockets[index] = socket;
     return socket;
   }
 
   Future clearInstance(SocketIO socket) async {
-    int index = await _channel.invokeMethod('clearInstance', {'id': socket.id});
+    await _channel.invokeMethod('clearInstance', {'id': socket.id});
   }
 
 }
