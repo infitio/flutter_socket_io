@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> {
     socket.onConnect((data){
       pprint("connected...");
       pprint(data);
-      socket.emit("message", ["Hello sexy!"]);
+      socket.emit("message", ["Hello world!"]);
     });
     socket.onConnectError(pprint);
     socket.onConnectTimeout(pprint);

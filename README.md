@@ -2,9 +2,25 @@
 
 socket.io for flutter by adhara
 
-## Getting Started
+supports both Android and iOS
 
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
 
-For help on editing plugin code, view the [documentation](https://flutter.io/developing-packages/#edit-plugin-package).
+Usage:
+
+See `example/lib/main.dart` for better example
+
+```dart
+
+    SocketIO socket = await SocketIOManager().createInstance('http://192.168.1.2:7000/');       //TODO change the port  accordingly
+    socket.onConnect((data){
+      print("connected...");
+      print(data);
+      socket.emit("message", ["Hello world!"]);
+    });
+    socket.on("news", (data){   //sample event
+      print("news");
+      print(data);
+    });
+    socket.connect();
+
+```
