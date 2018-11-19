@@ -39,10 +39,10 @@ class _MyAppState extends State<MyApp> {
   pprint(data){
     setState((){
       if(data is Map){
-        toPrint.add(json.encode(data));
-      }else{
-        toPrint.add(data);
+        data = json.encode(data);
       }
+      print(data);
+      toPrint.add(data);
     });
   }
 

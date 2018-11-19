@@ -72,6 +72,9 @@ class SocketIO{
 
   _handleData(String eventName, List arguments){
     listeners[eventName]?.forEach((Function listener){
+      if(arguments.length==0){
+        arguments = [null];
+      }
       Function.apply(listener, arguments);
     });
   }
