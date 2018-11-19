@@ -1,8 +1,8 @@
 name: adhara_socket_io
 description: socket.io for flutter by adhara
-version: 0.0.1
-author: Rohit R. Abbadi
-homepage: http://infito.com
+version: 0.1.0
+author: Rohit R. Abbadi <rohit@infitio.com>
+homepage: https://infito.com
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
