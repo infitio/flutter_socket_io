@@ -86,7 +86,7 @@ class AdharaSocket implements MethodCallHandler {
             }
             case "emit": {
                 final String eventName = call.argument("eventName");
-                final List data = call.argument("data");
+                final List data = call.argument("arguments");
                 socket.emit(eventName, data);
                 result.success(null);
                 break;

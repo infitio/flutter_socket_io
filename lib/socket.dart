@@ -76,7 +76,7 @@ class SocketIO{
     });
   }
 
-  //Utility methods
+  //Utility methods for listeners. De-registering can be handled using off(eventName, fn)
   onConnect(SocketEventListener listener) => on(CONNECT, listener);
   onDisconnect(SocketEventListener listener) => on(DISCONNECT, listener);
   onConnectError(SocketEventListener listener) => on(CONNECT_ERROR, listener);
