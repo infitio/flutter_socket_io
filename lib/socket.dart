@@ -3,14 +3,15 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 
-class Socket{
+class SocketIO{
   
   int id;
-  Map<String, List<Function>> listeners;
+  Map<String, List<Function>> listeners = {};
   final MethodChannel channel;
   
-  Socket(this.id){
-    channel = new MethodChannel("adhara_socket_io:socket:${id.toString()}");
+  SocketIO(this.id)
+  : this.channel = new MethodChannel("adhara_socket_io:socket:${id.toString()}")
+  {
     channel.setMethodCallHandler((call) {
       if (call.method == 'incoming') {
         final String eventName = call.arguments['eventNamr'];
@@ -43,11 +44,17 @@ class Socket{
     }
   }
 
+  emit(String eventName, List<dynamic> arguments) async {
+    await channel.invokeMethod('emit', {
+      'eventName': eventName,
+      'arguments': arguments,
+    });
+  }
+
   _handleData(String eventName, List arguments){
     listeners[eventName]?.forEach((Function listener){
       Function.apply(listener, arguments);
     });
   }
-  
   
 }

@@ -52,6 +52,13 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
                 }catch (URISyntaxException use){
                     result.error(use.toString(), null, null);
                 }
+                break;
+            }
+            case "clearInstance": {
+                this.instances.remove(adharaSocket);
+                adharaSocket.socket.disconnect();
+                result.success(null);
+                break;
             }
             default: {
                 result.notImplemented();

@@ -18,6 +18,18 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     initPlatformState();
+    init();
+  }
+
+  init() async {
+    SocketIO socket = await SocketIOManager().newInstance('http://192.168.43.168:7000/');
+    socket.on("connect", (data){
+      print("connected...");print(data);
+    });
+    socket.on("news", (data){
+      print("news");print(data);
+    });
+    socket.emit("message", [1,2,3]);
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.

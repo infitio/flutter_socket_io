@@ -26,7 +26,13 @@ class AdharaSocket implements MethodCallHandler {
     final MethodChannel channel;
 
     AdharaSocket(MethodChannel channel, String uri) throws URISyntaxException {
-        socket = IO.socket("http://localhost");
+        socket = IO.socket(uri);
+        socket.on("connect", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                System.out.println("Connected... yay!!!");
+            }
+        });
         this.channel = channel;
     }
 
@@ -42,10 +48,13 @@ class AdharaSocket implements MethodCallHandler {
         switch (call.method) {
             case "on": {
                 final String eventName = (String)call.argument("eventName");
+                System.out.println("registering::"+eventName);
                 socket.on(eventName, new Emitter.Listener() {
 
                     @Override
                     public void call(Object... args) {
+                        System.out.println("Socket triggered::"+eventName);
+                        System.out.println(args);
                         Map<String, Object> arguments = new HashMap<>();
                         arguments.put("eventName", eventName);
                         arguments.put("args", args);
@@ -54,24 +63,29 @@ class AdharaSocket implements MethodCallHandler {
 
                 });
                 result.success(null);
+                break;
             }
             case "off": {
                 final String eventName = (String)call.argument("eventName");
                 socket.off(eventName);
                 result.success(null);
+                break;
             }
             case "emit": {
                 final String eventName = (String)call.argument("eventName");
                 final List data = (List)call.argument("data");
                 socket.emit(eventName, data);
                 result.success(null);
+                break;
             }
             case "isConnected": {
                 result.success(socket.connected());
+                break;
             }
             case "disconnect": {
                 socket.disconnect();
                 result.success(null);
+                break;
             }
             default: {
                 result.notImplemented();
