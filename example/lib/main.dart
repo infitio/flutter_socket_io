@@ -19,20 +19,20 @@ class _MyAppState extends State<MyApp> {
   }
 
   initSocket() async {
-    SocketIO socket = await SocketIOManager().newInstance('http://192.168.43.78:7000/');
+    SocketIO socket = await SocketIOManager().newInstance('http://192.168.43.168:7000/');
     socket.onConnect((data){
       pprint("connected...");
       pprint(data);
+      socket.emit("message", ["Hello sexy!"]);
     });
-    socket.onConnectError((error) => pprint(error));
-    socket.onConnectTimeout((timeout) => pprint(timeout));
-    socket.onError((timeout) => pprint(timeout));
-    socket.onDisconnect((timeout) => pprint(timeout));
+    socket.onConnectError(pprint);
+    socket.onConnectTimeout(pprint);
+    socket.onError(pprint);
+    socket.onDisconnect(pprint);
     socket.on("news", (data){
       pprint("news");
       pprint(data);
     });
-    socket.emit("message", ["Hello sexy!"]);
     socket.connect();
   }
 
@@ -59,4 +59,5 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
+
 }
