@@ -49,6 +49,7 @@ class AdharaSocket implements MethodCallHandler {
             case "connect": {
                 Log.d(TAG, "Connecting....");
                 socket.connect();
+                result.success(null);
                 break;
             }
             case "on": {
