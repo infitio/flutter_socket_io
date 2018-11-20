@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'dart:convert' show jsonDecode;
 
 typedef void SocketEventListener(dynamic data);
 
@@ -74,6 +75,14 @@ class SocketIO{
     listeners[eventName]?.forEach((Function listener){
       if(arguments.length==0){
         arguments = [null];
+      }else{
+        arguments = arguments.map((_){
+          try{
+            return jsonDecode(_);
+          }catch(e){
+            return _;
+          }
+        }).toList();
       }
       Function.apply(listener, arguments);
     });
