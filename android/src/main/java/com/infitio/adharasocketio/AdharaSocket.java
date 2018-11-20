@@ -30,15 +30,15 @@ class AdharaSocket implements MethodCallHandler {
     private final MethodChannel channel;
     private static final String TAG = "Adhara:Socket";
 
-    private AdharaSocket(MethodChannel channel, String uri) throws URISyntaxException {
+    private AdharaSocket(MethodChannel channel, String uri, Options options) throws URISyntaxException {
         Log.d(TAG, "Connecting to... "+uri);
-        socket = IO.socket(uri);
+        socket = IO.socket(uri, options);
         this.channel = channel;
     }
 
-    static AdharaSocket getInstance(Registrar registrar, String uri, int index) throws URISyntaxException{
-        final MethodChannel channel = new MethodChannel(registrar.messenger(), "adhara_socket_io:socket:"+String.valueOf(index));
-        AdharaSocket _socket = new AdharaSocket(channel, uri);
+    static AdharaSocket getInstance(Registrar registrar, String uri, Options options) throws URISyntaxException{
+        final MethodChannel channel = new MethodChannel(registrar.messenger(), "adhara_socket_io:socket:"+String.valueOf(options.index));
+        AdharaSocket _socket = new AdharaSocket(channel, uri, options);
         channel.setMethodCallHandler(_socket);
         return _socket;
     }
@@ -104,6 +104,22 @@ class AdharaSocket implements MethodCallHandler {
                 result.notImplemented();
             }
         }
+    }
+
+    public static class Options extends IO.Options {
+
+        public boolean forceNew;
+
+        /**
+         * Whether to enable multiplexing. Default is true.
+         */
+        public boolean multiplex = true;
+        public int index;
+
+        Options(int index){
+            this.index = index;
+        }
+
     }
 
 }

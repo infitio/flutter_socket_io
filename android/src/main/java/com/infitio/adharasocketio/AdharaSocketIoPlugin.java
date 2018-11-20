@@ -11,6 +11,7 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
+import io.socket.client.IO;
 import io.socket.emitter.Emitter;
 import android.util.Log;
 
@@ -51,7 +52,11 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
             case "newInstance": {
                 try{
                     int newIndex = instances.size();
-                    this.instances.add(AdharaSocket.getInstance(registrar, (String)call.argument("uri"), newIndex));
+                    AdharaSocket.Options options = new AdharaSocket.Options(newIndex);
+                    if(call.hasArgument("query")){
+                        options.query = call.argument("query");
+                    }
+                    this.instances.add(AdharaSocket.getInstance(registrar, (String)call.argument("uri"), options));
                     result.success(newIndex);
                 }catch (URISyntaxException use){
                     result.error(use.toString(), null, null);
