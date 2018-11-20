@@ -25,7 +25,7 @@ class SocketIO{
   final MethodChannel channel;
 
   SocketIO(this.id)
-    :channel = new MethodChannel("adhara_socket_io:socket:${id.toString()}")
+      :channel = new MethodChannel("adhara_socket_io:socket:${id.toString()}")
   {
     channel.setMethodCallHandler((call) {
       if (call.method == 'incoming') {
@@ -40,24 +40,24 @@ class SocketIO{
     await channel.invokeMethod("connect");
   }
 
-  on(String eventName, SocketEventListener listener){
+  on(String eventName, SocketEventListener listener) async {
     if(listeners[eventName] == null){
       listeners[eventName] = [];
     }
     listeners[eventName].add(listener);
-    channel.invokeMethod("on", {
+    await channel.invokeMethod("on", {
       "eventName": eventName
     });
   }
 
-  off(String eventName, [SocketEventListener listener]){
+  off(String eventName, [SocketEventListener listener]) async {
     if(listener==null){
       listeners[eventName] = [];
     }else{
       listeners[eventName].remove(listener);
     }
     if(listeners[eventName].length == 0){
-      channel.invokeMethod("off", {
+      await channel.invokeMethod("off", {
         "eventName": eventName
       });
     }
@@ -80,17 +80,17 @@ class SocketIO{
   }
 
   //Utility methods for listeners. De-registering can be handled using off(eventName, fn)
-  onConnect(SocketEventListener listener) => on(CONNECT, listener);
-  onDisconnect(SocketEventListener listener) => on(DISCONNECT, listener);
-  onConnectError(SocketEventListener listener) => on(CONNECT_ERROR, listener);
-  onConnectTimeout(SocketEventListener listener) => on(CONNECT_TIMEOUT, listener);
-  onError(SocketEventListener listener) => on(ERROR, listener);
-  onConnecting(SocketEventListener listener) => on(CONNECTING, listener);
-  onReconnect(SocketEventListener listener) => on(RECONNECT, listener);
-  onReconnectError(SocketEventListener listener) => on(RECONNECT_ERROR, listener);
-  onReconnectFailed(SocketEventListener listener) => on(RECONNECT_FAILED, listener);
-  onReconnecting(SocketEventListener listener) => on(RECONNECTING, listener);
-  onPing(SocketEventListener listener) => on(PING, listener);
-  onPong(SocketEventListener listener) => on(PONG, listener);
+  onConnect(SocketEventListener listener) async => await on(CONNECT, listener);
+  onDisconnect(SocketEventListener listener) async => await on(DISCONNECT, listener);
+  onConnectError(SocketEventListener listener) async => await on(CONNECT_ERROR, listener);
+  onConnectTimeout(SocketEventListener listener) async => await on(CONNECT_TIMEOUT, listener);
+  onError(SocketEventListener listener) async => await on(ERROR, listener);
+  onConnecting(SocketEventListener listener) async => await on(CONNECTING, listener);
+  onReconnect(SocketEventListener listener) async => await on(RECONNECT, listener);
+  onReconnectError(SocketEventListener listener) async => await on(RECONNECT_ERROR, listener);
+  onReconnectFailed(SocketEventListener listener) async => await on(RECONNECT_FAILED, listener);
+  onReconnecting(SocketEventListener listener) async => await on(RECONNECTING, listener);
+  onPing(SocketEventListener listener) async => await on(PING, listener);
+  onPong(SocketEventListener listener) async => await on(PONG, listener);
 
 }
