@@ -10,7 +10,7 @@ class SocketIOManager {
 
   Map<int, SocketIO> sockets = {};
 
-  Future<SocketIO> createInstance(String uri, {Map query}) async {
+  Future<SocketIO> createInstance(String uri, {Map<String, String> query}) async {
     int index = await _channel
         .invokeMethod('newInstance', {'uri': uri, 'query': query});
     SocketIO socket = SocketIO(index);
