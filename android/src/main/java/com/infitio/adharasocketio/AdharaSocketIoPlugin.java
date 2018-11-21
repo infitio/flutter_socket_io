@@ -53,8 +53,18 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
                 try{
                     int newIndex = instances.size();
                     AdharaSocket.Options options = new AdharaSocket.Options(newIndex, (String)call.argument("uri"));
-                    if(call.hasArgument("query")){
-                        options.query = call.argument("query");
+                    if(call.hasArgument("query")) {
+                        Map<String, String> _query = call.argument("query");
+                        if(_query!=null) {
+                            StringBuilder sb = new StringBuilder("?");
+                            for (Map.Entry<String, String> entry : _query.entrySet()) {
+                                sb.append(entry.getKey());
+                                sb.append("=");
+                                sb.append(entry.getValue());
+                                sb.append("&");
+                            }
+                            options.query = sb.toString();
+                        }
                     }
                     this.instances.add(AdharaSocket.getInstance(registrar, options));
                     result.success(newIndex);
