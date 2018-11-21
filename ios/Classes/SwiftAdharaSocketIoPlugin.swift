@@ -26,10 +26,12 @@ public class SwiftAdharaSocketIoPlugin: NSObject, FlutterPlugin {
         switch (call.method) {
             case "newInstance":
                 let newIndex: Int = instances.count
-                if let query: String = arguments["query"] as! String{
-                    //todo handle query parameters
+                let config:AdharaSocketIOClientConfig
+                    = AdharaSocketIOClientConfig(newIndex, uri: arguments["uri"] as! String)
+                if let query: [String:String] = arguments["query"] as? [String:String]{
+                    config.query = query
                 }
-                instances.append(AdharaSocket.getInstance(registrar, arguments["uri"] as! String, newIndex));
+                instances.append(AdharaSocket.getInstance(registrar, config));
                 result(newIndex);
             case "clearInstance":
                 if(arguments["index"] == nil){

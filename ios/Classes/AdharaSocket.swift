@@ -18,18 +18,18 @@ public class AdharaSocket: NSObject, FlutterPlugin {
     let socket: SocketIOClient
     let channel: FlutterMethodChannel
     let manager: SocketManager
-    
-    public init(_ channel:FlutterMethodChannel, _ uri: String) {
-        print("initializing with URI", uri)
-        manager = SocketManager(socketURL: URL(string: uri)!, config: [.log(true)])
+
+    public init(_ channel:FlutterMethodChannel, _ config:AdharaSocketIOClientConfig) {
+        print("initializing with URI", config.uri)
+        manager = SocketManager(socketURL: URL(string: config.uri)!, config: [.log(true), .connectParams(config.query)])
         socket = manager.defaultSocket
         self.channel = channel
     }
 
-    public static func getInstance(_ registrar: FlutterPluginRegistrar, _ uri:String, _ index:Int) ->  AdharaSocket{
-        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>INDEX", index);
-        let channel = FlutterMethodChannel(name: "adhara_socket_io:socket:"+String(index), binaryMessenger: registrar.messenger())
-        let instance = AdharaSocket(channel, uri)
+    public static func getInstance(_ registrar: FlutterPluginRegistrar, _ config:AdharaSocketIOClientConfig) ->  AdharaSocket{
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>INDEX", config.adharaId);
+        let channel = FlutterMethodChannel(name: "adhara_socket_io:socket:"+String(config.adharaId), binaryMessenger: registrar.messenger())
+        let instance = AdharaSocket(channel, config)
         registrar.addMethodCallDelegate(instance, channel: channel)
         return instance
     }
@@ -78,6 +78,20 @@ public class AdharaSocket: NSObject, FlutterPlugin {
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         //        Do nothing...
+    }
+    
+}
+
+public class AdharaSocketIOClientConfig: NSObject{
+    
+    let adharaId:Int
+    let uri:String
+    public var query:[String:String]
+    
+    init(_ adharaId:Int, uri:String) {
+        self.adharaId = adharaId
+        self.uri = uri
+        self.query = [String:String]()
     }
     
 }

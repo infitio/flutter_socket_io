@@ -52,11 +52,11 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
             case "newInstance": {
                 try{
                     int newIndex = instances.size();
-                    AdharaSocket.Options options = new AdharaSocket.Options(newIndex);
+                    AdharaSocket.Options options = new AdharaSocket.Options(newIndex, (String)call.argument("uri"));
                     if(call.hasArgument("query")){
                         options.query = call.argument("query");
                     }
-                    this.instances.add(AdharaSocket.getInstance(registrar, (String)call.argument("uri"), options));
+                    this.instances.add(AdharaSocket.getInstance(registrar, options));
                     result.success(newIndex);
                 }catch (URISyntaxException use){
                     result.error(use.toString(), null, null);
