@@ -1,3 +1,7 @@
+## 0.1.3 - 21st November, 2018
+
+* Added support for socket.io handshake query params for both iOS and Android
+
 ## 0.1.2 - 20th November, 2018
 
 * Fully working version of basic Socket.io connection for both Android and iOS
