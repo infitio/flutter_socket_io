@@ -4,6 +4,8 @@ import 'package:adhara_socket_io/adhara_socket_io.dart';
 
 void main() => runApp(new MyApp());
 
+const String URI = "http://192.168.1.7:7000/";
+
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => new _MyAppState();
@@ -20,7 +22,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   initSocket() async {
-    socket = await SocketIOManager().createInstance('http://192.168.1.7:7000/');
+    socket = await SocketIOManager().createInstance(URI);
     socket.onConnect((data) {
       pprint("connected...");
       pprint(data);
