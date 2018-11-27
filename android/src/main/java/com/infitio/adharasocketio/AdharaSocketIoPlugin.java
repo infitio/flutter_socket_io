@@ -56,7 +56,7 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
                     if(call.hasArgument("query")) {
                         Map<String, String> _query = call.argument("query");
                         if(_query!=null) {
-                            StringBuilder sb = new StringBuilder("?");
+                            StringBuilder sb = new StringBuilder();
                             for (Map.Entry<String, String> entry : _query.entrySet()) {
                                 sb.append(entry.getKey());
                                 sb.append("=");
