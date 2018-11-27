@@ -1,3 +1,7 @@
+## 0.1.4 - 21st November, 2018
+
+* Android query bug: Extra ? is being sent. fixed
+
 ## 0.1.3 - 21st November, 2018
 
 * Added support for socket.io handshake query params for both iOS and Android
