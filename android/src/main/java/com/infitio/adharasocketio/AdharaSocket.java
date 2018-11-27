@@ -1,5 +1,6 @@
 package com.infitio.adharasocketio;
 
+import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 
 import io.socket.client.IO;
@@ -21,6 +22,7 @@ import io.socket.emitter.Emitter;
 import android.util.Log;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -88,7 +90,26 @@ class AdharaSocket implements MethodCallHandler {
             case "emit": {
                 final String eventName = call.argument("eventName");
                 final List data = call.argument("arguments");
-                socket.emit(eventName, data);
+                System.out.println(data);
+                Object[] array = {};
+                if(data!=null){
+                    array = new Object[data.size()];
+                    for(int i=0; i<data.size(); i++){
+                        Object datum = data.get(i);
+                        System.out.println(datum);
+                        System.out.println(datum.getClass());
+                        try{
+                            array[i] = new JSONObject(datum.toString());
+                        }catch (JSONException jse){
+                            try{
+                                array[i] = new JSONArray(datum.toString());
+                            }catch (JSONException jse2){
+                                array[i] = datum;
+                            }
+                        }
+                    }
+                }
+                socket.emit(eventName, array);
                 result.success(null);
                 break;
             }
@@ -110,13 +131,13 @@ class AdharaSocket implements MethodCallHandler {
     public static class Options extends IO.Options {
 
         public boolean forceNew;
-        public String uri;
+        String uri;
 
         /**
          * Whether to enable multiplexing. Default is true.
          */
         public boolean multiplex = true;
-        public int index;
+        int index;
 
         Options(int index, String uri){
             this.index = index;

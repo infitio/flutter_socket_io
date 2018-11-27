@@ -11,6 +11,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   List<String> toPrint = ["trying to conenct"];
+  SocketIO socket;
 
   @override
   void initState() {
@@ -19,26 +20,46 @@ class _MyAppState extends State<MyApp> {
   }
 
   initSocket() async {
-    SocketIO socket = await SocketIOManager().createInstance('http://192.168.43.168:7000/');
-    socket.onConnect((data){
+    socket = await SocketIOManager().createInstance('http://192.168.1.7:7000/');
+    socket.onConnect((data) {
       pprint("connected...");
       pprint(data);
-      socket.emit("message", ["Hello world!"]);
+      sendMessage();
     });
     socket.onConnectError(pprint);
     socket.onConnectTimeout(pprint);
     socket.onError(pprint);
     socket.onDisconnect(pprint);
-    socket.on("news", (data){
+    socket.on("news", (data) {
       pprint("news");
       pprint(data);
     });
     socket.connect();
   }
 
-  pprint(data){
-    setState((){
-      if(data is Map){
+  sendMessage() {
+    if (socket != null) {
+      pprint("sending message...");
+      socket.emit("message", [
+        "Hello world!",
+        1908,
+        {
+          "wonder": "Woman",
+          "comincs": ["DC", "Marvel"]
+        }
+      ]);
+      socket.emit("message", [
+        {
+          "wonder": "Woman",
+          "comincs": ["DC", "Marvel"]
+        }
+      ]);
+    }
+  }
+
+  pprint(data) {
+    setState(() {
+      if (data is Map) {
         data = json.encode(data);
       }
       print(data);
@@ -53,11 +74,20 @@ class _MyAppState extends State<MyApp> {
         appBar: new AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: new Center(
-          child: new Text(toPrint.join('\n')),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(child: Center(
+              child: new Text(toPrint.join('\n')),
+            )),
+            RaisedButton(
+              child: Text("Send Message"),
+              onPressed: sendMessage,
+            )
+          ],
         ),
       ),
     );
   }
-
 }

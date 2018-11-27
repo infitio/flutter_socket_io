@@ -21,7 +21,13 @@ app.listen(7000);
 io.on('connection', function (socket) {
 	console.log("new connection");
   socket.emit('news', { hello: 'world' });
-  socket.on("message", console.log);
+  socket.on("message", function(){
+    let args = Array.prototype.slice.call(arguments);
+    console.log(args, arguments.length);
+    for(let arg of args){
+        console.log(arg, typeof arg);
+    }
+  });
   socket.on("disconnect", ()=>{console.log("disconnect");})
 });
 

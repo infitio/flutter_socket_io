@@ -63,8 +63,9 @@ public class AdharaSocket: NSObject, FlutterPlugin {
                 result(nil)
             case "emit":
                 let eventName: String = arguments["eventName"] as! String
-                let data: NSArray = arguments["arguments"] as! NSArray
-                socket.emit(eventName, data)
+                let data: [Any] = arguments["arguments"] as! [Any]
+                print("DATATADAARADASDSFRASFRR ASDFASFAS>>>>", data);
+                socket.emit(eventName, with: data)
                 result(nil)
             case "isConnected":
                 result(socket.status == .connected)

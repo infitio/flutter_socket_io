@@ -1,4 +1,8 @@
-## 0.1.4 - 21st November, 2018
+## 0.1.5 - 28th November, 2018
+
+* Android and iOS data serialization handled properly to send objects and arrays
+
+## 0.1.4 - 28th November, 2018
 
 * Android query bug: Extra ? is being sent. fixed
 
