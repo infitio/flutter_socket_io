@@ -28,9 +28,15 @@ See `example/lib/main.dart` for better example
 ## Running example:
 
 
-    1. Open `example/ios` in XCode or `example/android` in android studio. Build the code once (`cd example` & `flutter build apk` | `flutter build ios --no-codesign`)
-    2. cd `example/socket.io.server`
-    2.1 run `npm i`
-    2.2 run `npm start`
-    3. open `example/lib/main.dart` and edir the URI in #7 to point to your hosted/local socket server instances as mentioned step 2
-    4. run Android/iOS app
+1. Open `example/ios` in XCode or `example/android` in android studio. Build the code once (`cd example` & `flutter build apk` | `flutter build ios --no-codesign`)
+2. cd `example/socket.io.server`
+
+	1 run `npm i`
+
+	2 run `npm start`
+
+3. open `example/lib/main.dart` and edir the URI in #7 to point to your hosted/local socket server instances as mentioned step 2
+4. run Android/iOS app
+
+
+Feel free to checkout our [Adhara](https://pub.dartlang.org/packages/adhara) package
