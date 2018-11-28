@@ -1,4 +1,4 @@
-## 0.1.5 - 28th November, 2018
+## 0.1.6 - 28th November, 2018
 
 * Android and iOS data serialization handled properly to send objects and arrays
 
