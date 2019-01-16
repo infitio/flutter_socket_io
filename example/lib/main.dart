@@ -2,29 +2,32 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:adhara_socket_io/adhara_socket_io.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(MyApp());
 
 const String URI = "http://192.168.1.5:7000/";
 
 class MyApp extends StatefulWidget {
   @override
-  _MyAppState createState() => new _MyAppState();
+  _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
   List<String> toPrint = ["trying to conenct"];
+  SocketIOManager manager;
   SocketIO socket;
+  bool isProbablyConnected = false;
 
   @override
   void initState() {
     super.initState();
+    manager = SocketIOManager();
     initSocket();
   }
 
   initSocket() async {
-    SocketIOManager manager = SocketIOManager();
+    setState(() => isProbablyConnected = true);
     socket = await manager.createInstance(
-        //Socket IO server URI
+      //Socket IO server URI
         URI,
         //Query params - can be used for authentication
         query: {
@@ -48,6 +51,11 @@ class _MyAppState extends State<MyApp> {
       pprint(data);
     });
     socket.connect();
+  }
+
+  disconnect(){
+    manager.clearInstance(socket);
+    setState(() => isProbablyConnected = false);
   }
 
   sendMessage() {
@@ -75,6 +83,7 @@ class _MyAppState extends State<MyApp> {
           },
         ]
       ]);
+      pprint("Message emitted...");
     }
   }
 
@@ -90,24 +99,79 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: const Text('Plugin example app'),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          textTheme: TextTheme(
+            title: TextStyle(color: Colors.white),
+            headline: TextStyle(color: Colors.white),
+            subtitle: TextStyle(color: Colors.white),
+            subhead: TextStyle(color: Colors.white),
+            body1: TextStyle(color: Colors.white),
+            body2: TextStyle(color: Colors.white),
+            button: TextStyle(color: Colors.white),
+            caption: TextStyle(color: Colors.white),
+            overline: TextStyle(color: Colors.white),
+            display1: TextStyle(color: Colors.white),
+            display2: TextStyle(color: Colors.white),
+            display3: TextStyle(color: Colors.white),
+            display4: TextStyle(color: Colors.white),
+          ),
+          buttonTheme: ButtonThemeData(
+              padding: EdgeInsets.all(24.0),
+              disabledColor: Colors.lightBlueAccent.withOpacity(0.5),
+              buttonColor: Colors.lightBlue,
+              splashColor: Colors.cyan
+          )
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Adhara Socket.IO example'),
+          backgroundColor: Colors.black,
+          elevation: 0.0,
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-                child: Center(
-              child: new Text(toPrint.join('\n')),
-            )),
-            RaisedButton(
-              child: Text("Send Message"),
-              onPressed: sendMessage,
-            )
-          ],
+        body: Container(
+          color: Colors.black,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                  child: Center(
+                    child: ListView(
+                      children: toPrint.map((String _) => Text(_ ?? "")).toList(),
+                    ),
+                  )),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: RaisedButton(
+                      child: Text("Connect"),
+                      onPressed: isProbablyConnected?null:initSocket,
+                    ),
+                  ),
+                  Container(
+                      margin: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: RaisedButton(
+                        child: Text("Send Message"),
+                        onPressed: sendMessage,
+                      )
+                  ),
+                  Container(
+                      margin: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: RaisedButton(
+                        child: Text("Disconnect"),
+                        onPressed: isProbablyConnected?disconnect:null,
+                      )
+                  ),
+                ],
+              ),
+              SizedBox(height: 12.0,)
+            ],
+          ),
         ),
       ),
     );
