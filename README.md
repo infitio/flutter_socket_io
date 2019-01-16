@@ -35,7 +35,7 @@ See `example/lib/main.dart` for better example
 
 	2 run `npm start`
 
-3. open `example/lib/main.dart` and edir the URI in #7 to point to your hosted/local socket server instances as mentioned step 2
+3. open `example/lib/main.dart` and edit the URI in #7 to point to your hosted/local socket server instances as mentioned step 2
 4. run Android/iOS app
 
 

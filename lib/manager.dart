@@ -13,9 +13,9 @@ class SocketIOManager {
   ///[query] - Query params to send to server as a Map
   ///returns [SocketIO]
   Future<SocketIO> createInstance(String uri,
-      {Map<String, String> query}) async {
-    int index = await _channel
-        .invokeMethod('newInstance', {'uri': uri, 'query': query});
+      {Map<String, String> query, bool enableLogging: false}) async {
+    int index = await _channel.invokeMethod('newInstance',
+        {'uri': uri, 'query': query, 'enableLogging': enableLogging});
     SocketIO socket = SocketIO(index);
     _sockets[index] = socket;
     return socket;

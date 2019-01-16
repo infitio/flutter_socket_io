@@ -4,7 +4,7 @@ import 'package:adhara_socket_io/adhara_socket_io.dart';
 
 void main() => runApp(new MyApp());
 
-const String URI = "http://192.168.1.7:7000/";
+const String URI = "http://192.168.1.5:7000/";
 
 class MyApp extends StatefulWidget {
   @override
@@ -22,7 +22,17 @@ class _MyAppState extends State<MyApp> {
   }
 
   initSocket() async {
-    socket = await SocketIOManager().createInstance(URI);
+    socket = await SocketIOManager().createInstance(
+        //Socket IO server URI
+        URI,
+        //Query params - can be used for authentication
+        query: {
+          "auth": "--SOME AUTH STRING---",
+          "info": "new connection from adhara-socketio"
+        },
+        //Enable or disable platform channel logging
+        enableLogging: false
+    );
     socket.onConnect((data) {
       pprint("connected...");
       pprint(data);
@@ -47,13 +57,13 @@ class _MyAppState extends State<MyApp> {
         1908,
         {
           "wonder": "Woman",
-          "comincs": ["DC", "Marvel"]
+          "comics": ["DC", "Marvel"]
         }
       ]);
       socket.emit("message", [
         {
           "wonder": "Woman",
-          "comincs": ["DC", "Marvel"]
+          "comics": ["DC", "Marvel"]
         }
       ]);
     }
@@ -80,7 +90,8 @@ class _MyAppState extends State<MyApp> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Expanded(child: Center(
+            Expanded(
+                child: Center(
               child: new Text(toPrint.join('\n')),
             )),
             RaisedButton(

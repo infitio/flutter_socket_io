@@ -2,7 +2,6 @@ package com.infitio.adharasocketio;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,9 +10,6 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
-import io.socket.client.IO;
-import io.socket.emitter.Emitter;
-import android.util.Log;
 
 
 /**
@@ -65,6 +61,9 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
                             }
                             options.query = sb.toString();
                         }
+                    }
+                    if(call.hasArgument("enableLogging")){
+                        options.enableLogging = call.argument("enableLogging");
                     }
                     this.instances.add(AdharaSocket.getInstance(registrar, options));
                     result.success(newIndex);

@@ -1,8 +1,34 @@
 # adhara_socket_io_example
 
-Demonstrates how to use the adhara_socket_io plugin.
+Usage:
 
-## Getting Started
+See `example/lib/main.dart` for better example
 
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
+```dart
+
+    SocketIO socket = await SocketIOManager().createInstance('http://192.168.1.2:7000/');       //TODO change the port  accordingly
+    socket.onConnect((data){
+      print("connected...");
+      print(data);
+      socket.emit("message", ["Hello world!"]);
+    });
+    socket.on("news", (data){   //sample event
+      print("news");
+      print(data);
+    });
+    socket.connect();
+
+```
+
+## Running example:
+
+
+1. Open `example/ios` in XCode or `example/android` in android studio. Build the code once (`cd example` & `flutter build apk` | `flutter build ios --no-codesign`)
+2. cd `example/socket.io.server`
+
+	1 run `npm i`
+
+	2 run `npm start`
+
+3. open `example/lib/main.dart` and edit the URI in #7 to point to your hosted/local socket server instances as mentioned step 2
+4. run Android/iOS app
