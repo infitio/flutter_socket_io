@@ -31,8 +31,11 @@ public class SwiftAdharaSocketIoPlugin: NSObject, FlutterPlugin {
                 if let query: [String:String] = arguments["query"] as? [String:String]{
                     config.query = query
                 }
-                instances.append(AdharaSocket.getInstance(registrar, config));
-                result(newIndex);
+                if let enableLogging: Bool = arguments["enableLogging"] as? Bool {
+                    config.enableLogging = enableLogging
+                }
+                instances.append(AdharaSocket.getInstance(registrar, config))
+                result(newIndex)
             case "clearInstance":
                 if(arguments["index"] == nil){
                     result(FlutterError(code: "400", message: "Invalid instance identifier provided", details: nil))
