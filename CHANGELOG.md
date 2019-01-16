@@ -1,3 +1,8 @@
+## 0.1.7 - 17th January, 2019
+
+* Disabling unnecessary logging of events in platform implementations in both Android and iOS,
+can enable if required by passing `enableLogging: true` to `createInstance`
+
 ## 0.1.6 - 28th November, 2018
 
 * Android and iOS data serialization handled properly to send objects and arrays
