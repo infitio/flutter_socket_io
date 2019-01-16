@@ -10,8 +10,8 @@ Usage:
 See `example/lib/main.dart` for better example
 
 ```dart
-
-    SocketIO socket = await SocketIOManager().createInstance('http://192.168.1.2:7000/');       //TODO change the port  accordingly
+    SocketIOManager manager = SocketIOManager();
+    SocketIO socket = manager.createInstance('http://192.168.1.2:7000/');       //TODO change the port  accordingly
     socket.onConnect((data){
       print("connected...");
       print(data);
@@ -22,6 +22,8 @@ See `example/lib/main.dart` for better example
       print(data);
     });
     socket.connect();
+    ///disconnect using
+    ///manager.
 
 ```
 
@@ -38,5 +40,7 @@ See `example/lib/main.dart` for better example
 3. open `example/lib/main.dart` and edit the URI in #7 to point to your hosted/local socket server instances as mentioned step 2
 4. run Android/iOS app
 
+## iOS support 📢📢
+This project uses Swift for iOS support, please enable Swift support for your project for this plugin to work
 
 Feel free to checkout our [Adhara](https://pub.dartlang.org/packages/adhara) package
