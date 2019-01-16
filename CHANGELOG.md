@@ -1,3 +1,8 @@
+## 0.1.8 - 17th January, 2019
+
+* Optimized serialization code for Android
+* Bug fix for Map representation characters/reserved characters for map representation as a string (`=` and `/`)
+
 ## 0.1.7 - 17th January, 2019
 
 * Disabling unnecessary logging of events in platform implementations in both Android and iOS,

@@ -53,20 +53,27 @@ class _MyAppState extends State<MyApp> {
   sendMessage() {
     if (socket != null) {
       pprint("sending message...");
-      socket.emit("message", ["test=!./", { "test": "=!./" }]);
       socket.emit("message", [
         "Hello world!",
         1908,
         {
           "wonder": "Woman",
           "comics": ["DC", "Marvel"]
-        }
-      ]);
-      socket.emit("message", [
+        },
         {
-          "wonder": "Woman",
-          "comics": ["DC", "Marvel"]
-        }
+          "test": "=!./"
+        },
+        [
+          "I'm glad",
+          2019,
+          {
+            "come back": "Tony",
+            "adhara means": ["base", "foundation"]
+          },
+          {
+            "test": "=!./"
+          },
+        ]
       ]);
     }
   }

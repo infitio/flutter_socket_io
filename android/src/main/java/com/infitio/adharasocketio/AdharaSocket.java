@@ -3,11 +3,11 @@ package com.infitio.adharasocketio;
 import android.util.Log;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,14 +103,21 @@ class AdharaSocket implements MethodCallHandler {
                         Object datum = data.get(i);
                         System.out.println(datum);
                         System.out.println(datum.getClass());
-                        try{
-                            array[i] = new JSONObject(datum.toString());
-                        }catch (JSONException jse){
-                            try{
-                                array[i] = new JSONArray(datum.toString());
-                            }catch (JSONException jse2){
-                                array[i] = datum;
-                            }
+                        if(datum instanceof Map){
+                            array[i] = new JSONObject((Map)datum);
+                        }else if(datum instanceof Collection){
+                            array[i] = new JSONArray((Collection) datum);
+                        }else{
+                            array[i] = datum;
+                            /*try{
+                                array[i] = new JSONObject(datum.toString());
+                            }catch (JSONException jse){
+                                try{
+                                    array[i] = new JSONArray(datum.toString());
+                                }catch (JSONException jse2){
+                                    array[i] = datum;
+                                }
+                            }*/
                         }
                     }
                 }
