@@ -22,7 +22,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   initSocket() async {
-    socket = await SocketIOManager().createInstance(
+    SocketIOManager manager = SocketIOManager();
+    socket = await manager.createInstance(
         //Socket IO server URI
         URI,
         //Query params - can be used for authentication
@@ -52,6 +53,7 @@ class _MyAppState extends State<MyApp> {
   sendMessage() {
     if (socket != null) {
       pprint("sending message...");
+      socket.emit("message", ["test=!./", { "test": "=!./" }]);
       socket.emit("message", [
         "Hello world!",
         1908,
