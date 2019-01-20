@@ -118,7 +118,7 @@ class _MyAppState extends State<MyApp> {
             display4: TextStyle(color: Colors.white),
           ),
           buttonTheme: ButtonThemeData(
-              padding: EdgeInsets.all(24.0),
+              padding: EdgeInsets.symmetric(vertical: 24.0, horizontal: 12.0),
               disabledColor: Colors.lightBlueAccent.withOpacity(0.5),
               buttonColor: Colors.lightBlue,
               splashColor: Colors.cyan
@@ -157,7 +157,7 @@ class _MyAppState extends State<MyApp> {
                       margin: EdgeInsets.symmetric(horizontal: 8.0),
                       child: RaisedButton(
                         child: Text("Send Message"),
-                        onPressed: sendMessage,
+                        onPressed: isProbablyConnected?sendMessage:null,
                       )
                   ),
                   Container(
