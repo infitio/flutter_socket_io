@@ -1,3 +1,11 @@
+## 0.1.10 - 26th February, 2019
+
+* `clearInstance` BugFix on iOS
+
+## 0.1.9 - 21st January, 2019
+
+* BugFix for iOS running on iPhone 6
+
 ## 0.1.8 - 17th January, 2019
 
 * Optimized serialization code for Android
