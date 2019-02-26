@@ -32,7 +32,8 @@ class _MyAppState extends State<MyApp> {
         //Query params - can be used for authentication
         query: {
           "auth": "--SOME AUTH STRING---",
-          "info": "new connection from adhara-socketio"
+          "info": "new connection from adhara-socketio",
+          "timestamp": DateTime.now().toString()
         },
         //Enable or disable platform channel logging
         enableLogging: false
@@ -53,8 +54,8 @@ class _MyAppState extends State<MyApp> {
     socket.connect();
   }
 
-  disconnect(){
-    manager.clearInstance(socket);
+  disconnect() async {
+    await manager.clearInstance(socket);
     setState(() => isProbablyConnected = false);
   }
 
