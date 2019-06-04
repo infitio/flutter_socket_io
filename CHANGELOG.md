@@ -1,3 +1,6 @@
+## 0.1.11 - 5th June, 2019
+* BugFix: Methods marked with @UiThread must be executed on the main thread.
+
 ## 0.1.10 - 26th February, 2019
 
 * `clearInstance` BugFix on iOS
