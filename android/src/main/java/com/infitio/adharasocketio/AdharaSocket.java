@@ -1,6 +1,8 @@
 package com.infitio.adharasocketio;
 
 import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -78,7 +80,14 @@ class AdharaSocket implements MethodCallHandler {
                             }
                         }
                         arguments.put("args", argsList);
-                        channel.invokeMethod("incoming", arguments);
+                        // channel.invokeMethod("incoming", arguments);
+                        final Handler handler = new Handler(Looper.getMainLooper());
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                channel.invokeMethod("incoming", arguments);
+                            }
+                        });
                     }
 
                 });
