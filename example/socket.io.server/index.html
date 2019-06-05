@@ -18,7 +18,7 @@
 		console.log(arguments);
 	}
 	ptoc("connecting...");
-	const socket = io();
+	const socket = io({transports:["websocket"]});
 	socket.on("connect", (data)=>{
 		ptoc("connected", data);
 	});

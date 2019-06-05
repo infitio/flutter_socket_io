@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:adhara_socket_io/socket.dart';
+import 'package:adhara_socket_io/options.dart';
 
 class SocketIOManager {
   static const MethodChannel _channel = const MethodChannel('adhara_socket_io');
@@ -9,13 +10,10 @@ class SocketIOManager {
   Map<int, SocketIO> _sockets = {};
 
   ///Create a [SocketIO] instance
-  ///[uri] - Socket Server URL
-  ///[query] - Query params to send to server as a Map
+  ///[options] - Options object to initialize socket instance
   ///returns [SocketIO]
-  Future<SocketIO> createInstance(String uri,
-      {Map<String, String> query, bool enableLogging: false}) async {
-    int index = await _channel.invokeMethod('newInstance',
-        {'uri': uri, 'query': query, 'enableLogging': enableLogging});
+  Future<SocketIO> createInstance(SocketOptions options) async {
+    int index = await _channel.invokeMethod('newInstance', options.asMap());
     SocketIO socket = SocketIO(index);
     _sockets[index] = socket;
     return socket;

@@ -21,6 +21,7 @@ var _sockets = new Set();
 io.on('connection', function (socket) {
     console.log(">>>>>>> new connection", socket.handshake.query.timestamp);
     _sockets.add(socket);
+    console.log(">>>>>socket.conn.transport.name>>>>", socket.conn.transport.name);
     console.log(">>>>>>> Total Sockets", _sockets.size);
     socket.emit('news', { hello: 'world' });
     socket.on("message", function(){

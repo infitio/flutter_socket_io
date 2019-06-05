@@ -1,5 +1,7 @@
 package com.infitio.adharasocketio;
 
+import android.util.Log;
+
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,13 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
 //    private final MethodChannel channel;
     private final Registrar registrar;
     private static final String TAG = "Adhara:SocketIOPlugin";
+    boolean enableLogging = false;
+
+    private void log(Object message){
+        if(this.enableLogging){
+            Log.d(TAG, message.toString());
+        }
+    }
 
     private AdharaSocketIoPlugin(Registrar registrar/*, MethodChannel channel*/) {
         this.instances = new ArrayList<>();
@@ -31,6 +40,14 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
     public static void registerWith(Registrar registrar) {
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "adhara_socket_io");
         channel.setMethodCallHandler(new AdharaSocketIoPlugin(registrar/*, channel*/));
+    }
+
+    static String[] getStringArray(List<String> arr){
+        String[] str = new String[arr.size()];
+        for (int j = 0; j < arr.size(); j++) {
+            str[j] = arr.get(j);
+        }
+        return str;
     }
 
     @Override
@@ -47,8 +64,20 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
         switch (call.method) {
             case "newInstance": {
                 try{
+                    if(call.hasArgument("enableLogging")){
+                        this.enableLogging = call.argument("enableLogging");
+                    }
                     int newIndex = instances.size();
                     AdharaSocket.Options options = new AdharaSocket.Options(newIndex, (String)call.argument("uri"));
+                    try {
+                        List<String> transports = call.argument("transports");
+                        if (transports != null) {
+                            options.transports = AdharaSocketIoPlugin.getStringArray(transports);
+                        }
+                        options.timeout = (Long) call.argument("timeout");
+                    }catch (Exception e){
+                        Log.e(TAG, e.toString());
+                    }
                     if(call.hasArgument("query")) {
                         Map<String, String> _query = call.argument("query");
                         if(_query!=null) {
@@ -62,9 +91,7 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
                             options.query = sb.toString();
                         }
                     }
-                    if(call.hasArgument("enableLogging")){
-                        options.enableLogging = call.argument("enableLogging");
-                    }
+                    options.enableLogging = this.enableLogging;
                     this.instances.add(AdharaSocket.getInstance(registrar, options));
                     result.success(newIndex);
                 }catch (URISyntaxException use){

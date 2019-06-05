@@ -26,8 +26,8 @@ class _MyAppState extends State<MyApp> {
 
   initSocket() async {
     setState(() => isProbablyConnected = true);
-    socket = await manager.createInstance(
-      //Socket IO server URI
+    socket = await manager.createInstance(SocketOptions(
+        //Socket IO server URI
         URI,
         //Query params - can be used for authentication
         query: {
@@ -36,8 +36,9 @@ class _MyAppState extends State<MyApp> {
           "timestamp": DateTime.now().toString()
         },
         //Enable or disable platform channel logging
-        enableLogging: false
-    );
+        enableLogging: false,
+        transports: [Transports.WEB_SOCKET, Transports.POLLING] //Enable required transport
+    ));
     socket.onConnect((data) {
       pprint("connected...");
       pprint(data);

@@ -1,5 +1,32 @@
+## 0.2.0 - 5th June, 2019
+
+### Breaking Change
+* Convert all arguments for SocketIOManager to a single Options object
+
+old config
+```
+socket = await manager.createInstance(
+  URI,
+  query: {"auth": "--SOME AUTH STRING---",},
+  enableLogging: false
+);
+```
+
+new config
+
+```
+socket = await manager.createInstance(SocketOptions(
+    URI,
+    query: {"auth": "--SOME AUTH STRING---",},
+    enableLogging: false,
+));
+```
+
+* Introducing `transports` in SocketOptions
+
 ## 0.1.11 - 5th June, 2019
 * BugFix: Methods marked with @UiThread must be executed on the main thread.
+* Fix for https://github.com/infitio/flutter_socket_io/issues/8
 
 ## 0.1.10 - 26th February, 2019
 
