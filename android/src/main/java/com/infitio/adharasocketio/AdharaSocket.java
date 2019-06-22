@@ -130,7 +130,30 @@ class AdharaSocket implements MethodCallHandler {
                         }
                     }
                 }
-                socket.emit(eventName, array);
+                if (reqId == null) {
+                    socket.emit(eventName, array);
+                } else {
+                    socket.emit(eventName, array, new Ack() {
+
+                        @Override
+                        public void call(Object... args) {
+                            log("Ack received:::"+eventName);
+                            Map<String, Object> arguments = new HashMap<>();
+                            arguments.put("reqId", reqId);
+                            List<String> argsList = new ArrayList<>();
+                            for(Object arg : args){
+                                if((arg instanceof JSONObject)
+                                        || (arg instanceof JSONArray)){
+                                    argsList.add(arg.toString());
+                                }else if(arg!=null){
+                                    argsList.add(arg.toString());
+                                }
+                            }
+                            arguments.put("args", argsList);
+                            channel.invokeMethod("incomingAck", arguments);
+                        }
+                    });
+                }
                 result.success(null);
                 break;
             }
