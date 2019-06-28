@@ -136,7 +136,7 @@ class AdharaSocket implements MethodCallHandler {
                 socket.emit(eventName, data,  new Ack() {
                     @Override
                     public void call(Object... args) {
-                        Log.d(TAG, 'ack come');
+                        Log.d(TAG, "ack come");
                     }
                 });
                 result.success(null);

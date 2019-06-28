@@ -92,7 +92,7 @@ class SocketIO {
   }
 
   ///send data to socket server
-  emit(String eventName, List<dynamic> arguments) async {
+  emit(String eventName, dynamic arguments) async {
     await _channel.invokeMethod('emit', {
       'eventName': eventName,
       'arguments': arguments,
