@@ -102,6 +102,7 @@ class SocketIO {
   ///Data listener called by platform API
   _handleData(String eventName, List arguments) {
     _listeners[eventName]?.forEach((Function listener) {
+      print(eventName + '' + arguments.toString());
       if (arguments.length == 0) {
         arguments = [null];
       } else {

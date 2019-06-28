@@ -35,8 +35,6 @@ class AdharaSocket implements MethodCallHandler {
     private void log(String message){
         if(this.options.enableLogging){
             Log.d(TAG, message);
-
-
         }
     }
 
@@ -75,21 +73,18 @@ class AdharaSocket implements MethodCallHandler {
                         arguments.put("eventName", eventName);
                         List<String> argsList = new ArrayList<>();
                         for(Object arg : args){
-                            if((arg instanceof JSONObject)
-                                    || (arg instanceof JSONArray)){
+                            if((arg instanceof JSONObject) || (arg instanceof JSONArray)){
                                 argsList.add(arg.toString());
                             }else if(arg!=null){
                                 argsList.add(arg.toString());
                             }
                         }
-                        arguments.put("args", argsList);
+                        arguments.put("args", arg);
                         // channel.invokeMethod("incoming", arguments);
                         final Handler handler = new Handler(Looper.getMainLooper());
                         handler.post(new Runnable() {
                             @Override
-                            public void run() {
-                                channel.invokeMethod("incoming", arguments);
-                            }
+                            public void run() { channel.invokeMethod("incoming", arguments); }
                         });
                     }
 
@@ -106,40 +101,14 @@ class AdharaSocket implements MethodCallHandler {
             }
             case "emit": {
                 final String eventName = call.argument("eventName");
-                final JSONObject data = new JSONObject(call.argument("arguments"));
+                final JSONObject data = new JSONObject((HashMap)call.argument("arguments"));
                 log("emitting:::"+data+":::to:::"+eventName);
-//                Object[] array = {};
-//                if(data!=null){
-//                    array = new Object[data.size()];
-//                    for(int i=0; i<data.size(); i++){
-//                        Object datum = data.get(i);
-//                        System.out.println(datum);
-//                        System.out.println(datum.getClass());
-//                        if(datum instanceof Map){
-//                            array[i] = new JSONObject((Map)datum);
-//                        }else if(datum instanceof Collection){
-//                            array[i] = new JSONArray((Collection) datum);
-//                        }else{
-//                            array[i] = datum;
-//                            /*try{
-//                                array[i] = new JSONObject(datum.toString());
-//                            }catch (JSONException jse){
-//                                try{
-//                                    array[i] = new JSONArray(datum.toString());
-//                                }catch (JSONException jse2){
-//                                    array[i] = datum;
-//                                }
-//                            }*/
-//                        }
-//                    }
-//                }
                 socket.emit(eventName, data,  new Ack() {
                     @Override
                     public void call(Object... args) {
-                        Log.d(TAG, "ack come");
+                        result.success(args[0]);
                     }
                 });
-                result.success(null);
                 break;
             }
             case "isConnected": {
