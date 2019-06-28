@@ -79,7 +79,7 @@ class AdharaSocket implements MethodCallHandler {
                                 argsList.add(arg.toString());
                             }
                         }
-                        arguments.put("args", arg);
+                        arguments.put("args", argsList);
                         // channel.invokeMethod("incoming", arguments);
                         final Handler handler = new Handler(Looper.getMainLooper());
                         handler.post(new Runnable() {
