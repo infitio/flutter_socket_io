@@ -102,12 +102,15 @@ class AdharaSocket implements MethodCallHandler {
             case "emit": {
                 final String eventName = call.argument("eventName");
                 final JSONObject data = new JSONObject((HashMap)call.argument("arguments"));
-                log("emitting:::"+data+":::to:::"+eventName);
+                log(eventName + "::" + data);
                 socket.emit(eventName, data,  new Ack() {
                     @Override
                     public void call(Object... args) {
-                        log("ack:::" + eventName);
-                        result.success(args != null && args.length > 0  ? (JSONObject) args[0] : null);
+                        if(args.length > 0) {
+                            result.success(args[args.length - 1]);
+                        } else {
+                            result.success(null);
+                        }
                     }
                 });
                 break;
