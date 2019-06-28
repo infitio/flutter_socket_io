@@ -53,7 +53,7 @@ class AdharaSocket implements MethodCallHandler {
     }
 
     @Override
-    public void onMethodCall(MethodCall call, Result result) {
+    public void onMethodCall(MethodCall call, final Result result) {
         switch (call.method) {
             case "connect": {
                 log("Connecting....");
@@ -106,7 +106,8 @@ class AdharaSocket implements MethodCallHandler {
                 socket.emit(eventName, data,  new Ack() {
                     @Override
                     public void call(Object... args) {
-                        result.success(args[0]);
+                        log("ack:::" + eventName);
+                        result.success(args != null && args.length > 0  ? (JSONObject) args[0] : null);
                     }
                 });
                 break;
