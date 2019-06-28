@@ -106,7 +106,7 @@ class AdharaSocket implements MethodCallHandler {
             }
             case "emit": {
                 final String eventName = call.argument("eventName");
-                final JSONObject data = call.argument("arguments");
+                final JSONObject data = new JSONObject(call.argument("arguments"));
                 log("emitting:::"+data+":::to:::"+eventName);
 //                Object[] array = {};
 //                if(data!=null){
