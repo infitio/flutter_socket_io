@@ -73,9 +73,9 @@ class SocketIO {
   on(String eventName, SocketEventListener listener) async {
     if (_listeners[eventName] == null) {
       _listeners[eventName] = [];
+      _channel.invokeMethod("on", {"eventName": eventName});
     }
     _listeners[eventName].add(listener);
-    await _channel.invokeMethod("on", {"eventName": eventName});
   }
 
   ///stop listening to an event.
