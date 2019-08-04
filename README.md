@@ -27,6 +27,14 @@ See `example/lib/main.dart` for better example
 
 ```
 
+To request callback on ack:
+```dart
+  socket.emitWithAck("message", ["Hello world!"]).then( (data) {
+    // this callback runs when this specific message is acknowledged by the server
+    print(data);
+  });
+```
+
 ## Running example:
 
 
