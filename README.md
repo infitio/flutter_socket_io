@@ -52,3 +52,21 @@ To request callback on ack:
 This project uses Swift for iOS support, please enable Swift support for your project for this plugin to work
 
 Feel free to checkout our [Adhara](https://pub.dartlang.org/packages/adhara) package
+
+
+## Android support for SDK > 27
+
+Configure `android:usesCleartextTraffic="true"` as a property of `<application ...>` tag in `android/app/src/main/AndroidManifest.xml`
+For example:
+    ```
+    ...
+    <application
+            android:name="io.flutter.app.FlutterApplication"
+            android:label="adhara_socket_io_example"
+            android:usesCleartextTraffic="true"
+            android:icon="@mipmap/ic_launcher">
+            <activity
+                android:name=".MainActivity"
+                ...
+    ```
+[Refer to discussion here](https://github.com/infitio/flutter_socket_io/issues/42)
