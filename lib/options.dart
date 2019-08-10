@@ -16,6 +16,9 @@ class SocketOptions {
 
   ///Connection timeout (ms). Set -1 to disable.
   int timeout = 20000;
+  
+  ///Namespace parameter 
+  String namesapce;
 
 //  public boolean forceNew;
 //          /**
@@ -47,7 +50,8 @@ class SocketOptions {
   SocketOptions(this.uri, {
     this.query: const {},
     this.enableLogging: false,
-    this.transports: const [Transports.WEB_SOCKET, Transports.POLLING]
+    this.transports: const [Transports.WEB_SOCKET, Transports.POLLING],
+    this.namesapce = "/"
   });
 
   Map asMap(){
@@ -55,6 +59,7 @@ class SocketOptions {
       "uri": uri,
       "query": query,
       "enableLogging": enableLogging,
+      "namespace": namesapce,
       "transports": transports.map((Transports t){
         return {
           Transports.WEB_SOCKET: "websocket",
