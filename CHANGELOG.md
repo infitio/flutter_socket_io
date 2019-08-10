@@ -1,3 +1,14 @@
+## 0.3.0 - 11th August, 2019
+
+### Bulk update
+* [PR 18](https://github.com/infitio/flutter_socket_io/pull/18) - Update deployment target to 9.0 and allow for most recent version of Starscream
+* [PR 27](https://github.com/infitio/flutter_socket_io/pull/27) - Android bug fix | Methods marked with @UiThread must be executed on the main thread
+* [PR 35](https://github.com/infitio/flutter_socket_io/pull/35) - *ACK Support*
+* [PR 44](https://github.com/infitio/flutter_socket_io/pull/44) - fix for duplicated listeners from platform channel
+* [PR 45](https://github.com/infitio/flutter_socket_io/pull/45) - Bug Fix | Java class cast exception for timeout
+* [PR 48](https://github.com/infitio/flutter_socket_io/pull/48) - Bug Fix | Swift version error on `pod install`
+* [PR 52](https://github.com/infitio/flutter_socket_io/pull/52) - *Namespace support for iOS* | Any contributors can develop similarly for android
+
 ## 0.2.0 - 5th June, 2019
 
 ### Breaking Change
