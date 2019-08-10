@@ -57,8 +57,10 @@ Feel free to checkout our [Adhara](https://pub.dartlang.org/packages/adhara) pac
 ## Android support for SDK > 27
 
 Configure `android:usesCleartextTraffic="true"` as a property of `<application ...>` tag in `android/app/src/main/AndroidManifest.xml`
+
 For example:
-    ```
+
+```
     ...
     <application
             android:name="io.flutter.app.FlutterApplication"
@@ -68,5 +70,6 @@ For example:
             <activity
                 android:name=".MainActivity"
                 ...
-    ```
+```
+
 [Refer to discussion here](https://github.com/infitio/flutter_socket_io/issues/42)
