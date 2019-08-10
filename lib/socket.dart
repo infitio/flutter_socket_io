@@ -48,6 +48,7 @@ class SocketIO {
 
   ///Store listeners
   Map<String, List<Function>> _listeners = {};
+
   ///Store Completers for pending Acks
   Map<String, Completer> _pendingAcks = {};
   int _reqCounter = 0;
@@ -57,9 +58,8 @@ class SocketIO {
 
   ///Create a socket object with identifier received from platform API's
   SocketIO(this.id)
-      : _channel =
-            new MethodChannel("adhara_socket_io:socket:${id.toString()}") {
-    _channel.setMethodCallHandler((call) {
+      : _channel = new MethodChannel("adhara_socket_io:socket:${id.toString()}") {
+    _channel.setMethodCallHandler((call) async {
       if (call.method == 'incoming') {
         final String eventName = call.arguments['eventName'];
         final List<dynamic> arguments = call.arguments['args'];
@@ -79,16 +79,19 @@ class SocketIO {
         if (arguments.length == 0) {
           arguments = [null];
         } else {
-          arguments = arguments.where((_) {
-            //TODO this works around difference in ios (doesn't eat nulls) and android (eats nulls)
-            return _ != null;
-          }).toList().map((_) {
-            try {
-              return jsonDecode(_);
-            } catch (e) {
-              return _;
-            }
-          }).toList();
+          arguments = arguments
+              .where((_) {
+                //TODO this works around difference in ios (doesn't eat nulls) and android (eats nulls)
+                return _ != null;
+              })
+              .map((_) {
+                try {
+                  return jsonDecode(_);
+                } catch (e) {
+                  return _;
+                }
+              })
+              .toList();
         }
         completer.complete(arguments);
       }
@@ -129,14 +132,12 @@ class SocketIO {
       'arguments': arguments,
     });
   }
+
   ///send data to socket server, return expected Ack as a Future
-  emitWithAck(String eventName, List<dynamic> arguments) async {
+  Future emitWithAck(String eventName, List<dynamic> arguments) async {
     String reqId = (++_reqCounter).toString();
-    await _channel.invokeMethod('emit', {
-      'eventName': eventName,
-      'arguments': arguments,
-      'reqId': reqId
-    });
+    await _channel.invokeMethod('emit',
+        {'eventName': eventName, 'arguments': arguments, 'reqId': reqId});
     var completer = new Completer();
     _pendingAcks[reqId] = completer;
     return completer.future;

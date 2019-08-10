@@ -1,10 +1,6 @@
-enum Transports{
-  WEB_SOCKET,
-  POLLING
-}
+enum Transports { WEB_SOCKET, POLLING }
 
 class SocketOptions {
-
   final String uri;
   final Map<String, String> query;
 
@@ -16,8 +12,8 @@ class SocketOptions {
 
   ///Connection timeout (ms). Set -1 to disable.
   int timeout = 20000;
-  
-  ///Namespace parameter 
+
+  ///Namespace parameter
   String namesapce;
 
 //  public boolean forceNew;
@@ -47,20 +43,19 @@ class SocketOptions {
 //        public int port = -1;
 //        public int policyPort = -1;
 
-  SocketOptions(this.uri, {
-    this.query: const {},
-    this.enableLogging: false,
-    this.transports: const [Transports.WEB_SOCKET, Transports.POLLING],
-    this.namesapce = "/"
-  });
+  SocketOptions(this.uri,
+      {this.query: const {},
+      this.enableLogging: false,
+      this.transports: const [Transports.WEB_SOCKET, Transports.POLLING],
+      this.namesapce = "/"});
 
-  Map asMap(){
+  Map asMap() {
     return {
       "uri": uri,
       "query": query,
       "enableLogging": enableLogging,
       "namespace": namesapce,
-      "transports": transports.map((Transports t){
+      "transports": transports.map((Transports t) {
         return {
           Transports.WEB_SOCKET: "websocket",
           Transports.POLLING: "polling"
@@ -69,5 +64,4 @@ class SocketOptions {
       "timeout": timeout
     };
   }
-
 }

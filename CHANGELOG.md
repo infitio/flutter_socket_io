@@ -1,3 +1,7 @@
+## 0.3.1 - 11th August, 2019
+
+* Bug fixes from 0.3.0
+
 ## 0.3.0 - 11th August, 2019
 
 ### Bulk update
