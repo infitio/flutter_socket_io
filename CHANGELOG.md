@@ -1,3 +1,7 @@
+## 0.3.2 - 11th August, 2019
+
+* ACK Bug fixes for android 27+ | UIThread/EventThread issue resolved
+
 ## 0.3.1 - 11th August, 2019
 
 * Bug fixes from 0.3.0
