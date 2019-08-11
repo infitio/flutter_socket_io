@@ -48,10 +48,11 @@ class _MyAppState extends State<MyApp> {
     socket.onConnectTimeout(pprint);
     socket.onError(pprint);
     socket.onDisconnect(pprint);
-    socket.on("news", (data) {
-      pprint("news");
-      pprint(data);
-    });
+    socket.on("type:string", (data) => pprint("type:string | $data"));
+    socket.on("type:bool", (data) => pprint("type:bool | $data"));
+    socket.on("type:number", (data) => pprint("type:number | $data"));
+    socket.on("type:object", (data) => pprint("type:object | $data"));
+    socket.on("type:list", (data) => pprint("type:list | $data"));
     socket.connect();
   }
 

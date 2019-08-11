@@ -46,12 +46,21 @@ To request callback on ack:
 	2 run `npm start`
 
 3. open `example/lib/main.dart` and edit the `URI` in #7 to point to your hosted/local socket server instances as mentioned step 2
+    
+    For example:
+        
+    ```dart
+    const String URI = "http://192.168.1.2:7000/";
+    ```
+        
+    ```dart
+    const String URI = "http://mysite.com/";
+    ```
+    
 4. run Android/iOS app
 
 ## iOS support 📢📢
 This project uses Swift for iOS support, please enable Swift support for your project for this plugin to work
-
-Feel free to checkout our [Adhara](https://pub.dartlang.org/packages/adhara) package
 
 
 ## Android support for SDK > 27
@@ -59,17 +68,22 @@ Feel free to checkout our [Adhara](https://pub.dartlang.org/packages/adhara) pac
 Configure `android:usesCleartextTraffic="true"` as a property of `<application ...>` tag in `android/app/src/main/AndroidManifest.xml`
 
 For example:
+    
+```xml
 
-```
-    ...
-    <application
-            android:name="io.flutter.app.FlutterApplication"
-            android:label="adhara_socket_io_example"
-            android:usesCleartextTraffic="true"
-            android:icon="@mipmap/ic_launcher">
-            <activity
-                android:name=".MainActivity"
-                ...
+<application
+        android:name="io.flutter.app.FlutterApplication"
+        android:label="adhara_socket_io_example"
+        android:usesCleartextTraffic="true"
+        android:icon="@mipmap/ic_launcher">
+        <activity
+            android:name=".MainActivity"...>...</activity>
+
 ```
 
 [Refer to discussion here](https://github.com/infitio/flutter_socket_io/issues/42)
+
+
+## Other Packages:
+
+Feel free to checkout our [Adhara](https://pub.dartlang.org/packages/adhara) package

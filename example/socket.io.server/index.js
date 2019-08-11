@@ -23,7 +23,11 @@ io.on('connection', function (socket) {
     _sockets.add(socket);
     console.log(">>>>>socket.conn.transport.name>>>>", socket.conn.transport.name);
     console.log(">>>>>>> Total Sockets", _sockets.size);
-    socket.emit('news', { hello: 'world' });
+    socket.emit('type:string', "String message back to client");
+    socket.emit('type:bool', true);
+    socket.emit('type:number', 123);
+    socket.emit('type:object', { hello: 'world' });
+    socket.emit('type:list', ["hello", 123, {"key": "value"}]);
     socket.on("message", function(){
         let args = Array.prototype.slice.call(arguments);
         console.log(args, arguments.length);
