@@ -4,7 +4,7 @@ import 'package:adhara_socket_io/adhara_socket_io.dart';
 
 void main() => runApp(MyApp());
 
-const String URI = "http://192.168.1.5:7000/";
+const String URI = "http://192.168.0.114:7000/";
 
 class MyApp extends StatefulWidget {
   @override
@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> {
   initSocket() async {
     setState(() => isProbablyConnected = true);
     socket = await manager.createInstance(SocketOptions(
-        //Socket IO server URI
+      //Socket IO server URI
         URI,
         //Query params - can be used for authentication
         query: {
@@ -89,6 +89,15 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  sendMessageWithACK(){
+    pprint("Sending ACK message...");
+    List msg = ["Hello world!", 1, true, {"p":1}, [3,'r']];
+    socket.emitWithAck("ack-message", msg).then( (data) {
+      // this callback runs when this specific message is acknowledged by the server
+      pprint("ACK recieved for $msg: $data");
+    });
+  }
+
   pprint(data) {
     setState(() {
       if (data is Map) {
@@ -143,33 +152,47 @@ class _MyAppState extends State<MyApp> {
                     child: ListView(
                       children: toPrint.map((String _) => Text(_ ?? "")).toList(),
                     ),
-                  )),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 8.0),
-                    child: RaisedButton(
-                      child: Text("Connect"),
-                      onPressed: isProbablyConnected?null:initSocket,
+                  )
+              ),
+              Container(
+                height: 60.0,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: RaisedButton(
+                        child: Text("Connect"),
+                        onPressed: isProbablyConnected?null:initSocket,
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      ),
                     ),
-                  ),
-                  Container(
-                      margin: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: RaisedButton(
-                        child: Text("Send Message"),
-                        onPressed: isProbablyConnected?sendMessage:null,
-                      )
-                  ),
-                  Container(
-                      margin: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: RaisedButton(
-                        child: Text("Disconnect"),
-                        onPressed: isProbablyConnected?disconnect:null,
-                      )
-                  ),
-                ],
+                    Container(
+                        margin: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: RaisedButton(
+                          child: Text("Send Message"),
+                          onPressed: isProbablyConnected?sendMessage:null,
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        )
+                    ),
+                    Container(
+                        margin: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: RaisedButton(
+                          child: Text("Send w/ ACK"), //Send message with ACK
+                          onPressed: isProbablyConnected?sendMessageWithACK:null,
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        )
+                    ),
+                    Container(
+                        margin: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: RaisedButton(
+                          child: Text("Disconnect"),
+                          onPressed: isProbablyConnected?disconnect:null,
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        )
+                    ),
+                  ],
+                ),
               ),
               SizedBox(height: 12.0,)
             ],

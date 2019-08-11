@@ -31,6 +31,13 @@ io.on('connection', function (socket) {
             console.log(arg, typeof arg);
         }
     });
+    socket.on("ack-message", function(){
+        let args = Array.prototype.slice.call(arguments);
+        console.log(args, arguments.length);
+        console.log(`received ack message: "${args}". Sending back ack!`);
+        fn = args.pop();
+        fn(`Ack for ${args.map(_ => (_ instanceof Object)?JSON.stringify(_):_).join(", ")}`);
+    });
     socket.on("disconnect", ()=>{
         _sockets.delete(socket);
         console.log(">>>>>>> disconnect", socket.handshake.query.timestamp);

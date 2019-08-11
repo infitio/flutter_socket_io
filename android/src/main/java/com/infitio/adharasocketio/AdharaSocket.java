@@ -81,7 +81,6 @@ class AdharaSocket implements MethodCallHandler {
                             }
                         }
                         arguments.put("args", argsList);
-                        // channel.invokeMethod("incoming", arguments);
                         final Handler handler = new Handler(Looper.getMainLooper());
                         handler.post(new Runnable() {
                             @Override
@@ -140,7 +139,7 @@ class AdharaSocket implements MethodCallHandler {
                         @Override
                         public void call(Object... args) {
                             log("Ack received:::"+eventName);
-                            Map<String, Object> arguments = new HashMap<>();
+                            final Map<String, Object> arguments = new HashMap<>();
                             arguments.put("reqId", reqId);
                             List<String> argsList = new ArrayList<>();
                             for(Object arg : args){
@@ -152,7 +151,13 @@ class AdharaSocket implements MethodCallHandler {
                                 }
                             }
                             arguments.put("args", argsList);
-                            channel.invokeMethod("incomingAck", arguments);
+                            final Handler handler = new Handler(Looper.getMainLooper());
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    channel.invokeMethod("incomingAck", arguments);
+                                }
+                            });
                         }
                     });
                 }

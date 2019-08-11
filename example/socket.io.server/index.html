@@ -28,7 +28,9 @@
 	socket.on("news", (data)=>{
 		ptoc("news...", data);
 	});
-	socket.emit("message", "hey yo!");
+	socket.emit("ack-message", "hey yo!", function(ackmsg){
+		console.log("ACK::"+ackmsg);
+	});
 </script>
 </body>
 </html>
