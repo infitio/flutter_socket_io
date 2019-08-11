@@ -53,6 +53,7 @@ class _MyAppState extends State<MyApp> {
     socket.on("type:number", (data) => pprint("type:number | $data"));
     socket.on("type:object", (data) => pprint("type:object | $data"));
     socket.on("type:list", (data) => pprint("type:list | $data"));
+    socket.on("message", (data) => pprint(data));
     socket.connect();
   }
 
