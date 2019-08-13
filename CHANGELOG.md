@@ -1,3 +1,7 @@
+## 0.3.3 - 14th August, 2019
+
+* Typo fix for nameSpace ( changed SocketOptions.namesapce to SocketOptions.nameSpace )
+
 ## 0.3.2 - 11th August, 2019
 
 * ACK Bug fixes for android 27+ | UIThread/EventThread issue resolved
