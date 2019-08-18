@@ -1,3 +1,7 @@
+## 0.3.3+1 - 18th August, 2019
+
+* [PR 57](https://github.com/infitio/flutter_socket_io/pull/57) fix for iOS (reqId wasn't optional) @Saifallak
+
 ## 0.3.3 - 14th August, 2019
 
 * Typo fix for nameSpace ( changed SocketOptions.namesapce to SocketOptions.nameSpace )
