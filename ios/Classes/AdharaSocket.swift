@@ -74,7 +74,7 @@ public class AdharaSocket: NSObject, FlutterPlugin {
             case "emit":
                 let eventName: String = arguments["eventName"] as! String
                 let data: [Any] = arguments["arguments"] as! [Any]
-                let reqId: String = arguments["reqId"] as! String
+                let reqId: String? = arguments["reqId"] as? String
                 self.log("emitting:::", data, ":::to:::", eventName);
                 if (reqId == nil) {
                     socket.emit(eventName, with: data)
