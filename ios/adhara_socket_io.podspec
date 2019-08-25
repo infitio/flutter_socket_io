@@ -8,9 +8,9 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
 socket.io for flutter by adhara
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://github.com/infitio/flutter_socket_io/'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'Infitio' => 'rr.16566@gmail.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
@@ -18,7 +18,7 @@ socket.io for flutter by adhara
   s.dependency 'Socket.IO-Client-Swift'
   s.dependency 'Starscream'
 
-  s.swift_version = '4.2'
+  s.swift_version = '5.0'
   s.ios.deployment_target = '9.0'
 end
 
