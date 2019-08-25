@@ -83,6 +83,7 @@ For example:
 
 [Refer to discussion here](https://github.com/infitio/flutter_socket_io/issues/42)
 
+[![Adhara Socket.io in action](https://img.youtube.com/vi/rc6Kv95FJ4M/2.jpg)](https://www.youtube.com/watch?v=rc6Kv95FJ4M)
 
 ## Other Packages:
 
