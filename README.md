@@ -86,7 +86,16 @@ For example:
 ## Sample Video - Running the example
 
 [![Running adhara socket io for flutter, example](http://img.youtube.com/vi/rc6Kv95FJ4M/0.jpg)](http://www.youtube.com/watch?v=rc6Kv95FJ4M "Running the example")
- 
+
+
+## FAQ's
+
+##### AdharaSocketIoPlugin.m:2:9: fatal error: 'adhara_socket_io/adhara_socket_io-Swift.h' file not found
+add use_frameworks! to your Podfile as in the example
+https://github.com/infitio/flutter_socket_io/blob/master/example/ios/Podfile#L30
+
+[Read more about this discussion](https://github.com/infitio/flutter_socket_io/issues/58)
+
 
 ## Other Packages:
 
