@@ -91,7 +91,7 @@ For example:
 ## FAQ's
 
 ##### AdharaSocketIoPlugin.m:2:9: fatal error: 'adhara_socket_io/adhara_socket_io-Swift.h' file not found
-add use_frameworks! to your Podfile as in the example
+add `use_frameworks!` to your Podfile as in the example
 https://github.com/infitio/flutter_socket_io/blob/master/example/ios/Podfile#L30
 
 [Read more about this discussion](https://github.com/infitio/flutter_socket_io/issues/58)
