@@ -4,28 +4,29 @@ import SocketIO
 
 
 public class SwiftAdharaSocketIoPlugin: NSObject, FlutterPlugin {
-    
-    var instances: [AdharaSocket];
+
+    var instances: [Int: AdharaSocket];
+    var currentIndex: Int;
     let registrar: FlutterPluginRegistrar;
-    
+
     init(_ _registrar: FlutterPluginRegistrar){
         registrar = _registrar
-        instances = [AdharaSocket]()
+        instances = [Int: AdharaSocket]()
+        currentIndex = 0;
     }
-    
+
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "adhara_socket_io", binaryMessenger: registrar.messenger())
         let instance = SwiftAdharaSocketIoPlugin(registrar)
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
-    
+
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        var adharaSocket:AdharaSocket
         let arguments = call.arguments as! [String: AnyObject]
-        
+
         switch (call.method) {
             case "newInstance":
-                let newIndex: Int = instances.count
+                let newIndex = currentIndex;
                 let config:AdharaSocketIOClientConfig
                     = AdharaSocketIOClientConfig(newIndex, uri: arguments["uri"] as! String,
                                                  namespace: arguments["namespace"] as! String)
@@ -35,25 +36,25 @@ public class SwiftAdharaSocketIoPlugin: NSObject, FlutterPlugin {
                 if let enableLogging: Bool = arguments["enableLogging"] as? Bool {
                     config.enableLogging = enableLogging
                 }
-                instances.append(AdharaSocket.getInstance(registrar, config))
+                instances[newIndex] = AdharaSocket.getInstance(registrar, config)
+                currentIndex += 1
                 result(newIndex)
             case "clearInstance":
                 if(arguments["id"] == nil){
                     result(FlutterError(code: "400", message: "Invalid instance identifier provided", details: nil))
                 }else{
                     let socketIndex = arguments["id"] as! Int
-                    if (instances.count > socketIndex) {
-                        adharaSocket = instances[socketIndex];
-                        instances = instances.filter({ (_ socket: AdharaSocket) -> Bool in
-                            socket != adharaSocket;
-                        })
-                        adharaSocket.socket.disconnect()
+                    if (instances[socketIndex] != nil) {
+                        instances[socketIndex]?.socket.disconnect()
+                        instances[socketIndex] = nil;
+                        result(nil)
+                    } else {
+                        result(FlutterError(code: "403", message: "Instance not found", details: nil))
                     }
-                    result(nil)
                 }
             default:
                 result(FlutterError(code: "404", message: "No such method", details: nil))
         }
     }
-    
+
 }
