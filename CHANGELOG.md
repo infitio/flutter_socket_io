@@ -1,3 +1,7 @@
+## 0.3.5 - 29th August, 2019
+
+* [PR63](https://github.com/infitio/flutter_socket_io/pull/63) Fix for clearing instances in case of multiple instances. by [Djo](https://github.com/rhessus)
+
 ## 0.3.4 - 26th August, 2019
 
 * iOS SWIFT_VERSION bumped up to use 5.0 as defined by [Socket.IO-Client-Swift 15.1.0](https://github.com/CocoaPods/Specs/blob/master/Specs/6/2/4/Socket.IO-Client-Swift/15.1.0/Socket.IO-Client-Swift.podspec.json)
