@@ -14,19 +14,19 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   List<String> toPrint = ["trying to conenct"];
   SocketIOManager manager;
-  SocketIO socket;
-  bool isProbablyConnected = false;
+  Map<String, SocketIO> sockets = {};
+  Map<String, bool> _isProbablyConnected = {};
 
   @override
   void initState() {
     super.initState();
     manager = SocketIOManager();
-    initSocket();
+    initSocket("default");
   }
 
-  initSocket() async {
-    setState(() => isProbablyConnected = true);
-    socket = await manager.createInstance(SocketOptions(
+  initSocket(String identifier) async {
+    setState(() => _isProbablyConnected[identifier] = true);
+    SocketIO socket = await manager.createInstance(SocketOptions(
       //Socket IO server URI
         URI,
         //Query params - can be used for authentication
@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
     socket.onConnect((data) {
       pprint("connected...");
       pprint(data);
-      sendMessage();
+      sendMessage(identifier);
     });
     socket.onConnectError(pprint);
     socket.onConnectTimeout(pprint);
@@ -55,17 +55,22 @@ class _MyAppState extends State<MyApp> {
     socket.on("type:list", (data) => pprint("type:list | $data"));
     socket.on("message", (data) => pprint(data));
     socket.connect();
+    sockets[identifier] = socket;
   }
 
-  disconnect() async {
-    await manager.clearInstance(socket);
-    setState(() => isProbablyConnected = false);
+  bool isProbablyConnected(String identifier){
+    return _isProbablyConnected[identifier]??false;
   }
 
-  sendMessage() {
-    if (socket != null) {
-      pprint("sending message...");
-      socket.emit("message", [
+  disconnect(String identifier) async {
+    await manager.clearInstance(sockets[identifier]);
+    setState(() => _isProbablyConnected[identifier] = false);
+  }
+
+  sendMessage(identifier) {
+    if (sockets[identifier] != null) {
+      pprint("sending message from '$identifier'...");
+      sockets[identifier].emit("message", [
         "Hello world!",
         1908,
         {
@@ -87,16 +92,16 @@ class _MyAppState extends State<MyApp> {
           },
         ]
       ]);
-      pprint("Message emitted...");
+      pprint("Message emitted from '$identifier'...");
     }
   }
 
-  sendMessageWithACK(){
-    pprint("Sending ACK message...");
+  sendMessageWithACK(identifier){
+    pprint("Sending ACK message from '$identifier'...");
     List msg = ["Hello world!", 1, true, {"p":1}, [3,'r']];
-    socket.emitWithAck("ack-message", msg).then( (data) {
+    sockets[identifier].emitWithAck("ack-message", msg).then( (data) {
       // this callback runs when this specific message is acknowledged by the server
-      pprint("ACK recieved for $msg: $data");
+      pprint("ACK recieved from '$identifier' for $msg: $data");
     });
   }
 
@@ -108,6 +113,50 @@ class _MyAppState extends State<MyApp> {
       print(data);
       toPrint.add(data);
     });
+  }
+
+  Container getButtonSet(String identifier){
+    bool ipc = isProbablyConnected(identifier);
+    return Container(
+      height: 60.0,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 8.0),
+            child: RaisedButton(
+              child: Text("Connect"),
+              onPressed: ipc?null:()=>initSocket(identifier),
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+            ),
+          ),
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 8.0),
+              child: RaisedButton(
+                child: Text("Send Message"),
+                onPressed: ipc?()=>sendMessage(identifier):null,
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+              )
+          ),
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 8.0),
+              child: RaisedButton(
+                child: Text("Send w/ ACK"), //Send message with ACK
+                onPressed: ipc?()=>sendMessageWithACK(identifier):null,
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+              )
+          ),
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 8.0),
+              child: RaisedButton(
+                child: Text("Disconnect"),
+                onPressed: ipc?()=>disconnect(identifier):null,
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+              )
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -146,8 +195,8 @@ class _MyAppState extends State<MyApp> {
         body: Container(
           color: Colors.black,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Expanded(
                   child: Center(
@@ -156,46 +205,16 @@ class _MyAppState extends State<MyApp> {
                     ),
                   )
               ),
-              Container(
-                height: 60.0,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: RaisedButton(
-                        child: Text("Connect"),
-                        onPressed: isProbablyConnected?null:initSocket,
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      ),
-                    ),
-                    Container(
-                        margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: RaisedButton(
-                          child: Text("Send Message"),
-                          onPressed: isProbablyConnected?sendMessage:null,
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        )
-                    ),
-                    Container(
-                        margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: RaisedButton(
-                          child: Text("Send w/ ACK"), //Send message with ACK
-                          onPressed: isProbablyConnected?sendMessageWithACK:null,
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        )
-                    ),
-                    Container(
-                        margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: RaisedButton(
-                          child: Text("Disconnect"),
-                          onPressed: isProbablyConnected?disconnect:null,
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        )
-                    ),
-                  ],
-                ),
+              Padding(
+                padding: EdgeInsets.only(left: 8.0, bottom: 8.0),
+                child: Text("Default Connection",),
               ),
+              getButtonSet("default"),
+              Padding(
+                padding: EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+                child: Text("Alternate Connection",),
+              ),
+              getButtonSet("alternate"),
               SizedBox(height: 12.0,)
             ],
           ),
