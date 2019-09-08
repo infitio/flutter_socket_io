@@ -10,6 +10,9 @@ assignees: tiholic
 **Describe the bug**
 A clear and concise description of what the bug is.
 
+**Have you tried reproducing the issue with example available in this repo?**
+Yes/No?
+
 **To Reproduce**
 Steps to reproduce the behavior:
 1. Go to '...'
