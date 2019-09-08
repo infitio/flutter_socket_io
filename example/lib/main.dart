@@ -4,7 +4,7 @@ import 'package:adhara_socket_io/adhara_socket_io.dart';
 
 void main() => runApp(MyApp());
 
-const String URI = "http://192.168.0.114:7000/";
+const String URI = "http://192.168.1.7:7000/";
 
 class MyApp extends StatefulWidget {
   @override
@@ -29,6 +29,7 @@ class _MyAppState extends State<MyApp> {
     SocketIO socket = await manager.createInstance(SocketOptions(
       //Socket IO server URI
         URI,
+        nameSpace: (identifier == "namespaced")?"adhara":null,
         //Query params - can be used for authentication
         query: {
           "auth": "--SOME AUTH STRING---",
@@ -215,6 +216,11 @@ class _MyAppState extends State<MyApp> {
                 child: Text("Alternate Connection",),
               ),
               getButtonSet("alternate"),
+              Padding(
+                padding: EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+                child: Text("Namespace Connection",),
+              ),
+              getButtonSet("namespaced"),
               SizedBox(height: 12.0,)
             ],
           ),

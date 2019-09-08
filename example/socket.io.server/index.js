@@ -49,6 +49,12 @@ io.on('connection', function (socket) {
     });
 });
 
+var io_adhara = io.of('/adhara');
+io_adhara.on('connection', function(socket){
+  console.log('Connected to Adhara namespace');
+  io_adhara.emit("nsp_hello", "HELLO, from namespace.");
+});
+
 process.on('SIGINT', function() {
     process.exit();
 });
