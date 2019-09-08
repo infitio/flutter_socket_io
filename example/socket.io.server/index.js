@@ -49,6 +49,7 @@ function listenToASocket(socket, namespace){
     socket.on("disconnect", ()=>{
         _sockets.delete(socket);
         console.log(">>>>>>> disconnect", socket.handshake.query.timestamp);
+        console.log(">>>>>Disconnected socket transport type:", socket.conn.transport.name);
         console.log(">>>>>>> Total Sockets", _sockets.size);
     });
 }
