@@ -30,7 +30,7 @@ public class AdharaSocket: NSObject, FlutterPlugin {
         if(config.namespace == "") {
             socket = manager.defaultSocket
         } else {
-            socket = manager.socket(forNamespace: config.namespace)
+            socket = manager.socket(forNamespace: config.namespace ?? "/")
         }
         self.channel = channel
         self.config = config
@@ -109,7 +109,7 @@ public class AdharaSocketIOClientConfig: NSObject{
     
     let adharaId:Int
     let uri:String
-    public var namespace:String
+    public var namespace:String?
     public var query:[String:String]
     public var enableLogging:Bool
     

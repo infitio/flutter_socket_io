@@ -17,12 +17,16 @@ var io = require('socket.io')(app);
 console.log("listening on 7000...");
 app.listen(7000, '0.0.0.0');
 
-var _sockets = new Set();
-io.on('connection', function (socket) {
-    console.log(">>>>>>> new connection", socket.handshake.query.timestamp);
+
+function listenToASocket(socket, namespace){
+    console.log(`>>>>>>> new connection ${namespace?"to "+namespace:""}`, socket.handshake.query.timestamp);
     _sockets.add(socket);
+    //let nsp = namespace?`(${namespace})   `:'';
     console.log(">>>>>socket.conn.transport.name>>>>", socket.conn.transport.name);
     console.log(">>>>>>> Total Sockets", _sockets.size);
+    if(namespace){
+        socket.emit("message", "-----NameSpace: "+namespace+" -----");
+    }
     socket.emit('type:string', "String message back to client");
     socket.emit('type:bool', true);
     socket.emit('type:number', 123);
@@ -47,12 +51,16 @@ io.on('connection', function (socket) {
         console.log(">>>>>>> disconnect", socket.handshake.query.timestamp);
         console.log(">>>>>>> Total Sockets", _sockets.size);
     });
+}
+
+var _sockets = new Set();
+io.on('connection', function(socket){
+    listenToASocket(socket, null);
 });
 
 var io_adhara = io.of('/adhara');
 io_adhara.on('connection', function(socket){
-  console.log('Connected to Adhara namespace');
-  io_adhara.emit("nsp_hello", "HELLO, from namespace.");
+  listenToASocket(socket, "/adhara");
 });
 
 process.on('SIGINT', function() {

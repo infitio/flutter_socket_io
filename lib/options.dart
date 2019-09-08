@@ -43,11 +43,12 @@ class SocketOptions {
 //        public int port = -1;
 //        public int policyPort = -1;
 
-  SocketOptions(this.uri,
-      {this.query: const {},
-      this.enableLogging: false,
-      this.transports: const [Transports.WEB_SOCKET, Transports.POLLING],
-      this.nameSpace = "/"});
+  SocketOptions(this.uri, {
+    this.query: const {},
+    this.enableLogging: false,
+    this.transports: const [Transports.WEB_SOCKET, Transports.POLLING],
+    this.nameSpace = "/"
+  }) : assert(nameSpace.startsWith("/"), "Namespace must be a non null string and should start with a '/'");
 
   Map asMap() {
     return {

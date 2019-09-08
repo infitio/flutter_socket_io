@@ -1,3 +1,9 @@
+## 0.3.6 - 8th September, 2019
+
+* Lint fix for namespaces in Socket.io swift code.
+* Show error when namespaces don't start with '/'
+* namespace example added
+
 ## 0.3.5 - 29th August, 2019
 
 * [PR63](https://github.com/infitio/flutter_socket_io/pull/63) Fix for clearing instances in case of multiple instances. by [Djo](https://github.com/rhessus)
