@@ -1,3 +1,7 @@
+## 0.3.6+1 - 8th September, 2019
+
+* Formatting, and updating readme
+
 ## 0.3.6 - 8th September, 2019
 
 * Lint fix for namespaces in Socket.io swift code.
