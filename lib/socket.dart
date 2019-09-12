@@ -105,6 +105,8 @@ class SocketIO {
   on(String eventName, SocketEventListener listener) async {
     if (_listeners[eventName] == null) {
       _listeners[eventName] = [];
+    }
+    if(_listeners[eventName].length == 0){
       _channel.invokeMethod("on", {"eventName": eventName});
     }
     _listeners[eventName].add(listener);

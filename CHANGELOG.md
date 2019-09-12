@@ -1,3 +1,7 @@
+## 0.3.7 - 8th September, 2019
+
+* Bug fix for [Stop listen event not working with one event #72](https://github.com/infitio/flutter_socket_io/issues/72)
+
 ## 0.3.6+1 - 8th September, 2019
 
 * Formatting, and updating readme
