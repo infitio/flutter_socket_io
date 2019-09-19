@@ -4,7 +4,7 @@ import 'package:adhara_socket_io/adhara_socket_io.dart';
 
 void main() => runApp(MyApp());
 
-const String URI = "http://192.168.1.7:7000/";
+const String URI = "http://192.168.0.106:7000/";
 
 class MyApp extends StatefulWidget {
   @override
@@ -38,7 +38,7 @@ class _MyAppState extends State<MyApp> {
         },
         //Enable or disable platform channel logging
         enableLogging: false,
-        transports: [Transports.WEB_SOCKET, Transports.POLLING] //Enable required transport
+        transports: [Transports.WEB_SOCKET/*, Transports.POLLING*/] //Enable required transport
     ));
     socket.onConnect((data) {
       pprint("connected...");

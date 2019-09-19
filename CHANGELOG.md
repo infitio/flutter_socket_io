@@ -1,3 +1,7 @@
+## 0.4.0 - 8th September, 2019 [ **BREAKING CHANGE** ]
+
+* AndroidX support
+
 ## 0.3.7 - 8th September, 2019
 
 * Bug fix for [Stop listen event not working with one event #72](https://github.com/infitio/flutter_socket_io/issues/72)
