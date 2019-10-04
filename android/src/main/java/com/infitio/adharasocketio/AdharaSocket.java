@@ -33,7 +33,7 @@ class AdharaSocket implements MethodCallHandler {
     private final MethodChannel channel;
     private static final String TAG = "Adhara:Socket";
     private Options options;
-    static private Manager manager;
+    private static Manager manager;
 
     private void log(String message){
         if(this.options.enableLogging){
@@ -50,9 +50,9 @@ class AdharaSocket implements MethodCallHandler {
 
     static AdharaSocket getInstance(Registrar registrar, Options options) throws URISyntaxException{
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "adhara_socket_io:socket:"+String.valueOf(options.index));
-        if (AdharaSocket.manager == null) {
-            AdharaSocket.manager = new Manager(new URI(options.uri), options);
-        }
+        // we create new manager instance every time here
+        // because manager cannot update the uri
+        AdharaSocket.manager = new Manager(new URI(options.uri), options);
         AdharaSocket _socket = new AdharaSocket(channel, options);
         channel.setMethodCallHandler(_socket);
         return _socket;
