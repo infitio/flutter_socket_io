@@ -71,6 +71,9 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
                     }catch (Exception e){
                         Log.e(TAG, e.toString());
                     }
+                    if (call.hasArgument("namespace")) {
+                        options.namespace = call.argument("namespace");
+                    }
                     if(call.hasArgument("query")) {
                         Map<String, String> _query = call.argument("query");
                         if(_query!=null) {
