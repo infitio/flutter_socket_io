@@ -143,6 +143,10 @@ class SocketIO {
     return completer.future;
   }
 
+  Future<bool> isConnected() async {
+    return await _channel.invokeMethod('isConnected');
+  }
+
   ///Data listener called by platform API
   _handleData(String eventName, List arguments) {
     _listeners[eventName]?.forEach((Function listener) {
