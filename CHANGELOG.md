@@ -1,3 +1,10 @@
+## 0.4.1 - 23rd October, 2019
+
+Releasing PRs:
+
+* [Expose method `isConnected` on socket interface](https://github.com/infitio/flutter_socket_io/pull/91)
+* [Fix namespace issue for android](https://github.com/infitio/flutter_socket_io/pull/83)
+
 ## 0.4.0 - 8th September, 2019 [ **BREAKING CHANGE** ]
 
 * AndroidX support
