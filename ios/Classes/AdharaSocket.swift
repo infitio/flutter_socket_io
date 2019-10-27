@@ -26,7 +26,7 @@ public class AdharaSocket: NSObject, FlutterPlugin {
     }
 
     public init(_ channel:FlutterMethodChannel, _ config:AdharaSocketIOClientConfig) {
-        manager = SocketManager(socketURL: URL(string: config.uri)!, config: [.log(true), .connectParams(config.query)])
+        manager = SocketManager(socketURL: URL(string: config.uri)!, config: [.log(true), .connectParams(config.query), .path(config.path)])
         if(config.namespace == "") {
             socket = manager.defaultSocket
         } else {
@@ -111,13 +111,15 @@ public class AdharaSocketIOClientConfig: NSObject{
     let uri:String
     public var namespace:String?
     public var query:[String:String]
+    public var path:String
     public var enableLogging:Bool
     
-    init(_ adharaId:Int, uri:String, namespace:String) {
+    init(_ adharaId:Int, uri:String, namespace:String, path:String) {
         self.adharaId = adharaId
         self.uri = uri
         self.namespace = namespace
         self.query = [String:String]()
+        self.path = path
         self.enableLogging = false
     }
     
