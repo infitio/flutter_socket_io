@@ -1,3 +1,7 @@
+## 0.4.2 - 4th April, 2020
+
+* [PR 120](https://github.com/infitio/flutter_socket_io/issues/120) Update Gradle Dependencies to latest available version (3.5.3) [@Saifallak](http://github.com/saifallak)
+
 ## 0.4.1 - 23rd October, 2019
 
 Releasing PRs:
@@ -33,7 +37,7 @@ Releasing PRs:
 
 ## 0.3.3+1 - 18th August, 2019
 
-* [PR 57](https://github.com/infitio/flutter_socket_io/pull/57) fix for iOS (reqId wasn't optional) @Saifallak
+* [PR 57](https://github.com/infitio/flutter_socket_io/pull/57) fix for iOS (reqId wasn't optional) [@Saifallak](http://github.com/saifallak)
 
 ## 0.3.3 - 14th August, 2019
 
