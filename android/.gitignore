@@ -10,3 +10,4 @@ GeneratedPluginRegistrant.java
 *.iml
 .idea/
 .vscode/
+build/
