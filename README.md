@@ -10,27 +10,24 @@ Usage:
 See `example/lib/main.dart` for better example
 
 ```dart
-    SocketIOManager manager = SocketIOManager();
-    SocketIO socket = manager.createInstance(
-    SocketOptions('http://192.168.1.12:5555', //TODO change the port  accordingly
-        nameSpace: '/yournamespace',
-        enableLogging: true,
-        transports: [Transports.POLLING])
-    );
-    
-    socket.onConnect((data){
-      print("connected...");
-      print(data);
-      socket.emit("message", ["Hello world!"]);
-    });
-    socket.on("news", (data){   //sample event
-      print("news");
-      print(data);
-    });
-    socket.connect();
-    ///disconnect using
-    ///manager.
+	Future<void> socketConfig() async {
+		SocketIOManager manager = SocketIOManager();
+		SocketIO socket = await manager.createInstance('http://192.168.1.2:7000/');       //TODO change the port  accordingly
+		socket.onConnect((data){
+		  print("connected...");
+		  print(data);
+		  socket.emit("message", ["Hello world!"]);
+		});
+		socket.on("news", (data){   //sample event
+		  print("news");
+		  print(data);
+		});
+		socket.connect();
+		///disconnect using
+		///manager.
+	}
 
+	socketConfig();
 ```
 
 To request callback on ack:
