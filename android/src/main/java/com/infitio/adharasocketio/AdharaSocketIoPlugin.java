@@ -1,12 +1,14 @@
 package com.infitio.adharasocketio;
 
 import android.util.Log;
+import android.util.SparseArray;
+
+import androidx.annotation.NonNull;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import app.loup.streams_channel.StreamsChannel;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -20,12 +22,12 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
  */
 public class AdharaSocketIoPlugin implements MethodCallHandler {
 
-    private Map<Integer, AdharaSocket> instances;
+    SparseArray<AdharaSocket> instances;
     private int currentIndex;
 //    private final MethodChannel channel;
     private final Registrar registrar;
     private static final String TAG = "Adhara:SocketIOPlugin";
-    boolean enableLogging = false;
+    private boolean enableLogging = false;
 
     private void log(Object message){
         if(this.enableLogging){
@@ -34,18 +36,21 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
     }
 
     private AdharaSocketIoPlugin(Registrar registrar/*, MethodChannel channel*/) {
-        this.instances = new HashMap<Integer, AdharaSocket>();
+        this.instances = new SparseArray<>();
         this.currentIndex = 0;
 //        this.channel = channel;
         this.registrar = registrar;
     }
 
     public static void registerWith(Registrar registrar) {
+        AdharaSocketIoPlugin plugin = new AdharaSocketIoPlugin(registrar/*, channel*/);
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "adhara_socket_io");
-        channel.setMethodCallHandler(new AdharaSocketIoPlugin(registrar/*, channel*/));
+        channel.setMethodCallHandler(plugin);
+        final StreamsChannel streamsChannel = new StreamsChannel(registrar.messenger(), "adhara_socket_io:event_streams");
+        streamsChannel.setStreamHandlerFactory(arguments -> new AdharaEventStreamHandler(plugin));
     }
 
-    static String[] getStringArray(List<String> arr){
+    private static String[] getStringArray(List<String> arr){
         String[] str = new String[arr.size()];
         for (int j = 0; j < arr.size(); j++) {
             str[j] = arr.get(j);
@@ -54,28 +59,35 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
     }
 
     @Override
-    public void onMethodCall(MethodCall call, Result result) {
+    public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         switch (call.method) {
             case "newInstance": {
                 try{
-                    if(call.hasArgument("enableLogging")){
-                        this.enableLogging = call.argument("enableLogging");
+                    if(call.argument("clear")){
+                        for(int i = 0; i < instances.size(); i++) {
+                            instances.valueAt(i).socket.disconnect();
+                        }
+                        instances.clear();
                     }
-                    AdharaSocket.Options options = new AdharaSocket.Options(this.currentIndex, (String)call.argument("uri"));
+                    Map<String, Object> socketOptions =  call.argument("options");
+                    if(socketOptions.containsKey("enableLogging")){
+                        this.enableLogging = (boolean)socketOptions.get("enableLogging");
+                    }
+                    AdharaSocket.Options options = new AdharaSocket.Options(this.currentIndex, (String)socketOptions.get("uri"));
                     try {
-                        List<String> transports = call.argument("transports");
+                        List<String> transports = (List<String>)socketOptions.get("transports");
                         if (transports != null) {
                             options.transports = AdharaSocketIoPlugin.getStringArray(transports);
                         }
-                        options.timeout = ((Number) call.argument("timeout")).longValue();
+                        options.timeout = ((Number) socketOptions.get("timeout")).longValue();
                     }catch (Exception e){
                         Log.e(TAG, e.toString());
                     }
-                    if (call.hasArgument("namespace")) {
-                        options.namespace = call.argument("namespace");
+                    if (socketOptions.containsKey("namespace")) {
+                        options.namespace = (String)socketOptions.get("namespace");
                     }
-                    if(call.hasArgument("query")) {
-                        Map<String, String> _query = call.argument("query");
+                    if(socketOptions.containsKey("query")) {
+                        Map<String, String> _query = (Map<String, String>) socketOptions.get("query");
                         if(_query!=null) {
                             StringBuilder sb = new StringBuilder();
                             for (Map.Entry<String, String> entry : _query.entrySet()) {
@@ -87,8 +99,8 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
                             options.query = sb.toString();
                         }
                     }
-                    if (call.hasArgument("path")) {
-                        options.path = call.argument("path");
+                    if (socketOptions.containsKey("path")) {
+                        options.path = (String) socketOptions.get("path");
                     }
                     options.enableLogging = this.enableLogging;
                     this.instances.put(this.currentIndex, AdharaSocket.getInstance(registrar, options));
@@ -103,7 +115,7 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
                     result.error("Invalid instance identifier provided", null, null);
                 } else {
                     Integer socketIndex = call.argument("id");
-                    if (this.instances.containsKey(socketIndex)) {
+                    if (this.instances.get(socketIndex)!=null) {
                         this.instances.get(socketIndex).socket.disconnect();
                         this.instances.remove(socketIndex);
                         result.success(null);

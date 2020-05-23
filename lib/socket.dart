@@ -1,8 +1,7 @@
 import 'package:flutter/services.dart';
 import 'dart:convert' show jsonDecode;
 import 'dart:async';
-
-typedef void SocketEventListener(dynamic data);
+import 'package:streams_channel/streams_channel.dart';
 
 class SocketIO {
   ///  Constants for default events handled by socket...
@@ -46,20 +45,18 @@ class SocketIO {
   ///Socket/Connection identifier
   int id;
 
-  ///Store listeners
-  Map<String, List<Function>> _listeners = {};
-
   ///Store Completers for pending Acks
   Map<String, Completer> _pendingAcks = {};
   int _reqCounter = 0;
 
   ///Method channel to interact with android/iOS
   final MethodChannel _channel;
+  final StreamsChannel _streamsChannel = new StreamsChannel('adhara_socket_io:event_streams');
 
   ///Create a socket object with identifier received from platform API's
   SocketIO(this.id)
-      : _channel =
-            new MethodChannel("adhara_socket_io:socket:${id.toString()}") {
+      : _channel = new MethodChannel("adhara_socket_io:socket:${id.toString()}")
+  {
     _channel.setMethodCallHandler((call) async {
       if (call.method == 'incoming') {
         final String eventName = call.arguments['eventName'];
@@ -102,32 +99,16 @@ class SocketIO {
   }
 
   ///listen to an event
-  on(String eventName, SocketEventListener listener) async {
-    if (_listeners[eventName] == null) {
-      _listeners[eventName] = [];
-    }
-    if(_listeners[eventName].length == 0){
-      _channel.invokeMethod("on", {"eventName": eventName});
-    }
-    _listeners[eventName].add(listener);
-  }
-
-  ///stop listening to an event.
-  ///Send the same function reference to stop that particular listener
-  off(String eventName, [SocketEventListener listener]) async {
-    if (listener == null) {
-      _listeners[eventName] = [];
-    } else {
-      _listeners[eventName].remove(listener);
-    }
-    if (_listeners[eventName].length == 0) {
-      await _channel.invokeMethod("off", {"eventName": eventName});
-    }
+  Stream<dynamic> on(String eventName){
+    return _streamsChannel.receiveBroadcastStream(<String, dynamic>{
+      "id": id,
+      "eventName": eventName
+    });
   }
 
   ///send data to socket server
   emit(String eventName, List<dynamic> arguments) async {
-    await _channel.invokeMethod('emit', {
+    await _channel.invokeMethod('emit', <String, dynamic>{
       'eventName': eventName,
       'arguments': arguments,
     });
@@ -148,6 +129,8 @@ class SocketIO {
   }
 
   ///Data listener called by platform API
+  //TODO do this in stream modification
+  Map _listeners = {};  //TODO remove this variable and below method
   _handleData(String eventName, List arguments) {
     _listeners[eventName]?.forEach((Function listener) {
       if (arguments.length == 0) {
@@ -167,46 +150,38 @@ class SocketIO {
 
   //Utility methods for listeners. De-registering can be handled using off(eventName, fn)
   ///Listen to connect event
-  onConnect(SocketEventListener listener) async => await on(CONNECT, listener);
+  Stream<dynamic> get onConnect => on(CONNECT);
 
   ///Listen to disconnect event
-  onDisconnect(SocketEventListener listener) async =>
-      await on(DISCONNECT, listener);
+  Stream<dynamic> get onDisconnect => on(DISCONNECT);
 
   ///Listen to connection error event
-  onConnectError(SocketEventListener listener) async =>
-      await on(CONNECT_ERROR, listener);
+  Stream<dynamic> get onConnectError => on(CONNECT_ERROR);
 
   ///Listen to connection timeout event
-  onConnectTimeout(SocketEventListener listener) async =>
-      await on(CONNECT_TIMEOUT, listener);
+  Stream<dynamic> get onConnectTimeout => on(CONNECT_TIMEOUT);
 
   ///Listen to error event
-  onError(SocketEventListener listener) async => await on(ERROR, listener);
+  Stream<dynamic> get onError => on(ERROR);
 
   ///Listen to connecting event
-  onConnecting(SocketEventListener listener) async =>
-      await on(CONNECTING, listener);
+  Stream<dynamic> get onConnecting => on(CONNECTING);
 
   ///Listen to reconnect event
-  onReconnect(SocketEventListener listener) async =>
-      await on(RECONNECT, listener);
+  Stream<dynamic> get onReconnect => on(RECONNECT);
 
   ///Listen to reconnect error event
-  onReconnectError(SocketEventListener listener) async =>
-      await on(RECONNECT_ERROR, listener);
+  Stream<dynamic> get onReconnectError => on(RECONNECT_ERROR);
 
   ///Listen to reconnect failed event
-  onReconnectFailed(SocketEventListener listener) async =>
-      await on(RECONNECT_FAILED, listener);
+  Stream<dynamic> get onReconnectFailed => on(RECONNECT_FAILED);
 
   ///Listen to reconnecting event
-  onReconnecting(SocketEventListener listener) async =>
-      await on(RECONNECTING, listener);
+  Stream<dynamic> get onReconnecting => on(RECONNECTING);
 
   ///Listen to ping event
-  onPing(SocketEventListener listener) async => await on(PING, listener);
+  Stream<dynamic> get onPing => on(PING);
 
   ///Listen to pong event
-  onPong(SocketEventListener listener) async => await on(PONG, listener);
+  Stream<dynamic> get onPong => on(PONG);
 }

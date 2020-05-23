@@ -55,7 +55,7 @@ class SocketOptions {
       : assert(nameSpace.startsWith("/"),
             "Namespace must be a non null string and should start with a '/'");
 
-  Map asMap() {
+  Map<String, dynamic> asMap() {
     return {
       "uri": uri,
       "query": query,

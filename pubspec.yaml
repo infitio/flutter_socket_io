@@ -11,6 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  streams_channel: ^0.3.0
 
 flutter:
   plugin:

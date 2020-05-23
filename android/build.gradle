@@ -24,6 +24,12 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 29
 
+    // Require Java language level 8 so we can use Lambdas
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
     defaultConfig {
         minSdkVersion 16
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

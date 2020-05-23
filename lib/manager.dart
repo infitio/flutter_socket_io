@@ -13,7 +13,10 @@ class SocketIOManager {
   ///[options] - Options object to initialize socket instance
   ///returns [SocketIO]
   Future<SocketIO> createInstance(SocketOptions options) async {
-    int index = await _channel.invokeMethod('newInstance', options.asMap());
+    int index = await _channel.invokeMethod('newInstance', {
+      "options": options.asMap(),
+      "clear": (_sockets.length==0)
+    });
     SocketIO socket = SocketIO(index);
     _sockets[index] = socket;
     return socket;

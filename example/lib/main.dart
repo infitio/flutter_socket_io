@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
 import 'dart:convert';
+
 import 'package:adhara_socket_io/adhara_socket_io.dart';
+import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
 
-const String URI = "http://192.168.0.106:7000/";
+const String URI = "http://192.168.0.5:7000/";
 
 class MyApp extends StatefulWidget {
   @override
@@ -37,24 +38,25 @@ class _MyAppState extends State<MyApp> {
           "timestamp": DateTime.now().toString()
         },
         //Enable or disable platform channel logging
-        enableLogging: false,
+        enableLogging: true,
         transports: [Transports.WEB_SOCKET/*, Transports.POLLING*/] //Enable required transport
     ));
-    socket.onConnect((data) {
+    socket.onConnect.listen((data) {
       pprint("connected...");
       pprint(data);
       sendMessage(identifier);
     });
-    socket.onConnectError(pprint);
-    socket.onConnectTimeout(pprint);
-    socket.onError(pprint);
-    socket.onDisconnect(pprint);
-    socket.on("type:string", (data) => pprint("type:string | $data"));
-    socket.on("type:bool", (data) => pprint("type:bool | $data"));
-    socket.on("type:number", (data) => pprint("type:number | $data"));
-    socket.on("type:object", (data) => pprint("type:object | $data"));
-    socket.on("type:list", (data) => pprint("type:list | $data"));
-    socket.on("message", (data) => pprint(data));
+    socket.onConnectError.listen(pprint);
+    socket.onConnectTimeout.listen(pprint);
+    socket.onError.listen(pprint);
+    socket.onDisconnect.listen(pprint);
+    socket.on("type:string").listen((data) => pprint("type:string | $data"));
+    socket.on("type:bool").listen((data) => pprint("type:bool | $data"));
+    socket.on("type:number").listen((data) => pprint("type:number | $data"));
+    socket.on("type:object").listen((data) => pprint("type:object | $data"));
+    socket.on("type:list").listen((data) => pprint("type:list | $data"));
+    socket.on("message").listen((data) => pprint(data));
+    //TODO add stream subscription in example
     socket.connect();
     sockets[identifier] = socket;
   }
