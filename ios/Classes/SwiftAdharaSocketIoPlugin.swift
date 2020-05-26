@@ -19,6 +19,11 @@ public class SwiftAdharaSocketIoPlugin: NSObject, FlutterPlugin {
         let channel = FlutterMethodChannel(name: "adhara_socket_io", binaryMessenger: registrar.messenger())
         let instance = SwiftAdharaSocketIoPlugin(registrar)
         registrar.addMethodCallDelegate(instance, channel: channel)
+                
+        let streamsChannel = AdharaSocketIoFlutterStreamsChannel(name: "adhara_socket_io:event_streams", binaryMessenger: registrar.messenger())
+        streamsChannel.setStreamHandlerFactory { (Any) -> (FlutterStreamHandler & NSObjectProtocol)? in
+            return AdharaSocketIoStreamHandler(instance)
+        }
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -26,27 +31,40 @@ public class SwiftAdharaSocketIoPlugin: NSObject, FlutterPlugin {
 
         switch (call.method) {
             case "newInstance":
-                let newIndex = currentIndex;
+                if((arguments["clear"] as! Bool?)!){
+                    for (_, adharaSocket) in instances {
+                        adharaSocket.socket.disconnect()
+                    }
+                    instances.removeAll()
+                }
+                let options: AnyObject = arguments["options"] as AnyObject
                 let config:AdharaSocketIOClientConfig
-                    = AdharaSocketIOClientConfig(newIndex, uri: arguments["uri"] as! String,
-                                                 namespace: arguments["namespace"] as! String, path: arguments["path"] as! String)
-                if let query: [String:String] = arguments["query"] as? [String:String]{
+                    = AdharaSocketIOClientConfig(currentIndex, uri: options["uri"] as! String,
+                                                 namespace: options["namespace"] as! String, path: options["path"] as! String)
+                if let query: [String:String] = options["query"] as? [String:String]{
                     config.query = query
                 }
-                if let enableLogging: Bool = arguments["enableLogging"] as? Bool {
+                if let enableLogging: Bool = options["enableLogging"] as? Bool {
                     config.enableLogging = enableLogging
                 }
-                instances[newIndex] = AdharaSocket.getInstance(registrar, config)
+                instances[currentIndex] = AdharaSocket.getInstance(registrar, config)
+                result(currentIndex)
                 currentIndex += 1
-                result(newIndex)
             case "clearInstance":
                 if(arguments["id"] == nil){
                     result(FlutterError(code: "400", message: "Invalid instance identifier provided", details: nil))
                 }else{
                     let socketIndex = arguments["id"] as! Int
                     if (instances[socketIndex] != nil) {
-                        instances[socketIndex]?.socket.disconnect()
-                        instances[socketIndex] = nil;
+                        if((arguments["clear"] as! Bool?)!){
+                            for (_, adharaSocket) in instances {
+                                adharaSocket.socket.disconnect()
+                            }
+                            instances.removeAll()
+                        }else{
+                            instances[socketIndex]?.socket.disconnect()
+                            instances[socketIndex] = nil
+                        }
                         result(nil)
                     } else {
                         result(FlutterError(code: "403", message: "Instance not found", details: nil))

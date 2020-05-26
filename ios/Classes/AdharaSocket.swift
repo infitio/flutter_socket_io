@@ -18,8 +18,9 @@ public class AdharaSocket: NSObject, FlutterPlugin {
     let channel: FlutterMethodChannel
     let manager: SocketManager
     let config: AdharaSocketIOClientConfig
+    var eventListenerCount: [String: Int]
     
-    private func log(_ items: Any...){
+    public func log(_ items: Any...){
         if(config.enableLogging){
             print(items)
         }
@@ -34,6 +35,7 @@ public class AdharaSocket: NSObject, FlutterPlugin {
         }
         self.channel = channel
         self.config = config
+        self.eventListenerCount = [String: Int]()
     }
 
     public static func getInstance(_ registrar: FlutterPluginRegistrar, _ config:AdharaSocketIOClientConfig) ->  AdharaSocket{

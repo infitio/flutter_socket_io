@@ -24,7 +24,10 @@ class SocketIOManager {
 
   ///Disconnect a socket instance and remove from stored sockets list
   Future clearInstance(SocketIO socket) async {
-    await _channel.invokeMethod('clearInstance', {'id': socket.id});
+    await _channel.invokeMethod('clearInstance', {
+      "id": socket.id,
+      "clear": (_sockets.length==1) //clear of any other uncleared socket instances
+    });
     _sockets.remove(socket.id);
   }
 }
