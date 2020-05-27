@@ -1,3 +1,7 @@
+## 0.4.2+1 - 27th May, 2020
+
+* Fix for pub.dev to display support for iOS too. [See more](https://github.com/infitio/flutter_socket_io/pull/120#discussion_r429587289)
+
 ## 0.4.2 - 4th April, 2020
 
 * [PR 120](https://github.com/infitio/flutter_socket_io/issues/120) Update Gradle Dependencies to latest available version (3.5.3) [@Saifallak](http://github.com/saifallak)
