@@ -26,7 +26,7 @@ public class AdharaEventStreamHandler implements EventChannel.StreamHandler {
 
 
     /**
-     * Refer to the comments on AblyMethodCallHandler.MethodResultWrapper
+     * Refer to the comments on MethodCallHandler.MethodResultWrapper
      * on why this customized EventSink is required
      * */
     private static class MainThreadEventSink implements EventChannel.EventSink {
