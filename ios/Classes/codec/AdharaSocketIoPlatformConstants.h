@@ -30,6 +30,6 @@ extern NSString *const TxEventTypes_pong;
 @end
 
 @interface TxTransportModes : NSObject
-extern NSString *const TxTransportModes_webSocket;
+extern NSString *const TxTransportModes_websocket;
 extern NSString *const TxTransportModes_polling;
 @end

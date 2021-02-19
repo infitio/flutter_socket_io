@@ -39,7 +39,9 @@ class _MyAppState extends State<MyApp> {
         },
         //Enable or disable platform channel logging
         enableLogging: true,
-        transports: [Transports.webSocket /*, Transports.POLLING*/
+        transports: [
+          Transports.webSocket,
+          // Transports.polling,
         ] //Enable required transport
     ));
     socket.onConnect.listen((data) {

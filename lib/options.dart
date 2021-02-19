@@ -79,7 +79,7 @@ class SocketOptions {
         'namespace': nameSpace,
         'transports': transports
             .map((t) => {
-                  Transports.webSocket: TxTransportModes.webSocket,
+                  Transports.webSocket: TxTransportModes.websocket,
                   Transports.polling: TxTransportModes.polling,
                 }[t])
             .toList(),

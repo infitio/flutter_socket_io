@@ -29,6 +29,6 @@ class TxEventTypes {
 }
 
 class TxTransportModes {
-  static const String webSocket = 'webSocket';
+  static const String websocket = 'websocket';
   static const String polling = 'polling';
 }

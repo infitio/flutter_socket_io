@@ -1,0 +1,16 @@
+{
+  "name": "socket.io.ex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pm2": "^4.5.4",
+    "socket.io": "3.1.1"
+  }
+}

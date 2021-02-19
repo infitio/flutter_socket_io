@@ -32,7 +32,7 @@ final public class PlatformConstants {
     }
 
     static final public class TxTransportModes {
-        public static final String webSocket = "webSocket";
+        public static final String websocket = "websocket";
         public static final String polling = "polling";
     }
 

@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.android.tools.build:gradle:4.1.2'
     }
 }
 
@@ -22,16 +22,24 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     // Require Java language level 8 so we can use Lambdas
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
+
+        // Flag to enable Java 8 language APIs while supporting to older SDK Versions
+        coreLibraryDesugaringEnabled true
     }
 
     defaultConfig {
         minSdkVersion 16
+
+        // Required when setting minSdkVersion to 20 or lower so we can use
+        // the Java 8 language APIs as mentioned here:
+        // https://developer.android.com/studio/write/java8-support#library-desugaring
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
@@ -40,8 +48,11 @@ android {
 }
 
 dependencies {
-    implementation ('io.socket:socket.io-client:1.0.0') {
-        // excluding org.json which is provided by Android
-        exclude group: 'org.json', module: 'json'
-    }
+    // https://mvnrepository.com/artifact/io.socket/socket.io-client
+    implementation group: 'io.socket', name: 'socket.io-client', version: '2.0.0'
+
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.1'
+//    implementation ('io.socket:socket.io-client:1.0.0') {// excluding org.json which is provided by Android
+//        exclude group: 'org.json', module: 'json'
+//    }
 }

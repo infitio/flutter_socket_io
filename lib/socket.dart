@@ -10,7 +10,7 @@ import 'manager.dart';
 /// A socket instance internally used by the [SocketIOManager]
 class SocketIO {
   /// Socket -or- Connection identifier
-  int id;
+  final int id;
 
   ///Store Completer(s) for pending Acknowledgements
   final _pendingAcknowledgements = <String, Completer>{};
@@ -25,11 +25,6 @@ class SocketIO {
   SocketIO(this.id)
       : _channel = MethodChannel('adhara_socket_io:socket:${id.toString()}') {
     _channel.setMethodCallHandler((call) async {
-      if (call.method == 'incoming') {
-        final eventName = call.arguments['eventName'] as String;
-        final arguments = call.arguments['args'] as List<dynamic>;
-        _handleData(eventName, arguments);
-      }
       if (call.method == 'incomingAck') {
         var arguments = call.arguments['args'] as List<dynamic>;
         final reqId = call.arguments['reqId'] as String;
@@ -68,7 +63,14 @@ class SocketIO {
       _streamsChannel.receiveBroadcastStream(<String, dynamic>{
         'id': id,
         'eventName': eventName,
-      });
+      }).map((arguments) => arguments.map((_) {
+            try {
+              return jsonDecode(_ as String);
+              // ignore: avoid_catches_without_on_clauses
+            } catch (e) {
+              return _;
+            }
+          }).toList());
 
   ///send data to socket server
   Future<void> emit(String eventName, List<dynamic> arguments) async {
@@ -81,8 +83,14 @@ class SocketIO {
   ///send data to socket server, return expected Ack as a Future
   Future emitWithAck(String eventName, List<dynamic> arguments) async {
     final reqId = (++_reqCounter).toString();
-    await _channel.invokeMethod('emit',
-        {'eventName': eventName, 'arguments': arguments, 'reqId': reqId});
+    await _channel.invokeMethod(
+      'emit',
+      {
+        'eventName': eventName,
+        'arguments': arguments,
+        'reqId': reqId,
+      },
+    );
     final completer = Completer();
     _pendingAcknowledgements[reqId] = completer;
     return completer.future;
@@ -90,30 +98,6 @@ class SocketIO {
 
   /// checks whether connection is alive
   Future<bool> isConnected() => _channel.invokeMethod('isConnected');
-
-  ///Data listener called by platform API
-  // TODO do this in once streams are mainstream
-  // TODO remove this variable and below method
-  final _listeners = <String, List<Function>>{};
-
-  void _handleData(String eventName, List arguments) {
-    if (_listeners[eventName] == null) return;
-    for (final listener in _listeners[eventName]) {
-      if (arguments.isEmpty) {
-        arguments ??= [null];
-      } else {
-        arguments = arguments.map((_) {
-          try {
-            return jsonDecode(_ as String);
-            // ignore: avoid_catches_without_on_clauses
-          } catch (e) {
-            return _;
-          }
-        }).toList();
-      }
-      Function.apply(listener, arguments);
-    }
-  }
 
   // Utility methods for listeners.
   // De-registering can be handled using off(eventName, fn)

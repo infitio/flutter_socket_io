@@ -41,7 +41,7 @@ const List<Map<String, dynamic>> _objects = [
   {
     'name': 'TransportModes',
     'properties': <String>[
-      'webSocket',
+      'websocket',
       'polling',
     ]
   },

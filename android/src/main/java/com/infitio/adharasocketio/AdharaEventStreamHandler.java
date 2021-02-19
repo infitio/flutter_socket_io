@@ -63,18 +63,18 @@ public class AdharaEventStreamHandler implements EventChannel.StreamHandler {
         adharaSocket.socket.on(eventName, args -> {
             if(stopListening) return;
             adharaSocket.log("Socket triggered::"+eventName);
-            final Map<String, Object> arguments = new HashMap<>();
-            arguments.put("eventName", eventName);
-            List<String> argsList = new ArrayList<>();
+//            final Map<String, Object> arguments = new HashMap<>();
+//            arguments.put("eventName", eventName);
+            List<Object> argsList = new ArrayList<>();
             for(Object arg : args){
                 if((arg instanceof JSONObject) || (arg instanceof JSONArray)){
                     argsList.add(arg.toString());
-                }else if(arg!=null){
-                    argsList.add(arg.toString());
+                }else{
+                    argsList.add(arg);
                 }
             }
-            arguments.put("args", argsList);
-            eventSink.success(arguments);
+//            arguments.put("args", argsList);
+            eventSink.success(argsList);
         });
         if(!adharaSocket.eventListenerCount.containsKey(eventName)){
             adharaSocket.eventListenerCount.put(eventName, 1);

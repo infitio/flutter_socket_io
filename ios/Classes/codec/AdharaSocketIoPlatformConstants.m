@@ -26,6 +26,6 @@ NSString *const TxEventTypes_pong = @"pong";
 @end
 
 @implementation TxTransportModes
-NSString *const TxTransportModes_webSocket = @"webSocket";
+NSString *const TxTransportModes_websocket = @"websocket";
 NSString *const TxTransportModes_polling = @"polling";
 @end

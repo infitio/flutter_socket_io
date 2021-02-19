@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 
 import java.net.URISyntaxException;
 import app.loup.streams_channel.StreamsChannel;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +17,8 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
+
+import com.infitio.adharasocketio.generated.PlatformConstants;
 
 
 /**
