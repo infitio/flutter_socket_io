@@ -8,9 +8,6 @@ Future<Map<String, dynamic>> publishTest({
   TestDispatcherState dispatcher,
   Map<String, dynamic> payload
 }) async {
-  payload ??= {
-    'options': {'url': 'http://192.168.0.107:7000/'}
-  };
   final manager = SocketIOManager();
   final socket = await manager.createInstance(getSocketOptions(payload));
 

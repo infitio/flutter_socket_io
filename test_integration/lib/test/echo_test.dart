@@ -4,19 +4,17 @@ import 'package:test_integration/config/data.dart';
 import '../test_dispatcher.dart';
 import 'utils.dart';
 
-Future<Map<String, dynamic>> echoTest(
-    {TestDispatcherState dispatcher, Map<String, dynamic> payload}) async {
-  payload ??= {
-    'options': {'url': 'http://192.168.0.107:7000/'}
-  };
+Future<Map<String, dynamic>> echoTest({
+  TestDispatcherState dispatcher,
+  Map<String, dynamic> payload,
+}) async {
   final manager = SocketIOManager();
   final socket = await manager.createInstance(getSocketOptions(payload));
   final messages = <Object>[];
   // connect
   await socket.connect();
 
-  final subscription =
-      socket.on('echo').listen(messages.add);
+  final subscription = socket.on('echo').listen(messages.add);
 
   for (final message in messagesToPublish) {
     await socket.emit('echo', [message]);

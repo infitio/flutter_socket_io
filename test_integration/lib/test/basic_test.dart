@@ -29,6 +29,14 @@ Future<Map<String, dynamic>> connectTest({
     events.add('connect');
   });
 
+  final messages = {};
+  socket.on('namespace').listen((args) => messages['namespace'] = args[0]);
+  socket.on('type:string').listen((args) => messages['type:string'] = args[0]);
+  socket.on('type:bool').listen((args) => messages['type:bool'] = args[0]);
+  socket.on('type:number').listen((args) => messages['type:number'] = args[0]);
+  socket.on('type:object').listen((args) => messages['type:object'] = args[0]);
+  socket.on('type:list').listen((args) => messages['type:list'] = args[0]);
+
   // connect
   await socket.connect();
 

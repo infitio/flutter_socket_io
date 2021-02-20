@@ -44,8 +44,7 @@ function listenToASocket(socket, namespace){
         let args = Array.prototype.slice.call(arguments);
         console.log(args);
     });
-    socket.on("echo", function(data, d2, d3){  //arguments make sense only if this is a function
-        console.log("ddd", data, d2, d3);
+    socket.on("echo", function(){  //`arguments` can be extracted only if this is an anonymous function and not an arrow => syntax
         let args = Array.prototype.slice.call(arguments);
         console.log("args:::", args, args.length);
         args.unshift('echo');
@@ -62,7 +61,7 @@ function listenToASocket(socket, namespace){
         let args = Array.prototype.slice.call(arguments);
         console.log(`received ack message: "${args}". Sending back ack!`);
         fn = args.pop();
-        fn(`Ack for ${args.map(_ => (_ instanceof Object)?JSON.stringify(_):_).join(", ")}`);
+        fn.apply(args);
     });
     socket.on("disconnect", ()=>{
         _sockets.delete(socket);
