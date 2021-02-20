@@ -8,7 +8,7 @@ import 'test_names.dart';
 
 final testFactory = <String, TestFactory>{
   TestName.basic: basicTest,
-  TestName.connect: connectTest,
+  TestName.listen: listenTest,
   TestName.events: eventsTest,
   TestName.publish: publishTest,
   TestName.echo: echoTest,

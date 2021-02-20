@@ -27,7 +27,7 @@ class SocketOptions {
   int timeout = 20000;
 
   ///Namespace parameter
-  String nameSpace;
+  String namespace;
 
   ///Path parameter if socket.io runs on a different endpoint
   String path;
@@ -65,9 +65,9 @@ class SocketOptions {
     this.query = const {},
     this.enableLogging = false,
     this.transports = const [Transports.webSocket, Transports.polling],
-    this.nameSpace = '/',
+    this.namespace = '/',
     this.path = '/socket.io',
-  }) : assert(nameSpace.startsWith('/'),
+  }) : assert(namespace.startsWith('/'),
             "Namespace must be a non null string and should start with a '/'");
 
   /// convert options to a Map
@@ -76,7 +76,7 @@ class SocketOptions {
         'query': query,
         'path': path,
         'enableLogging': enableLogging,
-        'namespace': nameSpace,
+        'namespace': namespace,
         'transports': transports
             .map((t) => {
                   Transports.webSocket: TxTransportModes.websocket,

@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
     final socket = await manager.createInstance(SocketOptions(
       //Socket IO server URI
         uri,
-        nameSpace: (identifier == 'namespaced') ? '/adhara' : '/',
+        namespace: (identifier == 'namespaced') ? '/adhara' : '/',
         //Query params - can be used for authentication
         query: {
           'auth': '--SOME AUTH STRING---',

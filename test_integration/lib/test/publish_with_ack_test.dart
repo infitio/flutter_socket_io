@@ -14,7 +14,8 @@ Future<Map<String, dynamic>> publishWithACKTest(
   final messages = [];
 
   for (final message in messagesToPublish) {
-    messages.add(await socket.emitWithAck('ack-message', [message]));
+    final messageAck = await socket.emitWithAck('ack-message', [message]);
+    messages.add(messageAck);
   }
   messages.add(
     await socket.emitWithAck('ack-message', messagesToPublish.last as List),

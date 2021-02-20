@@ -13,7 +13,7 @@ void main() {
   group('Socket', () {
     FlutterDriver driver;
     String socketURL;
-    final namespace = '/adhara';
+    const namespace = '/adhara';
 
     // Connect to the Flutter driver before running any tests.
     setUpAll(() async {
@@ -41,8 +41,8 @@ void main() {
             }));
 
     test(
-      'connect test',
-      () => runConnectTest(driver, {
+      'listen test',
+      () => runListenTest(driver, {
         'options': {'url': socketURL}
       }),
     );
@@ -77,8 +77,8 @@ void main() {
 
     // namespace
     test(
-      'namespace connect test',
-      () => runConnectTest(driver, {
+      'namespace listen test',
+      () => runListenTest(driver, {
         'options': {'url': socketURL, 'namespace': namespace}
       }),
     );

@@ -16,28 +16,25 @@ Future runBasicTest(FlutterDriver driver, Map<String, dynamic> data) async {
   expect(response.payload['id'], isA<int>());
 }
 
-Future runConnectTest(FlutterDriver driver, Map<String, dynamic> data) async {
-  final message = TestControlMessage(TestName.connect, payload: data);
+Future runListenTest(FlutterDriver driver, Map<String, dynamic> data) async {
+  final message = TestControlMessage(TestName.listen, payload: data);
   final response = TestControlMessage.fromJsonEncoded(
     await driver.requestData(message.toJsonEncoded()),
   );
 
   expect(response.testName, message.testName);
-
   expect(response.payload['id'], isA<int>());
-  expect(response.payload['events'], isA<List>());
-  expect(response.payload['events'], orderedEquals(const ['connect']));
 
   final messages = response.payload['messages'];
   expect(messages, isA<Map>());
   expect(messages['namespace'], isA<bool>());
-  expect(messages['namespace'], false);
+  expect(messages['namespace'], data['options']['namespace']!=null);
 
   expect(messages['type:string'], isA<String>());
   expect(messages['type:string'], 'String message back to client');
 
   expect(messages['type:bool'], isA<bool>());
-  expect(messages['type:bool'], false);
+  expect(messages['type:bool'], true);
 
   expect(messages['type:number'], isA<int>());
   expect(messages['type:number'], 123);

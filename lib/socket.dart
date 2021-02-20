@@ -28,28 +28,11 @@ class SocketIO {
       if (call.method == 'incomingAck') {
         var arguments = call.arguments['args'] as List<dynamic>;
         final reqId = call.arguments['reqId'] as String;
-        if (reqId == null) {
+        if (reqId == null || !_pendingAcknowledgements.containsKey(reqId)) {
           return;
         }
         final completer = _pendingAcknowledgements.remove(reqId);
-        if (completer == null) {
-          return;
-        }
-
-        if (arguments.isEmpty) {
-          arguments = [null];
-        } else {
-          //TODO this works around difference in ios
-          // (doesn't eat nulls) and android (eats nulls)
-          arguments = arguments.where((_) => _ != null).map((_) {
-            try {
-              return jsonDecode(_ as String);
-              // ignore: avoid_catches_without_on_clauses
-            } catch (e) {
-              return _;
-            }
-          }).toList();
-        }
+        arguments = arguments.map(_decodeArgument).toList();
         completer.complete(arguments);
       }
     });
@@ -58,19 +41,21 @@ class SocketIO {
   ///connect this socket to server
   Future<void> connect() => _channel.invokeMethod<void>('connect');
 
+  Object _decodeArgument(Object argument) {
+    try {
+      return jsonDecode(argument as String);
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      return argument;
+    }
+  }
+
   ///listen to an event
   Stream<dynamic> on(String eventName) =>
       _streamsChannel.receiveBroadcastStream(<String, dynamic>{
         'id': id,
         'eventName': eventName,
-      }).map((arguments) => arguments.map((_) {
-            try {
-              return jsonDecode(_ as String);
-              // ignore: avoid_catches_without_on_clauses
-            } catch (e) {
-              return _;
-            }
-          }).toList());
+      }).map((arguments) => arguments.map(_decodeArgument).toList());
 
   ///send data to socket server
   Future<void> emit(String eventName, List<dynamic> arguments) async {
@@ -99,8 +84,8 @@ class SocketIO {
   /// checks whether connection is alive
   Future<bool> isConnected() => _channel.invokeMethod('isConnected');
 
-  // Utility methods for listeners.
-  // De-registering can be handled using off(eventName, fn)
+// Utility methods for listeners.
+// De-registering can be handled using off(eventName, fn)
   ///Listen to connect event
   Stream<dynamic> get onConnect => on(TxEventTypes.connect);
 

@@ -33,6 +33,7 @@ function listenToASocket(socket, namespace){
     var _currentSocketId = ++socketId;
     _sockets.add(socket);
 
+
     socket.emit("namespace", !!namespace);
     socket.emit('type:string', "String message back to client");
     socket.emit('type:bool', true);
@@ -59,9 +60,9 @@ function listenToASocket(socket, namespace){
     });
     socket.on("ack-message", function(){
         let args = Array.prototype.slice.call(arguments);
-        console.log(`received ack message: "${args}". Sending back ack!`);
         fn = args.pop();
-        fn.apply(args);
+        console.log(`received ack message with args length: ${args.length} and content: ${JSON.stringify(args)}. Sending back ack!`);
+        fn.apply(fn, args);
     });
     socket.on("disconnect", ()=>{
         _sockets.delete(socket);
@@ -73,8 +74,7 @@ io.on('connection', function(socket){
     listenToASocket(socket, null);
 });
 
-var io_adhara = io.of('/adhara');
-io_adhara.on('connection', function(socket){
+io.of('/adhara').on('connection', function(socket){
   listenToASocket(socket, "/adhara");
 });
 
