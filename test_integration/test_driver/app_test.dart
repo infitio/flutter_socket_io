@@ -68,6 +68,13 @@ void main() {
       }),
     );
 
+    test(
+      'ack test',
+          () => runPublishWithACKTest(driver, {
+        'options': {'url': socketURL}
+      }),
+    );
+
     // namespace
     test(
       'namespace connect test',
@@ -93,6 +100,13 @@ void main() {
     test(
       'namespace echo test',
       () => runEchoTest(driver, {
+        'options': {'url': socketURL, 'namespace': namespace}
+      }),
+    );
+
+    test(
+      'namespace ack test',
+          () => runPublishWithACKTest(driver, {
         'options': {'url': socketURL, 'namespace': namespace}
       }),
     );
