@@ -7,13 +7,13 @@ import 'package:adhara_socket_io/options.dart';
 class SocketIOManager {
   static const MethodChannel _channel = const MethodChannel('adhara_socket_io');
 
-  Map<int, SocketIO> _sockets = {};
+  Map<int?, SocketIO> _sockets = {};
 
   ///Create a [SocketIO] instance
   ///[options] - Options object to initialize socket instance
   ///returns [SocketIO]
   Future<SocketIO> createInstance(SocketOptions options) async {
-    int index = await _channel.invokeMethod('newInstance', options.asMap());
+    int? index = await _channel.invokeMethod('newInstance', options.asMap());
     SocketIO socket = SocketIO(index);
     _sockets[index] = socket;
     return socket;

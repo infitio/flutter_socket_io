@@ -44,7 +44,7 @@ class SocketIO {
   static const String PONG = "pong";
 
   ///Socket/Connection identifier
-  int id;
+  int? id;
 
   ///Store listeners
   Map<String, List<Function>> _listeners = {};
@@ -62,13 +62,13 @@ class SocketIO {
             new MethodChannel("adhara_socket_io:socket:${id.toString()}") {
     _channel.setMethodCallHandler((call) async {
       if (call.method == 'incoming') {
-        final String eventName = call.arguments['eventName'];
-        final List<dynamic> arguments = call.arguments['args'];
+        final String? eventName = call.arguments['eventName'];
+        final List<dynamic>? arguments = call.arguments['args'];
         _handleData(eventName, arguments);
       }
       if (call.method == 'incomingAck') {
-        List<dynamic> arguments = call.arguments['args'];
-        final String reqId = call.arguments['reqId'];
+        List<dynamic>? arguments = call.arguments['args'];
+        final String? reqId = call.arguments['reqId'];
         if (reqId == null) {
           return;
         }
@@ -77,7 +77,7 @@ class SocketIO {
           return;
         }
 
-        if (arguments.length == 0) {
+        if (arguments!.length == 0) {
           arguments = [null];
         } else {
           arguments = arguments.where((_) {
@@ -106,21 +106,21 @@ class SocketIO {
     if (_listeners[eventName] == null) {
       _listeners[eventName] = [];
     }
-    if(_listeners[eventName].length == 0){
+    if(_listeners[eventName]!.length == 0){
       _channel.invokeMethod("on", {"eventName": eventName});
     }
-    _listeners[eventName].add(listener);
+    _listeners[eventName]!.add(listener);
   }
 
   ///stop listening to an event.
   ///Send the same function reference to stop that particular listener
-  off(String eventName, [SocketEventListener listener]) async {
+  off(String eventName, [SocketEventListener? listener]) async {
     if (listener == null) {
       _listeners[eventName] = [];
     } else {
-      _listeners[eventName].remove(listener);
+      _listeners[eventName]!.remove(listener);
     }
-    if (_listeners[eventName].length == 0) {
+    if (_listeners[eventName]!.length == 0) {
       await _channel.invokeMethod("off", {"eventName": eventName});
     }
   }
@@ -143,17 +143,17 @@ class SocketIO {
     return completer.future;
   }
 
-  Future<bool> isConnected() async {
+  Future<bool?> isConnected() async {
     return await _channel.invokeMethod('isConnected');
   }
 
   ///Data listener called by platform API
-  _handleData(String eventName, List arguments) {
-    _listeners[eventName]?.forEach((Function listener) {
-      if (arguments.length == 0) {
+  _handleData(String? eventName, List? arguments) {
+    _listeners[eventName!]?.forEach((Function listener) {
+      if (arguments!.length == 0) {
         arguments = [null];
       } else {
-        arguments = arguments.map((_) {
+        arguments = arguments!.map((_) {
           try {
             return jsonDecode(_);
           } catch (e) {
