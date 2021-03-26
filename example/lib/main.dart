@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
 
-const uri = 'http://192.168.5:7000/';
+const uri = 'http://192.168.0.105:7000/';
 
 class MyApp extends StatefulWidget {
   @override

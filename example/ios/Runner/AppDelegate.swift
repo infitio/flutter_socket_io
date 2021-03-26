@@ -1,6 +1,5 @@
 import UIKit
 import Flutter
-import adhara_socket_io
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -9,7 +8,6 @@ import adhara_socket_io
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
-    AdharaSocketIoPlugin.register(with: self.registrar(forPlugin: "AdharaSocketIoPlugin") )
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }
