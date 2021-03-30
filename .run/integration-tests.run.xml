@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="integration-tests" type="FlutterRunConfigurationType" factoryName="Flutter">
+    <option name="additionalArgs" value="--observatory-port 8888 --disable-service-auth-codes" />
+    <option name="filePath" value="$PROJECT_DIR$/test_integration/lib/main.dart" />
+    <method v="2" />
+  </configuration>
+</component>

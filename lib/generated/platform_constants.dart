@@ -10,7 +10,12 @@ class CodecTypes {
 }
 
 class PlatformMethod {
-  static const String method1 = 'method1';
+  static const String newInstance = 'newInstance';
+  static const String clearInstance = 'clearInstance';
+  static const String connect = 'connect';
+  static const String emit = 'emit';
+  static const String isConnected = 'isConnected';
+  static const String incomingAck = 'incomingAck';
 }
 
 class TxEventTypes {

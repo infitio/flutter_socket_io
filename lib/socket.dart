@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert' show jsonDecode;
 
 import 'package:flutter/services.dart';
-import 'package:streams_channel/streams_channel.dart';
+import 'streams_channel.dart';
 
 import 'generated/platform_constants.dart';
 import 'manager.dart';
@@ -18,14 +18,13 @@ class SocketIO {
 
   ///Method channel to interact with android/iOS
   final MethodChannel _channel;
-  final StreamsChannel _streamsChannel =
-      StreamsChannel('adhara_socket_io:event_streams');
+  final StreamsChannel _streamsChannel;
 
   ///Create a socket object with identifier received from platform APIs
-  SocketIO(this.id)
-      : _channel = MethodChannel('adhara_socket_io:socket:${id.toString()}') {
+  SocketIO(this.id, this._streamsChannel)
+    : _channel = MethodChannel('adhara_socket_io:socket:${id.toString()}') {
     _channel.setMethodCallHandler((call) async {
-      if (call.method == 'incomingAck') {
+      if (call.method == PlatformMethod.incomingAck) {
         var arguments = call.arguments['args'] as List<dynamic>;
         final reqId = call.arguments['reqId'] as String;
         if (reqId == null || !_pendingAcknowledgements.containsKey(reqId)) {
@@ -39,7 +38,7 @@ class SocketIO {
   }
 
   ///connect this socket to server
-  Future<void> connect() => _channel.invokeMethod<void>('connect');
+  Future<void> connect() => _channel.invokeMethod<void>(PlatformMethod.connect);
 
   Object _decodeArgument(Object argument) {
     try {
@@ -55,11 +54,14 @@ class SocketIO {
       _streamsChannel.receiveBroadcastStream(<String, dynamic>{
         'id': id,
         'eventName': eventName,
-      }).map((arguments) => arguments.map(_decodeArgument).toList());
+      }).map((arguments) {
+        print('aaaa , $eventName -- $arguments');
+        return arguments.map(_decodeArgument).toList();
+      });
 
   ///send data to socket server
   Future<void> emit(String eventName, List<dynamic> arguments) async {
-    await _channel.invokeMethod('emit', <String, dynamic>{
+    await _channel.invokeMethod(PlatformMethod.emit, <String, dynamic>{
       'eventName': eventName,
       'arguments': arguments,
     });
@@ -69,7 +71,7 @@ class SocketIO {
   Future emitWithAck(String eventName, List<dynamic> arguments) async {
     final reqId = (++_reqCounter).toString();
     await _channel.invokeMethod(
-      'emit',
+      PlatformMethod.emit,
       {
         'eventName': eventName,
         'arguments': arguments,
@@ -82,7 +84,9 @@ class SocketIO {
   }
 
   /// checks whether connection is alive
-  Future<bool> isConnected() => _channel.invokeMethod('isConnected');
+  Future<bool> isConnected() => _channel.invokeMethod(
+    PlatformMethod.isConnected,
+  );
 
 // Utility methods for listeners.
 // De-registering can be handled using off(eventName, fn)
