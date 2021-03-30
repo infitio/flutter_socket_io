@@ -13,7 +13,12 @@ final public class PlatformConstants {
     }
 
     static final public class PlatformMethod {
-        public static final String method1 = "method1";
+        public static final String newInstance = "newInstance";
+        public static final String clearInstance = "clearInstance";
+        public static final String connect = "connect";
+        public static final String emit = "emit";
+        public static final String isConnected = "isConnected";
+        public static final String incomingAck = "incomingAck";
     }
 
     static final public class TxEventTypes {

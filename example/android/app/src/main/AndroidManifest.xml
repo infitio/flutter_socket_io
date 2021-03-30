@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.infitio.example">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.infitio.adharasocketioexample">
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
          In most cases you can leave this as-is, but you if you want to provide
@@ -7,8 +8,11 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="example"
-        android:icon="@mipmap/ic_launcher">
+        android:label="adhara_socket_io_example"
+        android:usesCleartextTraffic="true"
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        tools:targetApi="m">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

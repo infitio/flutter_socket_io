@@ -7,91 +7,91 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import io.flutter.plugin.common.EventChannel;
+import io.socket.emitter.Emitter;
 
 public class AdharaEventStreamHandler implements EventChannel.StreamHandler {
 
-    private final AdharaSocketIoPlugin plugin;
-    private boolean stopListening = false;
-    private String eventName;
-    private AdharaSocket adharaSocket;
+  private final AdharaSocketIoPlugin plugin;
+  private String eventName;
+  private AdharaSocket adharaSocket;
+  private Emitter.Listener listener;
 
-    AdharaEventStreamHandler(AdharaSocketIoPlugin plugin){
-        this.plugin = plugin;
-    }
+  AdharaEventStreamHandler(AdharaSocketIoPlugin plugin) {
+    this.plugin = plugin;
+  }
 
+  /**
+   * Refer to the comments on MethodCallHandler.MethodResultWrapper
+   * on why this customized EventSink is required
+   */
+  private static class MainThreadEventSink implements EventChannel.EventSink {
+    private final EventChannel.EventSink eventSink;
+    private final Handler handler;
 
-    /**
-     * Refer to the comments on MethodCallHandler.MethodResultWrapper
-     * on why this customized EventSink is required
-     * */
-    private static class MainThreadEventSink implements EventChannel.EventSink {
-        private EventChannel.EventSink eventSink;
-        private Handler handler;
-
-        MainThreadEventSink(EventChannel.EventSink eventSink) {
-            this.eventSink = eventSink;
-            handler = new Handler(Looper.getMainLooper());
-        }
-
-        @Override
-        public void success(final Object o) {
-            handler.post(() -> eventSink.success(o));   //lambda for new Runnable
-        }
-
-        @Override
-        public void error(final String s, final String s1, final Object o) {
-            handler.post(() -> eventSink.error(s, s1, o));
-        }
-
-        @Override
-        public void endOfStream() {
-            //TODO work on this if required, or remove this TODO once all features are covered
-        }
+    MainThreadEventSink(EventChannel.EventSink eventSink) {
+      this.eventSink = eventSink;
+      handler = new Handler(Looper.getMainLooper());
     }
 
     @Override
-    public void onListen(Object o, final EventChannel.EventSink uiThreadEventSink) {
-        MainThreadEventSink eventSink = new MainThreadEventSink(uiThreadEventSink);
-        Map<String, Object> params = (Map<String, Object>) o;
-        this.eventName = (String)params.get("eventName");
-        this.adharaSocket = plugin.instances.get((int)params.get("id"));
-        adharaSocket.socket.on(eventName, args -> {
-            if(stopListening) return;
-            adharaSocket.log("Socket triggered::"+eventName);
-//            final Map<String, Object> arguments = new HashMap<>();
-//            arguments.put("eventName", eventName);
-            List<Object> argsList = new ArrayList<>();
-            for(Object arg : args){
-                if((arg instanceof JSONObject) || (arg instanceof JSONArray)){
-                    argsList.add(arg.toString());
-                }else{
-                    argsList.add(arg);
-                }
-            }
-//            arguments.put("args", argsList);
-            eventSink.success(argsList);
-        });
-        if(!adharaSocket.eventListenerCount.containsKey(eventName)){
-            adharaSocket.eventListenerCount.put(eventName, 1);
-        }{
-            adharaSocket.eventListenerCount.put(eventName, adharaSocket.eventListenerCount.get(eventName)+1);
+    public void success(final Object o) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          eventSink.success(o);
         }
+      });
     }
 
     @Override
-    public void onCancel(Object o) {
-        this.stopListening = true;
-        Integer count = this.adharaSocket.eventListenerCount.get(eventName);
-        if(count==1){
-            this.adharaSocket.socket.off(eventName);
-        }else{
-            this.adharaSocket.eventListenerCount.put(eventName, count-1);
+    public void error(final String s, final String s1, final Object o) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          eventSink.error(s, s1, o);
         }
+      });
     }
+
+    @Override
+    public void endOfStream() {}
+  }
+
+  @Override
+  public void onListen(Object o, final EventChannel.EventSink uiThreadEventSink) {
+    final MainThreadEventSink eventSink = new MainThreadEventSink(uiThreadEventSink);
+    Map<String, Object> params = (Map<String, Object>) o;
+    eventName = (String) params.get("eventName");
+    adharaSocket = plugin.instances.get((int) params.get("id"));
+    listener = new Emitter.Listener() {
+      @Override
+      public void call(Object... args) {
+        adharaSocket.log("Event triggered::" + eventName);
+        List<Object> argsList = new ArrayList<>();
+        for (Object arg : args) {
+          if ((arg instanceof JSONObject) || (arg instanceof JSONArray)) {
+            argsList.add(arg.toString());
+          } else if (arg == null || arg instanceof String || arg instanceof Number || arg instanceof Boolean) {
+            argsList.add(arg);
+          } else {
+            argsList.add(arg.toString());
+          }
+        }
+        adharaSocket.log("Received arguments::" + argsList);
+        eventSink.success(argsList);
+      }
+    };
+    adharaSocket.socket.on(eventName, listener);
+  }
+
+  @Override
+  public void onCancel(Object o) {
+    adharaSocket.log("Listening cancelled on::" + eventName);
+    this.adharaSocket.socket.off(eventName, listener);
+  }
 
 }

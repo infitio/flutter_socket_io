@@ -1,4 +1,4 @@
-package com.infitio.example;
+package com.infitio.adharasocketioexample;
 
 import io.flutter.embedding.android.FlutterActivity;
 

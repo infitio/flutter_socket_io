@@ -14,8 +14,12 @@ Iterable<Map<String, dynamic>> get _types sync* {
 
 ///Platform method names
 const List<Map<String, dynamic>> _platformMethods = [
-  // TODO add platform methods
-  {'name': 'method1', 'value': 'method1'},
+  {'name': 'newInstance', 'value': 'newInstance'},
+  {'name': 'clearInstance', 'value': 'clearInstance'},
+  {'name': 'connect', 'value': 'connect'},
+  {'name': 'emit', 'value': 'emit'},
+  {'name': 'isConnected', 'value': 'isConnected'},
+  {'name': 'incomingAck', 'value': 'incomingAck'},
 ];
 
 const List<Map<String, dynamic>> _objects = [

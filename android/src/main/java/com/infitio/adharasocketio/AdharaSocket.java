@@ -4,6 +4,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.infitio.adharasocketio.generated.PlatformConstants;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -25,7 +29,6 @@ import io.socket.client.Ack;
 import io.socket.client.IO;
 import io.socket.client.Manager;
 import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
 
 
 class AdharaSocket implements MethodCallHandler {
@@ -33,9 +36,8 @@ class AdharaSocket implements MethodCallHandler {
   final Socket socket;
   private final MethodChannel channel;
   private static final String TAG = "Adhara:Socket";
-  private Options options;
+  private final Options options;
   private static Manager manager;
-  HashMap<String, Integer> eventListenerCount = new HashMap<>();
 
   void log(String message) {
     if (this.options.enableLogging) {
@@ -43,10 +45,10 @@ class AdharaSocket implements MethodCallHandler {
     }
   }
 
-  private AdharaSocket(MethodChannel channel, Options options) {
+  private AdharaSocket(MethodChannel channel, Options options) throws URISyntaxException {
     this.channel = channel;
     this.options = options;
-    log("Connecting to... " + options.uri);
+    log("Creating socket with URL: " + options.uri);
     socket = AdharaSocket.manager.socket(options.namespace);
   }
 
@@ -63,8 +65,8 @@ class AdharaSocket implements MethodCallHandler {
   // https://github.com/flutter/flutter/issues/34993#issue-459900986
   // https://github.com/aloisdeniel/flutter_geocoder/commit/bc34cfe473bfd1934fe098bb7053248b75200241
   private static class MethodResultWrapper implements MethodChannel.Result {
-    private MethodChannel.Result methodResult;
-    private Handler handler;
+    private final MethodChannel.Result methodResult;
+    private final Handler handler;
 
     MethodResultWrapper(MethodChannel.Result result) {
       methodResult = result;
@@ -73,32 +75,47 @@ class AdharaSocket implements MethodCallHandler {
 
     @Override
     public void success(final Object result) {
-      handler.post(() -> methodResult.success(result));
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          methodResult.success(result);
+        }
+      });
     }
 
     @Override
     public void error(
       final String errorCode, final String errorMessage, final Object errorDetails) {
-      handler.post(() -> methodResult.error(errorCode, errorMessage, errorDetails));
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          methodResult.error(errorCode, errorMessage, errorDetails);
+        }
+      });
     }
 
     @Override
     public void notImplemented() {
-      handler.post(() -> methodResult.notImplemented());
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          methodResult.notImplemented();
+        }
+      });
     }
   }
 
   @Override
-  public void onMethodCall(MethodCall call, Result rawResult) {
+  public void onMethodCall(MethodCall call, @NonNull Result rawResult) {
     MethodChannel.Result result = new MethodResultWrapper(rawResult);
     switch (call.method) {
-      case "connect": {
-        log("Connecting....");
+      case PlatformConstants.PlatformMethod.connect: {
+        log("Connecting to socket "+this.options.uri);
         socket.connect();
         result.success(null);
         break;
       }
-      case "emit": {
+      case PlatformConstants.PlatformMethod.emit: {
         final String eventName = call.argument("eventName");
         final List data = call.argument("arguments");
         final String reqId = call.argument("reqId");
@@ -116,29 +133,22 @@ class AdharaSocket implements MethodCallHandler {
               array[i] = new JSONArray((Collection) datum);
             } else {
               array[i] = datum;
-                            /*try{
-                                array[i] = new JSONObject(datum.toString());
-                            }catch (JSONException jse){
-                                try{
-                                    array[i] = new JSONArray(datum.toString());
-                                }catch (JSONException jse2){
-                                    array[i] = datum;
-                                }
-                            }*/
             }
           }
         }
         if (reqId == null) {
           socket.emit(eventName, array);
         } else {
-          socket.emit(eventName, array, args -> {
+          socket.emit(eventName, array, new Ack() {
+            @Override
+            public void call(Object... args) {
               log("Ack received:::" + eventName + ":::" + Arrays.toString(args));
               final Map<String, Object> arguments = new HashMap<>();
               arguments.put("reqId", reqId);
               List<Object> argsList = new ArrayList<>();
               for (Object arg : args) {
                 if ((arg instanceof JSONObject)
-                  || (arg instanceof JSONArray)) {
+                    || (arg instanceof JSONArray)) {
                   argsList.add(arg.toString());
                 } else {
                   argsList.add(arg);
@@ -146,22 +156,20 @@ class AdharaSocket implements MethodCallHandler {
               }
               arguments.put("args", argsList);
               final Handler handler = new Handler(Looper.getMainLooper());
-              handler.post(() -> channel.invokeMethod("incomingAck", arguments));
+              handler.post(new Runnable() {
+                @Override
+                public void run() {
+                  channel.invokeMethod(PlatformConstants.PlatformMethod.incomingAck, arguments);
+                }
+              });
             }
-          );
+          });
         }
         result.success(null);
         break;
       }
-      case "isConnected": {
-        log("connected:::");
+      case PlatformConstants.PlatformMethod.isConnected: {
         result.success(socket.connected());
-        break;
-      }
-      case "disconnect": {
-        log("disconnected:::");
-        socket.disconnect();
-        result.success(null);
         break;
       }
       default: {
