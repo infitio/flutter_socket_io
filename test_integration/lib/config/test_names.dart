@@ -6,4 +6,5 @@ class TestName {
   static const String publishAdvanced = 'publishAdvanced';
   static const String echo = 'echo';
   static const String ack = 'ack';
+  static const String getFlutterErrors = 'getFlutterErrors';
 }

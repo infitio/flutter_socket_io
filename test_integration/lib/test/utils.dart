@@ -6,9 +6,6 @@ SocketOptions getSocketOptions(Map<String, dynamic> payload) {
   );
   print('socket options: $_options');
   final socketURL = _options['url'] as String;
-  return SocketOptions(
-    socketURL,
-    namespace: _options['namespace'] as String ?? '/',
-    enableLogging: true
-  );
+  return SocketOptions(socketURL,
+      namespace: _options['namespace'] as String ?? '/', enableLogging: true);
 }

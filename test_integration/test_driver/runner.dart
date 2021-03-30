@@ -28,7 +28,7 @@ Future runListenTest(FlutterDriver driver, Map<String, dynamic> data) async {
   final messages = response.payload['messages'];
   expect(messages, isA<Map>());
   expect(messages['namespace'], isA<bool>());
-  expect(messages['namespace'], data['options']['namespace']!=null);
+  expect(messages['namespace'], data['options']['namespace'] != null);
 
   expect(messages['type:string'], isA<String>());
   expect(messages['type:string'], 'String message back to client');

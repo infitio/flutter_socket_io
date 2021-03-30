@@ -1,5 +1,5 @@
 name: test_integration
-description: A new Flutter project.
+description: Integration tests for adhara socket io plugin
 publish_to: 'none'
 version: 1.0.0
 

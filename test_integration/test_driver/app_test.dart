@@ -70,7 +70,7 @@ void main() {
 
     test(
       'ack test',
-          () => runPublishWithACKTest(driver, {
+      () => runPublishWithACKTest(driver, {
         'options': {'url': socketURL}
       }),
     );
@@ -106,7 +106,7 @@ void main() {
 
     test(
       'namespace ack test',
-          () => runPublishWithACKTest(driver, {
+      () => runPublishWithACKTest(driver, {
         'options': {'url': socketURL, 'namespace': namespace}
       }),
     );

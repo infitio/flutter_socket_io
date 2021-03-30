@@ -24,7 +24,11 @@ Execute below commands to run tests
 
 ```bash
 export VM_SERVICE_URL=http://127.0.0.1:8888/
-dart test_driver/main_test.dart
+dart test_driver/app_test.dart
+```
+-or-
+```bash
+VM_SERVICE_URL=http://127.0.0.1:8888/ dart test_driver/app_test.dart
 ```
 
 stopping the `nodejs` server

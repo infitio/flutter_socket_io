@@ -1,13 +1,11 @@
 import 'package:adhara_socket_io/adhara_socket_io.dart';
 import 'package:test_integration/config/data.dart';
 
-import '../test_dispatcher.dart';
+import '../factory/reporter.dart';
 import 'utils.dart';
 
-Future<Map<String, dynamic>> publishTest({
-  TestDispatcherState dispatcher,
-  Map<String, dynamic> payload
-}) async {
+Future<Map<String, dynamic>> publishTest(
+    {Reporter reporter, Map<String, dynamic> payload}) async {
   final manager = SocketIOManager();
   final socket = await manager.createInstance(getSocketOptions(payload));
 
@@ -15,7 +13,7 @@ Future<Map<String, dynamic>> publishTest({
   await socket.connect();
 
   var counter = 0;
-  for(final message in messagesToPublish) {
+  for (final message in messagesToPublish) {
     await socket.emit('data', [message]);
     counter++;
   }

@@ -1,12 +1,10 @@
 import 'package:adhara_socket_io/adhara_socket_io.dart';
 
-import '../test_dispatcher.dart';
+import '../factory/reporter.dart';
 import 'utils.dart';
 
-Future<Map<String, dynamic>> eventsTest({
-  TestDispatcherState dispatcher,
-  Map<String, dynamic> payload
-}) async {
+Future<Map<String, dynamic>> eventsTest(
+    {Reporter reporter, Map<String, dynamic> payload}) async {
   final manager = SocketIOManager();
   final socket = await manager.createInstance(getSocketOptions(payload));
   final events = <String>[];

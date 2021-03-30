@@ -1,10 +1,10 @@
 import 'package:adhara_socket_io/adhara_socket_io.dart';
 
-import '../test_dispatcher.dart';
+import '../factory/reporter.dart';
 import 'utils.dart';
 
 Future<Map<String, dynamic>> basicTest({
-  TestDispatcherState dispatcher,
+  Reporter reporter,
   Map<String, dynamic> payload,
 }) async {
   final manager = SocketIOManager();
@@ -18,7 +18,7 @@ Future<Map<String, dynamic>> basicTest({
 }
 
 Future<Map<String, dynamic>> listenTest({
-  TestDispatcherState dispatcher,
+  Reporter reporter,
   Map<String, dynamic> payload,
 }) async {
   final manager = SocketIOManager();
