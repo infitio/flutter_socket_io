@@ -17,6 +17,7 @@ class _MyAppState extends State<MyApp> {
   SocketIOManager manager;
   Map<String, SocketIO> sockets = {};
   final _isProbablyConnected = <String, bool>{};
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -45,7 +46,7 @@ class _MyAppState extends State<MyApp> {
         ] //Enable required transport
     ));
     socket.onConnect.listen((data) {
-      pPrint('connected...');
+      pPrint('$identifier | connected...');
       pPrint(data);
       sendMessage(identifier);
     });
@@ -53,12 +54,13 @@ class _MyAppState extends State<MyApp> {
     socket.onConnectTimeout.listen(pPrint);
     socket.onError.listen(pPrint);
     socket.onDisconnect.listen(pPrint);
-    socket.on('type:string').listen((data) => pPrint('type:string | $data'));
-    socket.on('type:bool').listen((data) => pPrint('type:bool | $data'));
-    socket.on('type:number').listen((data) => pPrint('type:number | $data'));
-    socket.on('type:object').listen((data) => pPrint('type:object | $data'));
-    socket.on('type:list').listen((data) => pPrint('type:list | $data'));
+    socket.on('type:string').listen((data) => pPrint('$identifier | type:string... | $data'));
+    socket.on('type:bool').listen((data) => pPrint('$identifier | type:bool | $data'));
+    socket.on('type:number').listen((data) => pPrint('$identifier | type:number | $data'));
+    socket.on('type:object').listen((data) => pPrint('$identifier | type:object | $data'));
+    socket.on('type:list').listen((data) => pPrint('$identifier | type:list | $data'));
     socket.on('message').listen(pPrint);
+    socket.on('echo').listen((data) => pPrint('$identifier | echo received | $data'));
     //TODO add stream subscription in example
     await socket.connect();
     sockets[identifier] = socket;
@@ -101,13 +103,20 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  void sendEchoMessage(String identifier) {
+    if (sockets[identifier] != null) {
+      pPrint("$identifier | sending echo");
+      sockets[identifier].emit('echo', ['hello']);
+    }
+  }
+
   void sendMessageWithACK(String identifier) {
-    pPrint("Sending ACK message from '$identifier'...");
+    pPrint("$identifier | Sending ACK message...");
     final msg = ['Hello world!', 1, true, {'p': 1}, [3, 'r']];
     sockets[identifier].emitWithAck('ack-message', msg).then((data) {
       // this callback runs when this
       // specific message is acknowledged by the server
-      pPrint("ACK received from '$identifier' for $msg: $data");
+      pPrint("$identifier | ACK received | $msg -> $data");
     });
   }
 
@@ -118,6 +127,14 @@ class _MyAppState extends State<MyApp> {
       }
       print(data);
       toPrint.add(data?.toString());
+    });
+
+    Future.delayed(Duration(milliseconds: 250), (){
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 200),
+        curve: Curves.easeInOut
+      );
     });
   }
 
@@ -144,6 +161,14 @@ class _MyAppState extends State<MyApp> {
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: const Text('Send Message'),
                 )
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              child: RaisedButton(
+                onPressed: ipc ? () => sendEchoMessage(identifier) : null,
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: const Text('Send Echo Message'),
+              )
             ),
             Container(
                 margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -209,6 +234,7 @@ class _MyAppState extends State<MyApp> {
                 Expanded(
                     child: Center(
                       child: ListView(
+                        controller: _scrollController,
                         children: toPrint.map((_) => Text(_ ?? '')).toList(),
                       ),
                     )

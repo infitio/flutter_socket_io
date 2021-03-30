@@ -34,10 +34,16 @@ function listenToASocket(socket, namespace){
     socket.emit('type:list', ["hello", 123, {"key": "value"}]);
     socket.on("message", function(){
         let args = Array.prototype.slice.call(arguments);
-        console.log(args, arguments.length);
+        console.log("MESSAGE RECEIVED >> ", args, arguments.length);
         for(let arg of args){
             console.log(arg, typeof arg);
         }
+    });
+    socket.on("echo", function(){  //`arguments` can be extracted only if this is an anonymous function and not an arrow => syntax
+        let args = Array.prototype.slice.call(arguments);
+        console.log("args:::", args, args.length);
+        args.unshift('echo');
+        socket.emit.apply(socket, args);
     });
     socket.on("ack-message", function(){
         let args = Array.prototype.slice.call(arguments);
@@ -56,11 +62,13 @@ function listenToASocket(socket, namespace){
 
 var _sockets = new Set();
 io.on('connection', function(socket){
+console.log('here1');
     listenToASocket(socket, null);
 });
 
 var io_adhara = io.of('/adhara');
 io_adhara.on('connection', function(socket){
+console.log('here2');
   listenToASocket(socket, "/adhara");
 });
 
