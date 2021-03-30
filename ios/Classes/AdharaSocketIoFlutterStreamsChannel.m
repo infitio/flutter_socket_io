@@ -3,7 +3,6 @@
 //
 //  Original work on StreamsChannel by loup-v
 //  at https://github.com/loup-v/streams_channel
-//  Had to copy the file and rename classes due to some XCode errors >_<
 
 #import "AdharaSocketIoFlutterStreamsChannel.h"
 

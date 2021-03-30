@@ -11,7 +11,12 @@ typedef NS_ENUM(UInt8, _Value) {
 
 
 @interface AdharaSocketIoPlatformMethod : NSObject
-extern NSString *const AdharaSocketIoPlatformMethod_method1;
+extern NSString *const AdharaSocketIoPlatformMethod_newInstance;
+extern NSString *const AdharaSocketIoPlatformMethod_clearInstance;
+extern NSString *const AdharaSocketIoPlatformMethod_connect;
+extern NSString *const AdharaSocketIoPlatformMethod_emit;
+extern NSString *const AdharaSocketIoPlatformMethod_isConnected;
+extern NSString *const AdharaSocketIoPlatformMethod_incomingAck;
 @end
 
 @interface TxEventTypes : NSObject

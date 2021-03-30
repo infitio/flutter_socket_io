@@ -7,7 +7,12 @@
 
 
 @implementation AdharaSocketIoPlatformMethod
-NSString *const AdharaSocketIoPlatformMethod_method1= @"method1";
+NSString *const AdharaSocketIoPlatformMethod_newInstance= @"newInstance";
+NSString *const AdharaSocketIoPlatformMethod_clearInstance= @"clearInstance";
+NSString *const AdharaSocketIoPlatformMethod_connect= @"connect";
+NSString *const AdharaSocketIoPlatformMethod_emit= @"emit";
+NSString *const AdharaSocketIoPlatformMethod_isConnected= @"isConnected";
+NSString *const AdharaSocketIoPlatformMethod_incomingAck= @"incomingAck";
 @end
 
 @implementation TxEventTypes

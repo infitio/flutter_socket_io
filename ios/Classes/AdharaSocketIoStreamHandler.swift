@@ -24,10 +24,7 @@ public class AdharaSocketIoStreamHandler: NSObject, FlutterStreamHandler {
             adharaSocket?.socket.disconnect()
             adharaSocket?.socket.on(_eventName) {data, ack in
                 self.adharaSocket?.log("incoming:::", _eventName, data, ack)
-                events([
-                    "eventName": _eventName,
-                    "args": data
-                ]);
+                events(data);
             }
             adharaSocket?.eventListenerCount[_eventName] = (adharaSocket?.eventListenerCount[_eventName] ?? 0) + 1
         } else {
