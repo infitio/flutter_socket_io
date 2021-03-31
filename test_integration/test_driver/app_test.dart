@@ -46,7 +46,6 @@ void main() {
         'options': {'url': socketURL}
       }),
     );
-
     test(
       'events test',
       () => runEventsTest(driver, {

@@ -33,7 +33,6 @@ function listenToASocket(socket, namespace){
     var _currentSocketId = ++socketId;
     _sockets.add(socket);
 
-
     socket.emit("namespace", !!namespace);
     socket.emit('type:string', "String message back to client");
     socket.emit('type:bool', true);
@@ -43,11 +42,11 @@ function listenToASocket(socket, namespace){
 
     socket.on("data", function(){
         let args = Array.prototype.slice.call(arguments);
-        console.log(args);
+        console.log(`data event received: ${args}`);
     });
     socket.on("echo", function(){  //`arguments` can be extracted only if this is an anonymous function and not an arrow => syntax
         let args = Array.prototype.slice.call(arguments);
-        console.log("args:::", args, args.length);
+        console.log(`echo event received with ${args.length} args: ${args}`);
         args.unshift('echo');
         socket.emit.apply(socket, args);
     });
@@ -66,7 +65,7 @@ function listenToASocket(socket, namespace){
     });
     socket.on("disconnect", ()=>{
         _sockets.delete(socket);
-        console.log(`socket disconnected at ${socket.handshake.query.timestamp} with transport: ${socket.conn.transport.name}, leaving ${_sockets.size} active sockets`);
+        console.log(`socket with transport: ${socket.conn.transport.name} disconnected, leaving ${_sockets.size} active sockets`);
     });
 }
 

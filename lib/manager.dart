@@ -8,9 +8,18 @@ import 'streams_channel.dart';
 import 'generated/platform_constants.dart';
 
 bool _shouldHotRestart = true;
+SocketIOManager _manager;
 
 /// Class to manage multiple socket connections
 class SocketIOManager {
+  static final SocketIOManager _manager = SocketIOManager._internal();
+
+  factory SocketIOManager() {
+    return _manager;
+  }
+
+  SocketIOManager._internal();
+
   static const MethodChannel _channel = MethodChannel('adhara_socket_io');
   final StreamsChannel _streamsChannel =
   StreamsChannel('adhara_socket_io:event_streams');
