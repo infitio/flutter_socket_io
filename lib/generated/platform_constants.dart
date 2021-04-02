@@ -5,6 +5,12 @@
 
 // ignore_for_file: public_member_api_docs
 
+class MethodChannelNames {
+  static const String managerMethodChannel = 'adhara_socket_io';
+  static const String socketMethodChannel = 'adhara_socket_io:socket:';
+  static const String streamsChannel = 'adhara_socket_io:event_streams';
+}
+
 class CodecTypes {
   static const int type1 = 128;
 }

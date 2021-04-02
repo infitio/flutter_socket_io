@@ -33,7 +33,7 @@ class StreamsChannel {
     StreamController<T> controller;
     controller = StreamController<T>.broadcast(onListen: () async {
       ServicesBinding.instance.defaultBinaryMessenger
-        .setMessageHandler(handlerName, (reply) async {
+          .setMessageHandler(handlerName, (reply) async {
         if (reply == null) {
           await controller.close();
         } else {
@@ -54,12 +54,13 @@ class StreamsChannel {
           stack: stack,
           library: 'streams_channel',
           context: DiagnosticsNode.message(
-            'while activating platform stream on channel $name'),
+            'while activating platform stream on channel $name',
+          ),
         ));
       }
     }, onCancel: () async {
       ServicesBinding.instance.defaultBinaryMessenger
-        .setMessageHandler(handlerName, null);
+          .setMessageHandler(handlerName, null);
       try {
         await methodChannel.invokeMethod('cancel#$id', arguments);
       } on Exception catch (exception, stack) {
@@ -68,7 +69,8 @@ class StreamsChannel {
           stack: stack,
           library: 'streams_channel',
           context: DiagnosticsNode.message(
-            'while de-activating platform stream on channel $name'),
+            'while de-activating platform stream on channel $name',
+          ),
         ));
       }
     });

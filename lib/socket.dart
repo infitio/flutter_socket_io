@@ -22,7 +22,9 @@ class SocketIO {
 
   ///Create a socket object with identifier received from platform APIs
   SocketIO(this.id, this._streamsChannel)
-    : _channel = MethodChannel('adhara_socket_io:socket:${id.toString()}') {
+      : _channel = MethodChannel(
+          MethodChannelNames.socketMethodChannel + id.toString(),
+        ) {
     _channel.setMethodCallHandler((call) async {
       if (call.method == PlatformMethod.incomingAck) {
         var arguments = call.arguments['args'] as List<dynamic>;
@@ -55,7 +57,6 @@ class SocketIO {
         'id': id,
         'eventName': eventName,
       }).map((arguments) {
-        print('aaaa , $eventName -- $arguments');
         return arguments.map(_decodeArgument).toList();
       });
 
@@ -85,8 +86,8 @@ class SocketIO {
 
   /// checks whether connection is alive
   Future<bool> isConnected() => _channel.invokeMethod(
-    PlatformMethod.isConnected,
-  );
+        PlatformMethod.isConnected,
+      );
 
 // Utility methods for listeners.
 // De-registering can be handled using off(eventName, fn)

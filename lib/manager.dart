@@ -7,22 +7,32 @@ import 'socket.dart';
 import 'streams_channel.dart';
 import 'generated/platform_constants.dart';
 
-bool _shouldHotRestart = true;
-SocketIOManager _manager;
+// Indicates whether platform side should release existing connections
+//
+// On hot restart this variable will be set to true, which indicates
+//  platform side release the existing sockets
+//  once released, the value will be updated to false
+//
+// See [SocketIOManager.createInstance] for usage
+bool _clearExisting = true;
 
 /// Class to manage multiple socket connections
 class SocketIOManager {
+  // singleton
   static final SocketIOManager _manager = SocketIOManager._internal();
+
+  SocketIOManager._internal();
 
   factory SocketIOManager() {
     return _manager;
   }
 
-  SocketIOManager._internal();
-
-  static const MethodChannel _channel = MethodChannel('adhara_socket_io');
-  final StreamsChannel _streamsChannel =
-  StreamsChannel('adhara_socket_io:event_streams');
+  static const MethodChannel _channel = MethodChannel(
+    MethodChannelNames.managerMethodChannel,
+  );
+  final StreamsChannel _streamsChannel = StreamsChannel(
+    MethodChannelNames.streamsChannel,
+  );
 
   final _sockets = <int, SocketIO>{};
 
@@ -34,10 +44,10 @@ class SocketIOManager {
       PlatformMethod.newInstance,
       {
         'options': options.asMap(),
-        'clear': _shouldHotRestart
+        'clear': _clearExisting,
       },
     );
-    _shouldHotRestart = false;
+    _clearExisting = false;
     final socket = SocketIO(index, _streamsChannel);
     _sockets[index] = socket;
     return socket;
