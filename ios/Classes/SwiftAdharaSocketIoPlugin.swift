@@ -8,19 +8,27 @@ public class SwiftAdharaSocketIoPlugin: NSObject, FlutterPlugin {
     var instances: [Int: AdharaSocket];
     var currentIndex: Int;
     let registrar: FlutterPluginRegistrar;
+    let streamsChannel: AdharaSocketIoFlutterStreamsChannel;
 
-    init(_ _registrar: FlutterPluginRegistrar){
+    init(_ _registrar: FlutterPluginRegistrar,
+         _ _streamsChannel: AdharaSocketIoFlutterStreamsChannel){
         registrar = _registrar
         instances = [Int: AdharaSocket]()
         currentIndex = 0;
+        streamsChannel = _streamsChannel;
     }
 
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "adhara_socket_io", binaryMessenger: registrar.messenger())
-        let instance = SwiftAdharaSocketIoPlugin(registrar)
+        let channel = FlutterMethodChannel(
+            name: AdharaSocketIoMethodChannelNames.managerMethodChannel,
+            binaryMessenger: registrar.messenger()
+        )
+        let streamsChannel = AdharaSocketIoFlutterStreamsChannel(
+            name: AdharaSocketIoMethodChannelNames.streamsChannel,
+            binaryMessenger: registrar.messenger()
+        )
+        let instance = SwiftAdharaSocketIoPlugin(registrar, streamsChannel)
         registrar.addMethodCallDelegate(instance, channel: channel)
-                
-        let streamsChannel = AdharaSocketIoFlutterStreamsChannel(name: "adhara_socket_io:event_streams", binaryMessenger: registrar.messenger())
         streamsChannel.setStreamHandlerFactory { (Any) -> (FlutterStreamHandler & NSObjectProtocol)? in
             return AdharaSocketIoStreamHandler(instance)
         }
@@ -30,7 +38,7 @@ public class SwiftAdharaSocketIoPlugin: NSObject, FlutterPlugin {
         let arguments = call.arguments as! [String: AnyObject]
 
         switch (call.method) {
-            case "newInstance":
+            case AdharaSocketIoPlatformMethod.newInstance:
                 if((arguments["clear"] as! Bool?)!){
                     for (_, adharaSocket) in instances {
                         adharaSocket.socket.disconnect()
@@ -50,21 +58,14 @@ public class SwiftAdharaSocketIoPlugin: NSObject, FlutterPlugin {
                 instances[currentIndex] = AdharaSocket.getInstance(registrar, config)
                 result(currentIndex)
                 currentIndex += 1
-            case "clearInstance":
+            case AdharaSocketIoPlatformMethod.clearInstance:
                 if(arguments["id"] == nil){
                     result(FlutterError(code: "400", message: "Invalid instance identifier provided", details: nil))
                 }else{
                     let socketIndex = arguments["id"] as! Int
                     if (instances[socketIndex] != nil) {
-                        if((arguments["clear"] as! Bool?)!){
-                            for (_, adharaSocket) in instances {
-                                adharaSocket.socket.disconnect()
-                            }
-                            instances.removeAll()
-                        }else{
-                            instances[socketIndex]?.socket.disconnect()
-                            instances[socketIndex] = nil
-                        }
+                        instances[socketIndex]?.socket.disconnect()
+                        instances[socketIndex] = nil
                         result(nil)
                     } else {
                         result(FlutterError(code: "403", message: "Instance not found", details: nil))
