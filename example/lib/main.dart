@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
 
-const uri = 'http://192.168.0.105:7000/';
+const uri = 'http://192.168.0.105:7070/';
 
 class MyApp extends StatefulWidget {
   @override
@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> initSocket(String identifier) async {
     setState(() => _isProbablyConnected[identifier] = true);
     final socket = await manager.createInstance(SocketOptions(
-      //Socket IO server URI
+        //Socket IO server URI
         uri,
         namespace: (identifier == 'namespaced') ? '/adhara' : '/',
         //Query params - can be used for authentication
@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
           Transports.webSocket,
           // Transports.polling,
         ] //Enable required transport
-    ));
+        ));
     socket.onConnect.listen((data) {
       pPrint('$identifier | connected...');
       pPrint(data);
@@ -54,13 +54,28 @@ class _MyAppState extends State<MyApp> {
     socket.onConnectTimeout.listen(pPrint);
     socket.onError.listen(pPrint);
     socket.onDisconnect.listen(pPrint);
-    socket.on('type:string').listen((data) => pPrint('$identifier | type:string... | $data'));
-    socket.on('type:bool').listen((data) => pPrint('$identifier | type:bool | $data'));
-    socket.on('type:number').listen((data) => pPrint('$identifier | type:number | $data'));
-    socket.on('type:object').listen((data) => pPrint('$identifier | type:object | $data'));
-    socket.on('type:list').listen((data) => pPrint('$identifier | type:list | $data'));
+    socket
+        .on('type:string')
+        .listen((data) => pPrint('$identifier | type:string... | $data'));
+    socket
+        .on('type:bool')
+        .listen((data) => pPrint('$identifier | type:bool | $data'));
+    socket
+        .on('type:number')
+        .listen((data) => pPrint('$identifier | type:number | $data'));
+    socket
+        .on('type:object')
+        .listen((data) => pPrint('$identifier | type:object | $data'));
+    socket
+        .on('type:list')
+        .listen((data) => pPrint('$identifier | type:list | $data'));
     socket.on('message').listen(pPrint);
-    socket.on('echo').listen((data) => pPrint('$identifier | echo received | $data'));
+    socket
+        .on('echo')
+        .listen((data) => pPrint('$identifier | echo received | $data'));
+    socket
+        .on('namespace')
+        .listen((data) => pPrint('$identifier | namespace: | $data'));
     //TODO add stream subscription in example
     await socket.connect();
     sockets[identifier] = socket;
@@ -77,16 +92,14 @@ class _MyAppState extends State<MyApp> {
   void sendMessage(String identifier) {
     if (sockets[identifier] != null) {
       pPrint("sending message from '$identifier'...");
-      sockets[identifier].emit('message', [
+      sockets[identifier].emit('data', [
         'Hello world!',
         1908,
         {
           'wonder': 'Woman',
           'comics': ['DC', 'Marvel']
         },
-        {
-          'test': '=!./'
-        },
+        {'test': '=!./'},
         [
           "I'm glad",
           2019,
@@ -94,9 +107,7 @@ class _MyAppState extends State<MyApp> {
             'come back': 'Tony',
             'adhara means': ['base', 'foundation']
           },
-          {
-            'test': '=!./'
-          },
+          {'test': '=!./'},
         ]
       ]);
       pPrint("Message emitted from '$identifier'...");
@@ -106,13 +117,19 @@ class _MyAppState extends State<MyApp> {
   void sendEchoMessage(String identifier) {
     if (sockets[identifier] != null) {
       pPrint("$identifier | sending echo");
-      sockets[identifier].emit('echo', ['hello']);
+      sockets[identifier].emit('echo', [null]);
     }
   }
 
   void sendMessageWithACK(String identifier) {
     pPrint("$identifier | Sending ACK message...");
-    final msg = ['Hello world!', 1, true, {'p': 1}, [3, 'r']];
+    final msg = [
+      'Hello world!',
+      1,
+      true,
+      {'p': 1},
+      [3, 'r']
+    ];
     sockets[identifier].emitWithAck('ack-message', msg).then((data) {
       // this callback runs when this
       // specific message is acknowledged by the server
@@ -129,12 +146,9 @@ class _MyAppState extends State<MyApp> {
       toPrint.add(data?.toString());
     });
 
-    Future.delayed(Duration(milliseconds: 250), (){
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 200),
-        curve: Curves.easeInOut
-      );
+    Future.delayed(Duration(milliseconds: 250), () {
+      _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
     });
   }
 
@@ -160,32 +174,28 @@ class _MyAppState extends State<MyApp> {
                   onPressed: ipc ? () => sendMessage(identifier) : null,
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: const Text('Send Message'),
-                )
-            ),
+                )),
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 8),
-              child: RaisedButton(
-                onPressed: ipc ? () => sendEchoMessage(identifier) : null,
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: const Text('Send Echo Message'),
-              )
-            ),
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                child: RaisedButton(
+                  onPressed: ipc ? () => sendEchoMessage(identifier) : null,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: const Text('Send Echo Message'),
+                )),
             Container(
                 margin: const EdgeInsets.symmetric(horizontal: 8),
                 child: RaisedButton(
                   onPressed: ipc ? () => sendMessageWithACK(identifier) : null,
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: const Text('Send w/ ACK'), //Send message with ACK
-                )
-            ),
+                )),
             Container(
                 margin: const EdgeInsets.symmetric(horizontal: 8),
                 child: RaisedButton(
                   onPressed: ipc ? () => disconnect(identifier) : null,
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: const Text('Disconnect'),
-                )
-            ),
+                )),
           ],
         ),
       ),
@@ -193,8 +203,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      MaterialApp(
+  Widget build(BuildContext context) => MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
             textTheme: const TextTheme(
@@ -213,13 +222,11 @@ class _MyAppState extends State<MyApp> {
               headline1: TextStyle(color: Colors.white),
             ),
             buttonTheme: ButtonThemeData(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 24, horizontal: 12),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
                 disabledColor: Colors.lightBlueAccent.withOpacity(0.5),
                 buttonColor: Colors.lightBlue,
-                splashColor: Colors.cyan
-            )
-        ),
+                splashColor: Colors.cyan)),
         home: Scaffold(
           appBar: AppBar(
             title: const Text('Adhara Socket.IO example'),
@@ -233,32 +240,38 @@ class _MyAppState extends State<MyApp> {
               children: <Widget>[
                 Expanded(
                     child: Center(
-                      child: ListView(
-                        controller: _scrollController,
-                        children: toPrint.map((_) => Text(_ ?? '')).toList(),
-                      ),
-                    )
-                ),
+                  child: ListView(
+                    controller: _scrollController,
+                    children: toPrint.map((_) => Text(_ ?? '')).toList(),
+                  ),
+                )),
                 const Padding(
                   padding: EdgeInsets.only(left: 8, bottom: 8),
-                  child: Text('Default Connection',),
+                  child: Text(
+                    'Default Connection',
+                  ),
                 ),
                 getButtonSet('default'),
                 const Padding(
                   padding: EdgeInsets.only(left: 8, bottom: 8, top: 8),
-                  child: Text('Alternate Connection',),
+                  child: Text(
+                    'Alternate Connection',
+                  ),
                 ),
                 getButtonSet('alternate'),
                 const Padding(
                   padding: EdgeInsets.only(left: 8, bottom: 8, top: 8),
-                  child: Text('Namespace Connection',),
+                  child: Text(
+                    'Namespace Connection',
+                  ),
                 ),
                 getButtonSet('namespaced'),
-                const SizedBox(height: 12,)
+                const SizedBox(
+                  height: 12,
+                )
               ],
             ),
           ),
         ),
       );
-
 }
