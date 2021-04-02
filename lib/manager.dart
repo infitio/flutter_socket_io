@@ -23,6 +23,7 @@ class SocketIOManager {
 
   SocketIOManager._internal();
 
+  /// factory constructor that returns same instance of [SocketIOManager] always
   factory SocketIOManager() {
     return _manager;
   }
