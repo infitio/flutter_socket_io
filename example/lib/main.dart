@@ -71,9 +71,8 @@ class _MyAppState extends State<MyApp> {
         .on('type:list')
         .listen((data) => pPrint('$identifier | type:list | $data'));
     socket.on('message').listen(pPrint);
-    socket
-        .on('echo')
-        .listen((data) => pPrint('$identifier | echo received | ${data.length} | $data'));
+    socket.on('echo').listen((data) =>
+        pPrint('$identifier | echo received | ${data.length} | $data'));
     socket
         .on('namespace')
         .listen((data) => pPrint('$identifier | namespace: | $data'));
@@ -222,13 +221,12 @@ class _MyAppState extends State<MyApp> {
             elevation: 0,
             actions: [
               IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: (){
-                  setState((){
-                    toPrint = [];
-                  });
-                }
-              )
+                  icon: Icon(Icons.delete),
+                  onPressed: () {
+                    setState(() {
+                      toPrint = [];
+                    });
+                  })
             ],
           ),
           body: Container(

@@ -45,7 +45,7 @@ class SocketIO {
     _connectSyncCompleter = Completer();
     StreamSubscription onConnectSubscription;
     StreamSubscription onConnectErrorSubscription;
-    final cleanup = (){
+    final cleanup = () {
       onConnectSubscription.cancel();
       onConnectErrorSubscription.cancel();
       _connectSyncCompleter = null;
@@ -64,7 +64,7 @@ class SocketIO {
   /// Connect and ensure connection to server by listening to
   /// first connect event.
   Future<void> connectSync() {
-    if(_connectSyncCompleter == null){
+    if (_connectSyncCompleter == null) {
       _connectSync();
     }
     return _connectSyncCompleter.future;

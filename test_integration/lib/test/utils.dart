@@ -16,7 +16,8 @@ SocketOptions getSocketOptions(Map<String, dynamic> payload) {
 
 final _socketSubscriptions = <int, StreamSubscription>{};
 Future<SocketIO> createSocket(Map<String, dynamic> payload) async {
-  final socket = await SocketIOManager().createInstance(getSocketOptions(payload));
+  final socket =
+      await SocketIOManager().createInstance(getSocketOptions(payload));
   final errorListener = socket.onError.listen((args) {
     print('error event received $args');
   });
