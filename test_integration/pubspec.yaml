@@ -7,10 +7,12 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
   adhara_socket_io:
     path: ../
+  adhara_socket_io_example:
+    path: ../example
+  flutter:
+    sdk: flutter
 
 dev_dependencies:
   flutter_driver:

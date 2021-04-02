@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:adhara_socket_io/adhara_socket_io.dart';
 import 'package:flutter/material.dart';
+import 'data.dart';
 
 void main() => runApp(MyApp());
 
@@ -72,7 +73,7 @@ class _MyAppState extends State<MyApp> {
     socket.on('message').listen(pPrint);
     socket
         .on('echo')
-        .listen((data) => pPrint('$identifier | echo received | $data'));
+        .listen((data) => pPrint('$identifier | echo received | ${data.length} | $data'));
     socket
         .on('namespace')
         .listen((data) => pPrint('$identifier | namespace: | $data'));
@@ -92,32 +93,19 @@ class _MyAppState extends State<MyApp> {
   void sendMessage(String identifier) {
     if (sockets[identifier] != null) {
       pPrint("sending message from '$identifier'...");
-      sockets[identifier].emit('data', [
-        'Hello world!',
-        1908,
-        {
-          'wonder': 'Woman',
-          'comics': ['DC', 'Marvel']
-        },
-        {'test': '=!./'},
-        [
-          "I'm glad",
-          2019,
-          {
-            'come back': 'Tony',
-            'adhara means': ['base', 'foundation']
-          },
-          {'test': '=!./'},
-        ]
-      ]);
+      sockets[identifier].emit('data', messagesToPublish);
       pPrint("Message emitted from '$identifier'...");
     }
   }
 
-  void sendEchoMessage(String identifier) {
+  void sendEchoMessage(String identifier) async {
     if (sockets[identifier] != null) {
-      pPrint("$identifier | sending echo");
-      sockets[identifier].emit('echo', [null]);
+      for (final message in messagesToPublish) {
+        pPrint("publishing echo message $message");
+        await sockets[identifier].emit('echo', [message]);
+      }
+      print("publishing echo message ${messagesToPublish.last}");
+      await sockets[identifier].emit('echo', messagesToPublish.last as List);
     }
   }
 
@@ -232,6 +220,16 @@ class _MyAppState extends State<MyApp> {
             title: const Text('Adhara Socket.IO example'),
             backgroundColor: Colors.black,
             elevation: 0,
+            actions: [
+              IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: (){
+                  setState((){
+                    toPrint = [];
+                  });
+                }
+              )
+            ],
           ),
           body: Container(
             color: Colors.black,
