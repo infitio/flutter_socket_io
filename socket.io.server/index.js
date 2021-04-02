@@ -1,21 +1,24 @@
 var fs = require('fs');
 
 function handler (req, res) {
-  fs.readFile(__dirname + '/index.html',
-  function (err, data) {
-    if (err) {
-      res.writeHead(500);
-      return res.end('Error loading index.html');
-    }
-    res.writeHead(200);
-    res.end(data);
-  });
+console.log("req.url", req.url);
+  fs.readFile(
+      __dirname + ((req.url == '/') ? '/index.html' : req.url),
+      function (err, data) {
+        if (err) {
+          res.writeHead(500);
+          return res.end('Error loading index.html');
+        }
+        res.writeHead(200);
+        res.end(data);
+      }
+  );
 }
 
 var app = require('http').createServer(handler);
 var io = require('socket.io')(app);
-console.log("listening on 7000...");
-app.listen(7000, '0.0.0.0');
+console.log("listening on 7070...");
+app.listen(7070, '0.0.0.0');
 
 var socketId = 0;
 var counters = {};
@@ -39,10 +42,9 @@ function listenToASocket(socket, namespace){
     socket.emit('type:number', 123);
     socket.emit('type:object', { hello: 'world' });
     socket.emit('type:list', ["hello", 123, {"key": "value"}]);
-
     socket.on("data", function(){
         let args = Array.prototype.slice.call(arguments);
-        console.log(`data event received: ${args}`);
+        console.log(`data event received with ${args.length} args: ${args.map(_ => arg+' is '+(typeof arg))}`);
     });
     socket.on("echo", function(){  //`arguments` can be extracted only if this is an anonymous function and not an arrow => syntax
         let args = Array.prototype.slice.call(arguments);
