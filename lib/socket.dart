@@ -39,6 +39,37 @@ class SocketIO {
     });
   }
 
+  Completer _connectSyncCompleter;
+
+  Future<void> _connectSync() async {
+    _connectSyncCompleter = Completer();
+    StreamSubscription onConnectSubscription;
+    StreamSubscription onConnectErrorSubscription;
+    final cleanup = (){
+      onConnectSubscription.cancel();
+      onConnectErrorSubscription.cancel();
+      _connectSyncCompleter = null;
+    };
+    onConnectSubscription = onConnect.listen((args) {
+      _connectSyncCompleter.complete();
+      cleanup();
+    });
+    onConnectErrorSubscription = onConnect.listen((args) {
+      _connectSyncCompleter.completeError(args);
+      cleanup();
+    });
+    await connect();
+  }
+
+  /// Connect and ensure connection to server by listening to
+  /// first connect event.
+  Future<void> connectSync() {
+    if(_connectSyncCompleter == null){
+      _connectSync();
+    }
+    return _connectSyncCompleter.future;
+  }
+
   ///connect this socket to server
   Future<void> connect() => _channel.invokeMethod<void>(PlatformMethod.connect);
 
