@@ -6,8 +6,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.infitio.adharasocketio.generated.PlatformConstants;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -53,7 +51,7 @@ class AdharaSocket implements MethodCallHandler {
   }
 
   static AdharaSocket getInstance(Registrar registrar, Options options) throws URISyntaxException {
-    final MethodChannel channel = new MethodChannel(registrar.messenger(), "adhara_socket_io:socket:" + String.valueOf(options.index));
+    final MethodChannel channel = new MethodChannel(registrar.messenger(), PlatformConstants.MethodChannelNames.socketMethodChannel + String.valueOf(options.index));
     // we create new manager instance every time here
     // because manager cannot update the uri
     AdharaSocket.manager = new Manager(new URI(options.uri), options);
@@ -85,7 +83,7 @@ class AdharaSocket implements MethodCallHandler {
 
     @Override
     public void error(
-      final String errorCode, final String errorMessage, final Object errorDetails) {
+        final String errorCode, final String errorMessage, final Object errorDetails) {
       handler.post(new Runnable() {
         @Override
         public void run() {
@@ -110,7 +108,7 @@ class AdharaSocket implements MethodCallHandler {
     MethodChannel.Result result = new MethodResultWrapper(rawResult);
     switch (call.method) {
       case PlatformConstants.PlatformMethod.connect: {
-        log("Connecting to socket "+this.options.uri);
+        log("Connecting to socket " + this.options.uri);
         socket.connect();
         result.success(null);
         break;

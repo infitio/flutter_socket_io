@@ -1,8 +1,12 @@
 String $(Map<String, dynamic> c) => '''
-package com.infitio.adharasocketio.generated;
+package com.infitio.adharasocketio;
 
 
 final public class PlatformConstants {
+
+\tstatic final public class MethodChannelNames {
+\t\t${c['channels'].map((_) => 'public static final String ${_['name']} = "${_['value']}";').join('\n\t\t')}
+\t}
 
 \tstatic final public class CodecTypes {
 \t\t${c['types'].map((_) => 'public static final byte ${_['name']} = (byte) ${_['value']};').join('\n\t\t')}

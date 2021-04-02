@@ -3,10 +3,16 @@
 // source file can be found at bin/templates'
 //
 
-package com.infitio.adharasocketio.generated;
+package com.infitio.adharasocketio;
 
 
 final public class PlatformConstants {
+
+    static final public class MethodChannelNames {
+        public static final String managerMethodChannel = "adhara_socket_io";
+        public static final String socketMethodChannel = "adhara_socket_io:socket:";
+        public static final String streamsChannel = "adhara_socket_io:event_streams";
+    }
 
     static final public class CodecTypes {
         public static final byte type1 = (byte) 128;

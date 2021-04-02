@@ -2,9 +2,8 @@ import 'dart:io';
 
 import 'codegencontext.dart' show context;
 import 'templates/platformconstants.dart.dart' as dart_template;
-import 'templates/platformconstants.h.dart' as objc_header_template;
 import 'templates/platformconstants.java.dart' as java_template;
-import 'templates/platformconstants.m.dart' as objc_impl_template;
+import 'templates/platformconstants.swift.dart' as swift_template;
 
 typedef Template = String Function(Map<String, dynamic> context);
 
@@ -14,11 +13,9 @@ Map<Template, String> toGenerate = {
   // input template method vs output file path
   dart_template.$: '${projectRoot}lib/generated/platform_constants.dart',
   java_template.$:
-      '${projectRoot}android/src/main/java/com/infitio/adharasocketio/generated/PlatformConstants.java',
-  objc_header_template.$:
-      '${projectRoot}ios/Classes/codec/AdharaSocketIoPlatformConstants.h',
-  objc_impl_template.$:
-      '${projectRoot}ios/Classes/codec/AdharaSocketIoPlatformConstants.m',
+      '${projectRoot}android/src/main/java/com/infitio/adharasocketio/PlatformConstants.java',
+  swift_template.$:
+      '${projectRoot}ios/Classes/codec/AdharaSocketIoPlatformConstants.swift',
 };
 
 void main() {

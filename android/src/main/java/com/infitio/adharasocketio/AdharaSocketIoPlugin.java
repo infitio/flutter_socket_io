@@ -5,8 +5,6 @@ import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
 
-import com.infitio.adharasocketio.generated.PlatformConstants;
-
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
@@ -45,9 +43,9 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
   }
 
   public static void registerWith(Registrar registrar) {
-    final StreamsChannel streamsChannel = new StreamsChannel(registrar.messenger(), "adhara_socket_io:event_streams");
+    final StreamsChannel streamsChannel = new StreamsChannel(registrar.messenger(), PlatformConstants.MethodChannelNames.streamsChannel);
     final AdharaSocketIoPlugin plugin = new AdharaSocketIoPlugin(registrar, streamsChannel);
-    final MethodChannel channel = new MethodChannel(registrar.messenger(), "adhara_socket_io");
+    final MethodChannel channel = new MethodChannel(registrar.messenger(), PlatformConstants.MethodChannelNames.managerMethodChannel);
     channel.setMethodCallHandler(plugin);
   }
 

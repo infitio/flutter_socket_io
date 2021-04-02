@@ -4,6 +4,10 @@ String getPrefix(Object str) =>
 String $(Map<String, dynamic> c) => '''
 // ignore_for_file: public_member_api_docs
 
+class MethodChannelNames {
+${c['channels'].map((_) => "  static const String ${_['name']} =${getPrefix(_['value'])}'${_['value']}';").join('\n')}
+}
+
 class CodecTypes {
 ${c['types'].map((_) => "  static const int ${_['name']} ="
         " ${_['value']};").join('\n')}
