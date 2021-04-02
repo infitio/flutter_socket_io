@@ -32,7 +32,8 @@ function listenToASocket(socket, namespace) {
     namespace: ${namespace ? namespace : "-NA-"}
     timestamp: ${socket.handshake.query.timestamp}
     transport: ${socket.conn.transport.name}
-    total active sockets: ${_sockets.size}`
+    total active sockets: ${_sockets.size}
+    \x1b[43m\x1b[30m ${new Date()} \x1b[0m`
   );
 
   socket.emit("namespace", !!namespace);
@@ -45,12 +46,13 @@ function listenToASocket(socket, namespace) {
     let args = Array.prototype.slice.call(arguments);
     console.log(
       `data event received with ${args.length} args: ${args.map(
-        (_) => arg + " is " + typeof arg
+        (arg) => arg + " is " + typeof arg
       )}`
     );
   });
   socket.on("echo", function () {
     //`arguments` can be extracted only if this is an anonymous function and not an arrow => syntax
+    console.log(">>>arguments ", arguments);
     let args = Array.prototype.slice.call(arguments);
     console.log(`echo event received with ${args.length} args: ${args}`);
     args.unshift("echo");
@@ -78,7 +80,8 @@ function listenToASocket(socket, namespace) {
     console.log(
       `\x1b[31m✘✘✘\x1b[0m Socket disconnected with socketId ${_currentSocketId}
     transport: ${socket.conn.transport.name},
-    total active sockets: ${_sockets.size}`
+    total active sockets: ${_sockets.size}
+    \x1b[43m\x1b[30m ${new Date()} \x1b[0m`
     );
   });
 }
