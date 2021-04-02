@@ -8,13 +8,13 @@ Future<Map<String, dynamic>> publishWithACKTest({
   Reporter reporter,
   Map<String, dynamic> payload,
 }) async {
-  final manager = SocketIOManager();
-  final socket = await manager.createInstance(getSocketOptions(payload));
+  // creating socket
+  final socket = await createSocket(payload);
 
   // connect
-  await socket.connect();
-  final messages = [];
+  await socket.connectSync();
 
+  final messages = [];
   for (final message in messagesToPublish) {
     print('emitting ack msg loop');
     final messageAck = await socket.emitWithAck('ack-message', [message]);
@@ -29,7 +29,8 @@ Future<Map<String, dynamic>> publishWithACKTest({
   print('ack recd: $ack_message');
   messages.add(ack_message);
 
-  await manager.clearInstance(socket);
+  // disposing socket
+  await disposeSocket(socket);
 
   return {'id': socket.id, 'messages': messages};
 }

@@ -6,11 +6,11 @@ import 'utils.dart';
 
 Future<Map<String, dynamic>> publishTest(
     {Reporter reporter, Map<String, dynamic> payload}) async {
-  final manager = SocketIOManager();
-  final socket = await manager.createInstance(getSocketOptions(payload));
+  // creating socket
+  final socket = await createSocket(payload);
 
   // connect
-  await socket.connect();
+  await socket.connectSync();
 
   var counter = 0;
   for (final message in messagesToPublish) {
@@ -18,7 +18,8 @@ Future<Map<String, dynamic>> publishTest(
     counter++;
   }
 
-  await manager.clearInstance(socket);
+  // disposing socket
+  await disposeSocket(socket);
 
   return {'id': socket.id, 'counter': counter};
 }

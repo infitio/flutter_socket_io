@@ -7,10 +7,14 @@ Future<Map<String, dynamic>> basicTest({
   Reporter reporter,
   Map<String, dynamic> payload,
 }) async {
-  final manager = SocketIOManager();
-  final socket = await manager.createInstance(getSocketOptions(payload));
-  await socket.connect();
-  await manager.clearInstance(socket);
+  // creating socket
+  final socket = await createSocket(payload);
+
+  // connect
+  await socket.connectSync();
+
+  // disposing socket
+  await disposeSocket(socket);
 
   return {
     'id': socket.id,
@@ -21,8 +25,9 @@ Future<Map<String, dynamic>> listenTest({
   Reporter reporter,
   Map<String, dynamic> payload,
 }) async {
-  final manager = SocketIOManager();
-  final socket = await manager.createInstance(getSocketOptions(payload));
+  // creating socket
+  final socket = await createSocket(payload);
+
   final messages = {};
   final subscriptions = [
     socket.on('namespace').listen((args) => messages['namespace'] = args[0]),
@@ -40,11 +45,10 @@ Future<Map<String, dynamic>> listenTest({
   ];
 
   // connect
-  await socket.connect();
+  await socket.connectSync();
 
-  // waiting and disconnecting
-  await Future.delayed(const Duration(seconds: 2));
-  await manager.clearInstance(socket);
+  // disposing socket
+  await disposeSocket(socket);
 
   // attributing to the async delays from stream channel
   // waiting to receive events, and then cancelling subscription

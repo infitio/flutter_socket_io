@@ -18,7 +18,7 @@ void main() {
     // Connect to the Flutter driver before running any tests.
     setUpAll(() async {
       driver = await FlutterDriver.connect();
-      socketURL = 'http://${await getIP()}:7000/';
+      socketURL = 'http://${await getIP()}:7070/';
       print('socketURL: $socketURL');
     });
 
@@ -46,6 +46,7 @@ void main() {
         'options': {'url': socketURL}
       }),
     );
+
     test(
       'events test',
       () => runEventsTest(driver, {
@@ -59,7 +60,6 @@ void main() {
         'options': {'url': socketURL}
       }),
     );
-
     test(
       'echo test',
       () => runEchoTest(driver, {
