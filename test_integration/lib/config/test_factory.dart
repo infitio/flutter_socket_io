@@ -1,11 +1,10 @@
+import '../factory/reporter.dart';
 import '../test/basic_test.dart';
 import '../test/echo_test.dart';
 import '../test/events_test.dart';
 import '../test/publish_test.dart';
 import '../test/publish_with_ack_test.dart';
-import '../test_dispatcher.dart';
 import 'test_names.dart';
-import '../factory/reporter.dart';
 
 typedef TestFactory = Future<Map<String, dynamic>> Function({
   Reporter reporter,

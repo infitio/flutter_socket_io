@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert' show jsonDecode;
 
 import 'package:flutter/services.dart';
-import 'streams_channel.dart';
 
 import 'generated/platform_constants.dart';
 import 'manager.dart';
+import 'streams_channel.dart';
 
 /// A socket instance internally used by the [SocketIOManager]
 class SocketIO {
@@ -45,11 +45,12 @@ class SocketIO {
     _connectSyncCompleter = Completer();
     StreamSubscription onConnectSubscription;
     StreamSubscription onConnectErrorSubscription;
-    final cleanup = () {
+    void cleanup() {
       onConnectSubscription.cancel();
       onConnectErrorSubscription.cancel();
       _connectSyncCompleter = null;
-    };
+    }
+
     onConnectSubscription = onConnect.listen((args) {
       _connectSyncCompleter.complete();
       cleanup();
@@ -87,9 +88,7 @@ class SocketIO {
       _streamsChannel.receiveBroadcastStream(<String, dynamic>{
         'id': id,
         'eventName': eventName,
-      }).map((arguments) {
-        return arguments.map(_decodeArgument).toList();
-      });
+      }).map((arguments) => arguments.map(_decodeArgument).toList());
 
   ///send data to socket server
   Future<void> emit(String eventName, List<dynamic> arguments) async {

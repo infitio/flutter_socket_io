@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:adhara_socket_io/adhara_socket_io.dart';
 import 'package:flutter/material.dart';
+
 import 'data.dart';
 
 void main() => runApp(MyApp());
@@ -97,19 +98,19 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void sendEchoMessage(String identifier) async {
+  Future<void> sendEchoMessage(String identifier) async {
     if (sockets[identifier] != null) {
       for (final message in messagesToPublish) {
-        pPrint("publishing echo message $message");
+        pPrint('publishing echo message $message');
         await sockets[identifier].emit('echo', [message]);
       }
-      print("publishing echo message ${messagesToPublish.last}");
+      pPrint('publishing echo message ${messagesToPublish.last}');
       await sockets[identifier].emit('echo', messagesToPublish.last as List);
     }
   }
 
   void sendMessageWithACK(String identifier) {
-    pPrint("$identifier | Sending ACK message...");
+    pPrint('$identifier | Sending ACK message...');
     final msg = [
       'Hello world!',
       1,
@@ -120,7 +121,7 @@ class _MyAppState extends State<MyApp> {
     sockets[identifier].emitWithAck('ack-message', msg).then((data) {
       // this callback runs when this
       // specific message is acknowledged by the server
-      pPrint("$identifier | ACK received | $msg -> $data");
+      pPrint('$identifier | ACK received | $msg -> $data');
     });
   }
 
@@ -133,9 +134,9 @@ class _MyAppState extends State<MyApp> {
       toPrint.add(data?.toString());
     });
 
-    Future.delayed(Duration(milliseconds: 250), () {
+    Future.delayed(const Duration(milliseconds: 250), () {
       _scrollController.animateTo(_scrollController.position.maxScrollExtent,
-          duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
+          duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
     });
   }
 
@@ -149,38 +150,58 @@ class _MyAppState extends State<MyApp> {
           children: <Widget>[
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 8),
-              child: RaisedButton(
+              child: ElevatedButton(
                 onPressed: ipc ? null : () => initSocket(identifier),
-                padding: const EdgeInsets.symmetric(horizontal: 8),
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.resolveWith(
+                    (states) => const EdgeInsets.symmetric(horizontal: 8),
+                  ),
+                ),
                 child: const Text('Connect'),
               ),
             ),
             Container(
                 margin: const EdgeInsets.symmetric(horizontal: 8),
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: ipc ? () => sendMessage(identifier) : null,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.resolveWith(
+                      (states) => const EdgeInsets.symmetric(horizontal: 8),
+                    ),
+                  ),
                   child: const Text('Send Message'),
                 )),
             Container(
                 margin: const EdgeInsets.symmetric(horizontal: 8),
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: ipc ? () => sendEchoMessage(identifier) : null,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.resolveWith(
+                      (states) => const EdgeInsets.symmetric(horizontal: 8),
+                    ),
+                  ),
                   child: const Text('Send Echo Message'),
                 )),
             Container(
                 margin: const EdgeInsets.symmetric(horizontal: 8),
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: ipc ? () => sendMessageWithACK(identifier) : null,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.resolveWith(
+                      (states) => const EdgeInsets.symmetric(horizontal: 8),
+                    ),
+                  ),
                   child: const Text('Send w/ ACK'), //Send message with ACK
                 )),
             Container(
                 margin: const EdgeInsets.symmetric(horizontal: 8),
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: ipc ? () => disconnect(identifier) : null,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.resolveWith(
+                      (states) => const EdgeInsets.symmetric(horizontal: 8),
+                    ),
+                  ),
                   child: const Text('Disconnect'),
                 )),
           ],
@@ -221,7 +242,7 @@ class _MyAppState extends State<MyApp> {
             elevation: 0,
             actions: [
               IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: const Icon(Icons.delete),
                   onPressed: () {
                     setState(() {
                       toPrint = [];

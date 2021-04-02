@@ -1,6 +1,6 @@
+import 'package:adhara_socket_io_example/data.dart';
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
-import 'package:test_integration/config/data.dart';
 import 'package:test_integration/driver_data_handler.dart';
 
 export 'package:test_integration/config/test_names.dart';

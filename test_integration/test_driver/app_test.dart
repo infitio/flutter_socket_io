@@ -1,8 +1,6 @@
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
-import 'package:test_integration/config/data.dart';
-import 'package:test_integration/driver_data_handler.dart';
 
 import 'runner.dart';
 import 'utils.dart';

@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 
+import 'generated/platform_constants.dart';
 import 'options.dart';
 import 'socket.dart';
 import 'streams_channel.dart';
-import 'generated/platform_constants.dart';
 
 // Indicates whether platform side should release existing connections
 //
@@ -24,9 +24,7 @@ class SocketIOManager {
   SocketIOManager._internal();
 
   /// factory constructor that returns same instance of [SocketIOManager] always
-  factory SocketIOManager() {
-    return _manager;
-  }
+  factory SocketIOManager() => _manager;
 
   static const MethodChannel _channel = MethodChannel(
     MethodChannelNames.managerMethodChannel,

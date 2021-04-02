@@ -1,5 +1,3 @@
-import 'package:adhara_socket_io/adhara_socket_io.dart';
-
 import '../factory/reporter.dart';
 import 'utils.dart';
 
@@ -25,7 +23,9 @@ Future<Map<String, dynamic>> eventsTest(
     // socket.onReconnecting.listen((args) => events.add('reconnecting')),
     // socket.onReconnect.listen((args) => events.add('reconnect')),
     // socket.onReconnectError.listen((args) => events.add('reconnect_error')),
-    // socket.onReconnectFailed.listen((args) => events.add('reconnect_failed')),
+    // socket.onReconnectFailed.listen((args) => events.add(
+    //   'reconnect_failed',
+    // )),
     // socket.onPing.listen((args) => events.add('ping')),
     // socket.onPong.listen((args) => events.add('pong')),
   ];

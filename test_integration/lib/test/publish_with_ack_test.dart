@@ -1,5 +1,4 @@
-import 'package:adhara_socket_io/adhara_socket_io.dart';
-import 'package:test_integration/config/data.dart';
+import 'package:adhara_socket_io_example/data.dart';
 
 import '../factory/reporter.dart';
 import 'utils.dart';
@@ -22,12 +21,12 @@ Future<Map<String, dynamic>> publishWithACKTest({
     messages.add(messageAck);
   }
   print('emitting last ack msg');
-  final ack_message = await socket.emitWithAck(
+  final ackMessage = await socket.emitWithAck(
     'ack-message',
     messagesToPublish.last as List,
   );
-  print('ack recd: $ack_message');
-  messages.add(ack_message);
+  print('ack recd: $ackMessage');
+  messages.add(ackMessage);
 
   // disposing socket
   await disposeSocket(socket);

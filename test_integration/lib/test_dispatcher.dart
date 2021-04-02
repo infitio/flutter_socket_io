@@ -196,8 +196,8 @@ class _TestDispatcherState extends State<TestDispatcher> {
               child: Text(
                 _reporters.isEmpty
                     ? '-'
-                    : 'running ${_reporters.length} tests'
-                        ': ${_reporters.keys.toList().toString()}',
+                    : 'running ${_reporters.length} tests:'
+                        ' ${_reporters.keys.toList().toString()}',
               ),
             ),
             Expanded(

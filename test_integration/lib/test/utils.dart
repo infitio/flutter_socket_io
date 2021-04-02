@@ -1,5 +1,6 @@
-import 'package:adhara_socket_io/adhara_socket_io.dart';
 import 'dart:async';
+
+import 'package:adhara_socket_io/adhara_socket_io.dart';
 
 SocketOptions getSocketOptions(Map<String, dynamic> payload) {
   final _options = Map.castFrom<dynamic, dynamic, String, dynamic>(
@@ -18,6 +19,7 @@ final _socketSubscriptions = <int, StreamSubscription>{};
 Future<SocketIO> createSocket(Map<String, dynamic> payload) async {
   final socket =
       await SocketIOManager().createInstance(getSocketOptions(payload));
+  // ignore: cancel_subscriptions
   final errorListener = socket.onError.listen((args) {
     print('error event received $args');
   });

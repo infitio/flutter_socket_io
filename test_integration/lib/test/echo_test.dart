@@ -1,5 +1,4 @@
-import 'package:adhara_socket_io/adhara_socket_io.dart';
-import 'package:test_integration/config/data.dart';
+import 'package:adhara_socket_io_example/data.dart';
 
 import '../factory/reporter.dart';
 import 'utils.dart';
@@ -12,9 +11,6 @@ Future<Map<String, dynamic>> echoTest({
   final socket = await createSocket(payload);
 
   final messages = <Object>[];
-  final errorListener = socket.onError.listen((args) {
-    print('error event received $args');
-  });
 
   await socket.connectSync();
   final subscription = socket.on('echo').listen(messages.add);
