@@ -3,6 +3,8 @@ import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 import 'package:test_integration/driver_data_handler.dart';
 
+import 'utils.dart';
+
 export 'package:test_integration/config/test_names.dart';
 
 Future runBasicTest(FlutterDriver driver, Map<String, dynamic> data) async {
@@ -88,11 +90,13 @@ Future runEchoTest(FlutterDriver driver, Map<String, dynamic> data) async {
 
   final messages = response.payload['messages'] as List;
   expect(response.payload['id'], isA<int>());
-  expect(messages.length, messagesToPublish.length + 1);
-  for (var i = 0; i < messagesToPublish.length; i++) {
-    expect(messages[i], equals([messagesToPublish[i]]));
-  }
-  expect(messages.last, equals(messagesToPublish.last));
+  matchMessages(
+    [
+      ...messagesToPublish.map((e) => [e]),
+      messagesToPublish.last,
+    ],
+    messages,
+  );
 }
 
 Future runPublishWithACKTest(
@@ -108,9 +112,11 @@ Future runPublishWithACKTest(
 
   final messages = response.payload['messages'] as List;
   expect(response.payload['id'], isA<int>());
-  expect(messages.length, messagesToPublish.length + 1);
-  for (var i = 0; i < messagesToPublish.length; i++) {
-    expect(messages[i], equals([messagesToPublish[i]]));
-  }
-  expect(messages.last, equals(messagesToPublish.last));
+  matchMessages(
+    [
+      ...messagesToPublish.map((e) => [e]),
+      messagesToPublish.last,
+    ],
+    messages,
+  );
 }
