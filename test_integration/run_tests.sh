@@ -3,13 +3,12 @@ set -e
 # setup server
 cd socket.io.server
 npm i
-cd ..
+./node_modules/.bin/pm2 start index.js
 
-socket.io.server/node_modules/.bin/pm2 start socket.io.server/index.js
-
+cd ../test_integration
 
 # run tests
-flutter drive test_driver/app.dart
+flutter drive
 
 # Kill server
-socket.io.server/node_modules/.bin/pm2 kill
+./../socket.io.server/node_modules/.bin/pm2 kill
