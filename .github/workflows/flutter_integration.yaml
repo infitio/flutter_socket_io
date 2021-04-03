@@ -8,11 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "checking available network interfaces"
-          ifconfig
-          echo "checking local addresses"
-          ifconfig | grep 192.
-          ifconfig | grep 10.
+          sh bin/check.sh
       - name: Checkout
         uses: actions/checkout@v2
       - uses: subosito/flutter-action@v1
@@ -64,7 +60,7 @@ jobs:
         timeout-minutes: 15
         run: |
           flutter pub get
-          sh test_integration/run_tests.sh
+          sh bin/run_tests.sh
 
   android:
     needs: flutter
@@ -100,4 +96,4 @@ jobs:
           script: |
             /Users/runner/Library/Android/sdk/tools/bin/avdmanager list
             flutter pub get
-            sh test_integration/run_tests.sh
+            sh bin/run_tests.sh
