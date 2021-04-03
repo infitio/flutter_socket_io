@@ -7,7 +7,12 @@ jobs:
   flutter:
     runs-on: ubuntu-latest
     steps:
-
+      - run: |
+          echo "checking available network interfaces"
+          ifconfig
+          echo "checking local addresses"
+          ifconfig | grep 192.
+          ifconfig | grep 10.
       - name: Checkout
         uses: actions/checkout@v2
       - uses: subosito/flutter-action@v1
@@ -30,6 +35,12 @@ jobs:
       fail-fast: false
     runs-on: 'macos-latest'
     steps:
+      - run: |
+          echo "checking available network interfaces"
+          ifconfig
+          echo "checking local addresses"
+          ifconfig | grep 192.
+          ifconfig | grep 10.
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
@@ -65,6 +76,12 @@ jobs:
     # ubuntu-latest cannot be used as it is only a docker container, and unfortunately running
     #  hardware acceleration in container is not allowed by android emulator
     steps:
+      - run: |
+          echo "checking available network interfaces"
+          ifconfig
+          echo "checking local addresses"
+          ifconfig | grep 192.
+          ifconfig | grep 10.
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
