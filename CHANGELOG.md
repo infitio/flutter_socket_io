@@ -1,3 +1,32 @@
+## 1.0.0 - 3rd Apr, 2020
+
+#### Breaking changes
+
+* event listeners don't use callbacks anymore
+* new syntax for listening to events:
+```dart
+final listener = socket.on('event-name').listen((data) => print(data));
+```
+
+* to cancel listening:
+```dart
+await listener.cancel();
+```
+
+##### Other major enhancements:
+
+* Clear existing connections on hot-resart
+* A new API is introduced: `await socket.connectSync()` will wait until a `connected`, or `conenctError` event is recieved and will accordingly resolve, or throw error.
+
+##### Maintenance upgrades:
+
+* Introducing codegen to generate constants for java, swift and dart to help reduce errors
+* Add code linting rules to improvise flutter's auto formatting and code-readability
+* Add integration tests
+* Use Github Actions to
+	* run lint checks
+    * run integration tests on both Android and iOS emulators
+
 ## 0.4.2+1 - 27th May, 2020
 
 * Fix for pub.dev to display support for iOS too. [See more](https://github.com/infitio/flutter_socket_io/pull/120#discussion_r429587289)

@@ -1,66 +1,103 @@
 # adhara_socket_io
 
-socket.io for flutter by adhara
+[socket.io](https://socket.io/) for flutter by [adhara](https://github.com/infitio/)
 
 supports both Android and iOS
 
 
 Usage:
 
-See `example/lib/main.dart` for better example
+> See `example/lib/main.dart` for more detailed example
 
 ```dart
-	Future<void> socketConfig() async {
-		SocketIOManager manager = SocketIOManager();
-		SocketIO socket = await manager.createInstance('http://192.168.1.2:7000/');       //TODO change the port  accordingly
-		socket.onConnect((data){
-		  print("connected...");
-		  print(data);
-		  socket.emit("message", ["Hello world!"]);
+	final SOCKET_SERVER = 'http://192.168.1.2:7070/';	//To be modified accordingly
+    SocketIO socket;
+	StreamSubscription connectSubscription;
+	StreamSubscription echoSubscription;
+
+	Future<void> demonstrateSocket() async {
+    	// Create a socket instance
+		socket = await SocketIOManager().createInstance(
+        	SocketOptions(SOCKET_SERVER),
+        );
+
+		// Listen to a socket event
+		subscription = socket.onConnect.listen((data){   //listen to socket connect event
+		  print('connected: $data');
+		  socket.emit('message', ['Hello world!']);
 		});
-		socket.on("news", (data){   //sample event
-		  print("news");
-		  print(data);
+
+        // Listen to an custom event
+		echoSubscription = socket.on('echo', (data){   //listen to 'news' event
+		  print("news event recieved with data: $data");
 		});
-		socket.connect();
-		///disconnect using
-		///manager.
+
+        // connect to socket server - will initialize connection,
+        //  but not ensure the connection yet.
+        //  If this method used to connect to server, then emit events should be sent
+        //  only after ensuring connection to socket server is successful by listening
+        //  to onConnect events
+		// await socket.connect();
+
+        // This API will ensure connection to server is successful
+        //  or will throw error on connect error
+        await socket.connectSync();
+
+        // publish data - will publish to server, won't ensure the delivery
+		await socket.emit('echo', ['hello']);
+
+        // emit with acknowledgement - will publish to server
+        //  and ensure delivery with ack if ack is implemented in server
+        dynamic ackData = await socket.emitWithAck('echo', ['hello']);
+        print('acknowledgement recieved from server: $ackData');
 	}
 
-	socketConfig();
+    Future<void> dispose() async {
+    	// cancel echo and onConnect subscriptions
+	    await echoSubscription.cancel();
+	    await connectSubscription.cancel();
+
+        // clear socket instance from manager
+    	await SocketIOManager().clearInstance(socket);
+    }
+
+	// register liteners, connect to a socket, and publish data
+	demonstrateSocket();
+
+    // will dispose listeners and socket
+    dispose();
 ```
 
-To request callback on ack:
-```dart
-  socket.emitWithAck("message", ["Hello world!"]).then( (data) {
-    // this callback runs when this specific message is acknowledged by the server
-    print(data);
-  });
-```
 
 ## Running example:
 
 
-1. Open `example/ios` in XCode or `example/android` in android studio. Build the code once (`cd example` & `flutter build apk` | `flutter build ios --no-codesign`)
-2. cd `example/socket.io.server`
-
-	1 run `npm i`
-
-	2 run `npm start`
+1. clone the project
+2. start socket server in the background
+```bash
+cd socket.io.server
+npm i
+./node_modules/.bin/pm2/ index.js
+cd ../
+```
 
 3. open `example/lib/main.dart` and edit the `URI` in #7 to point to your hosted/local socket server instances as mentioned step 2
-    
+
     For example:
-        
+
     ```dart
     const String URI = "http://192.168.1.2:7000/";
     ```
-        
+
     ```dart
     const String URI = "http://mysite.com/";
     ```
-    
-4. run Android/iOS app
+
+3. run example
+```
+cd example
+flutter run
+```
 
 ## iOS support 📢📢
 This project uses Swift for iOS support, please enable Swift support for your project for this plugin to work
@@ -71,7 +108,7 @@ This project uses Swift for iOS support, please enable Swift support for your pr
 Configure `android:usesCleartextTraffic="true"` as a property of `<application ...>` tag in `android/app/src/main/AndroidManifest.xml`
 
 For example:
-    
+
 ```xml
 
 <application
@@ -81,10 +118,19 @@ For example:
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"...>...</activity>
-
+        ...
+</application>
 ```
 
 [Refer to discussion here](https://github.com/infitio/flutter_socket_io/issues/42)
+
+## Running tests
+
+This plugin uses flutter driver to run integration tests tests. Use below command to run integration tests on Android/iOS
+
+```bash
+sh bin/run_tests.sh
+```
 
 ## Sample Video - Running the example
 
@@ -97,7 +143,7 @@ For example:
 add `use_frameworks!` to your Podfile as in the example
 https://github.com/infitio/flutter_socket_io/blob/master/example/ios/Podfile#L30
 
-[Read more about this discussion](https://github.com/infitio/flutter_socket_io/issues/58)
+Read more about this: [discussion](https://github.com/infitio/flutter_socket_io/issues/58)
 
 
 ## Other Packages:

@@ -31,22 +31,22 @@ class _MyAppState extends State<MyApp> {
   Future<void> initSocket(String identifier) async {
     setState(() => _isProbablyConnected[identifier] = true);
     final socket = await manager.createInstance(SocketOptions(
-        //Socket IO server URI
-        uri,
-        namespace: (identifier == 'namespaced') ? '/adhara' : '/',
-        //Query params - can be used for authentication
-        query: {
-          'auth': '--SOME AUTH STRING---',
-          'info': 'new connection from adhara-socketio',
-          'timestamp': DateTime.now().toString()
-        },
-        //Enable or disable platform channel logging
-        enableLogging: true,
-        transports: [
-          Transports.webSocket,
-          // Transports.polling,
-        ] //Enable required transport
-        ));
+      //Socket IO server URI
+      uri,
+      namespace: (identifier == 'namespaced') ? '/adhara' : '/',
+      //Query params - can be used for authentication
+      query: {
+        'auth': '--SOME AUTH STRING---',
+        'info': 'new connection from adhara-socketio',
+        'timestamp': DateTime.now().toString()
+      },
+      //Enable or disable platform channel logging
+      enableLogging: true,
+      transports: [
+        Transports.webSocket,
+        // Transports.polling,
+      ], //Enable required transport
+    ));
     socket.onConnect.listen((data) {
       pPrint('$identifier | connected...');
       pPrint(data);
