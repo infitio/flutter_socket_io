@@ -134,7 +134,7 @@ sh bin/run_tests.sh
 
 ## Sample Video - Running the example
 
-[![Running adhara socket io for flutter, example](https://img.youtube.com/vi/rc6Kv95FJ4M/0.jpg)](http://www.youtube.com/watch?v=rc6Kv95FJ4M "Running the example")
+[![Running adhara socket io for flutter, example](https://img.youtube.com/vi/rc6Kv95FJ4M/0.jpg)](https://www.youtube.com/watch?v=rc6Kv95FJ4M "Running the example")
 
 
 ## FAQ's

@@ -22,7 +22,7 @@ public class AdharaSocketIoStreamHandler: NSObject, FlutterStreamHandler {
         let _eventName = eventName ?? ""
         if (plugin.instances[socketIndex] != nil) {
             adharaSocket = plugin.instances[socketIndex]
-            adharaSocket.log("registering listener for event", _eventName)
+            adharaSocket?.log("registering listener for event", _eventName)
             listenerId = (adharaSocket?.socket.on(_eventName) {data, ack in
                 self.adharaSocket?.log("incoming message", _eventName, data, ack)
                 events(data);
