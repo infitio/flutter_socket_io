@@ -1,10 +1,11 @@
 import 'dart:async';
-import 'dart:convert' show jsonDecode;
+import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart';
 
 import 'generated/platform_constants.dart';
 import 'manager.dart';
+import 'message.dart';
 import 'streams_channel.dart';
 
 /// A socket instance internally used by the [SocketIOManager]
@@ -74,14 +75,15 @@ class SocketIO {
   ///connect this socket to server
   Future<void> connect() => _channel.invokeMethod<void>(PlatformMethod.connect);
 
-  Object _decodeArgument(Object argument) {
-    try {
-      return jsonDecode(argument as String);
-      // ignore: avoid_catches_without_on_clauses
-    } catch (e) {
-      return argument;
-    }
-  }
+  Object _decodeArgument(Object argument) =>
+      SocketMessage.fromPlatform(argument).message;
+
+  /// Encodes data to platform understandable
+  ///
+  /// Currently, not encoding data for iOS as it seems
+  ///  to handle all data types just fine!
+  Object _encodeArgument(Object argument) =>
+      Platform.isIOS ? argument : SocketMessage(argument).toPlatform();
 
   ///listen to an event
   Stream<dynamic> on(String eventName) =>
@@ -94,7 +96,7 @@ class SocketIO {
   Future<void> emit(String eventName, List<dynamic> arguments) async {
     await _channel.invokeMethod(PlatformMethod.emit, <String, dynamic>{
       'eventName': eventName,
-      'arguments': arguments,
+      'arguments': arguments.map(_encodeArgument).toList(growable: false),
     });
   }
 

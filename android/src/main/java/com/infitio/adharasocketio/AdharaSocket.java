@@ -7,13 +7,13 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,13 +122,25 @@ class AdharaSocket implements MethodCallHandler {
         if (data != null) {
           array = new Object[data.size()];
           for (int i = 0; i < data.size(); i++) {
-            Object datum = data.get(i);
+            Map encodedDatum = (Map) data.get(i);
+            Object datum = encodedDatum.get(PlatformConstants.TxSocketMessage.message);
+            String type = (String) encodedDatum.get(PlatformConstants.TxSocketMessage.type);
             System.out.println(datum);
             System.out.println(datum == null ? "null" : datum.getClass());
-            if (datum instanceof Map) {
-              array[i] = new JSONObject((Map) datum);
-            } else if (datum instanceof Collection) {
-              array[i] = new JSONArray((Collection) datum);
+            if (type.equals(PlatformConstants.TxMessageDataTypes.map)) {
+              try {
+                array[i] = new JSONObject((String) datum);
+              } catch (JSONException e) {
+                e.printStackTrace();
+                result.error("400", "invalid message data for JsonObject: " + datum, e);
+              }
+            } else if (type.equals(PlatformConstants.TxMessageDataTypes.list)) {
+              try {
+                array[i] = new JSONArray((String) datum);
+              } catch (JSONException e) {
+                e.printStackTrace();
+                result.error("400", "invalid message data for JsonArray: " + datum, e);
+              }
             } else {
               array[i] = datum;
             }
