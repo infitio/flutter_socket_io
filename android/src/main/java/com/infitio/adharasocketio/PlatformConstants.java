@@ -47,4 +47,15 @@ final public class PlatformConstants {
         public static final String polling = "polling";
     }
 
+    static final public class TxMessageDataTypes {
+        public static final String map = "map";
+        public static final String list = "list";
+        public static final String other = "other";
+    }
+
+    static final public class TxSocketMessage {
+        public static final String type = "type";
+        public static final String message = "message";
+    }
+
 }

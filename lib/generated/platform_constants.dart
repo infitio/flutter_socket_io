@@ -8,7 +8,8 @@
 class MethodChannelNames {
   static const String managerMethodChannel = 'adhara_socket_io';
   static const String socketMethodChannel = 'adhara_socket_io:socket:';
-  static const String streamsChannel = 'adhara_socket_io:event_streams';
+  static const String streamsChannel =
+      'adhara_socket_io:event_streams';
 }
 
 class CodecTypes {
@@ -42,4 +43,15 @@ class TxEventTypes {
 class TxTransportModes {
   static const String websocket = 'websocket';
   static const String polling = 'polling';
+}
+
+class TxMessageDataTypes {
+  static const String map = 'map';
+  static const String list = 'list';
+  static const String other = 'other';
+}
+
+class TxSocketMessage {
+  static const String type = 'type';
+  static const String message = 'message';
 }

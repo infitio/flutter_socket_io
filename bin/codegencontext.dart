@@ -56,6 +56,21 @@ const List<Map<String, dynamic>> _objects = [
       'polling',
     ]
   },
+  {
+    'name': 'MessageDataTypes',
+    'properties': <String>[
+      'map',
+      'list',
+      'other',
+    ]
+  },
+  {
+    'name': 'SocketMessage',
+    'properties': <String>[
+      'type',
+      'message',
+    ]
+  }
 ];
 
 // exporting all the constants as a single map

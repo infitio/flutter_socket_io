@@ -41,3 +41,14 @@ public class TxTransportModes {
     public static let websocket = "websocket";
     public static let polling = "polling";
 }
+
+public class TxMessageDataTypes {
+    public static let map = "map";
+    public static let list = "list";
+    public static let other = "other";
+}
+
+public class TxSocketMessage {
+    public static let type = "type";
+    public static let message = "message";
+}
