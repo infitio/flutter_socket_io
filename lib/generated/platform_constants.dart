@@ -8,8 +8,7 @@
 class MethodChannelNames {
   static const String managerMethodChannel = 'adhara_socket_io';
   static const String socketMethodChannel = 'adhara_socket_io:socket:';
-  static const String streamsChannel =
-      'adhara_socket_io:event_streams';
+  static const String streamsChannel = 'adhara_socket_io:event_streams';
 }
 
 class CodecTypes {
