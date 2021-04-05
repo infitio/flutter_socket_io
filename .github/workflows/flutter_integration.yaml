@@ -57,7 +57,7 @@ jobs:
     needs: flutter
     strategy:
       matrix:
-        api-level: [16, 17, 18, 19, 22, 25, 29]
+        api-level: [16, 19, 22, 25, 29]
       fail-fast: false
     runs-on: 'macos-latest'
     # ubuntu-latest cannot be used as it is only a docker container, and unfortunately running
