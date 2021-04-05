@@ -19,12 +19,12 @@ public class AdharaSocket: NSObject, FlutterPlugin {
     let manager: SocketManager
     let config: AdharaSocketIOClientConfig
     
-    private func log(_ items: Any...){
+    public func log(_ items: Any...){
         if(config.enableLogging){
             print(items)
         }
     }
-
+    
     public init(_ channel:FlutterMethodChannel, _ config:AdharaSocketIOClientConfig) {
         manager = SocketManager(socketURL: URL(string: config.uri)!, config: [.log(true), .connectParams(config.query), .path(config.path)])
         if(config.namespace == "") {
@@ -35,9 +35,12 @@ public class AdharaSocket: NSObject, FlutterPlugin {
         self.channel = channel
         self.config = config
     }
-
+    
     public static func getInstance(_ registrar: FlutterPluginRegistrar, _ config:AdharaSocketIOClientConfig) ->  AdharaSocket{
-        let channel = FlutterMethodChannel(name: "adhara_socket_io:socket:"+String(config.adharaId), binaryMessenger: registrar.messenger())
+        let channel = FlutterMethodChannel(
+            name: AdharaSocketIoMethodChannelNames.socketMethodChannel+String(config.adharaId),
+            binaryMessenger: registrar.messenger()
+        )
         let instance = AdharaSocket(channel, config)
         instance.log("initializing with URI", config.uri)
         registrar.addMethodCallDelegate(instance, channel: channel)
@@ -52,50 +55,30 @@ public class AdharaSocket: NSObject, FlutterPlugin {
             arguments = [String: AnyObject]()
         }
         switch call.method{
-            case "connect":
-                socket.connect()
-                result(nil)
-            case "on":
-                let eventName: String = arguments["eventName"] as! String
-                self.log("registering event:::", eventName)
-                socket.on(eventName) {data, ack in
-                    self.log("incoming:::", eventName, data, ack)
-                    self.channel.invokeMethod("incoming", arguments: [
-                        "eventName": eventName,
-                        "args": data
+        case AdharaSocketIoPlatformMethod.connect:
+            socket.connect()
+            result(nil)
+        case AdharaSocketIoPlatformMethod.emit:
+            let eventName: String = arguments["eventName"] as! String
+            let data: [Any] = arguments["arguments"] as! [Any]
+            let reqId: String? = arguments["reqId"] as? String
+            self.log("emitting", data, "to", eventName);
+            if (reqId == nil) {
+                socket.emit(eventName, with: data)
+            } else {
+                socket.emitWithAck(eventName, with: data).timingOut(after: 0) { data in
+                    self.channel.invokeMethod(AdharaSocketIoPlatformMethod.incomingAck, arguments: [
+                        "args": data,
+                        "reqId": reqId as Any
                     ]);
                 }
-                result(nil)
-            case "off":
-                let eventName: String = arguments["eventName"] as! String
-                self.log("un-registering event:::", eventName)
-                socket.off(eventName);
-                result(nil)
-            case "emit":
-                let eventName: String = arguments["eventName"] as! String
-                let data: [Any] = arguments["arguments"] as! [Any]
-                let reqId: String? = arguments["reqId"] as? String
-                self.log("emitting:::", data, ":::to:::", eventName);
-                if (reqId == nil) {
-                    socket.emit(eventName, with: data)
-                } else {
-                    socket.emitWithAck(eventName, with: data).timingOut(after: 0) { data in 
-                        self.channel.invokeMethod("incomingAck", arguments: [
-                            "args": data,
-                            "reqId": reqId
-                        ]);
-                    }
-                }
-                result(nil)
-            case "isConnected":
-                self.log("connected")
-                result(socket.status == .connected)
-            case "disconnect":
-                self.log("dis-connected")
-                socket.disconnect()
-                result(nil)
-            default:
-                result(FlutterError(code: "404", message: "No such method", details: nil))
+            }
+            result(nil)
+        case AdharaSocketIoPlatformMethod.isConnected:
+            self.log("connected")
+            result(socket.status == .connected)
+        default:
+            result(FlutterError(code: "404", message: "No such method", details: nil))
         }
     }
     

@@ -8,45 +8,64 @@ public class SwiftAdharaSocketIoPlugin: NSObject, FlutterPlugin {
     var instances: [Int: AdharaSocket];
     var currentIndex: Int;
     let registrar: FlutterPluginRegistrar;
+    let streamsChannel: AdharaSocketIoFlutterStreamsChannel;
 
-    init(_ _registrar: FlutterPluginRegistrar){
+    init(_ _registrar: FlutterPluginRegistrar,
+         _ _streamsChannel: AdharaSocketIoFlutterStreamsChannel){
         registrar = _registrar
         instances = [Int: AdharaSocket]()
         currentIndex = 0;
+        streamsChannel = _streamsChannel;
     }
 
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "adhara_socket_io", binaryMessenger: registrar.messenger())
-        let instance = SwiftAdharaSocketIoPlugin(registrar)
+        let channel = FlutterMethodChannel(
+            name: AdharaSocketIoMethodChannelNames.managerMethodChannel,
+            binaryMessenger: registrar.messenger()
+        )
+        let streamsChannel = AdharaSocketIoFlutterStreamsChannel(
+            name: AdharaSocketIoMethodChannelNames.streamsChannel,
+            binaryMessenger: registrar.messenger()
+        )
+        let instance = SwiftAdharaSocketIoPlugin(registrar, streamsChannel)
         registrar.addMethodCallDelegate(instance, channel: channel)
+        streamsChannel.setStreamHandlerFactory { (Any) -> (FlutterStreamHandler & NSObjectProtocol)? in
+            return AdharaSocketIoStreamHandler(instance)
+        }
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         let arguments = call.arguments as! [String: AnyObject]
 
         switch (call.method) {
-            case "newInstance":
-                let newIndex = currentIndex;
+            case AdharaSocketIoPlatformMethod.newInstance:
+                if((arguments["clear"] as! Bool?)!){
+                    for (_, adharaSocket) in instances {
+                        adharaSocket.socket.disconnect()
+                    }
+                    instances.removeAll()
+                }
+                let options: AnyObject = arguments["options"] as AnyObject
                 let config:AdharaSocketIOClientConfig
-                    = AdharaSocketIOClientConfig(newIndex, uri: arguments["uri"] as! String,
-                                                 namespace: arguments["namespace"] as! String, path: arguments["path"] as! String)
-                if let query: [String:String] = arguments["query"] as? [String:String]{
+                    = AdharaSocketIOClientConfig(currentIndex, uri: options["uri"] as! String,
+                                                 namespace: options["namespace"] as! String, path: options["path"] as! String)
+                if let query: [String:String] = options["query"] as? [String:String]{
                     config.query = query
                 }
-                if let enableLogging: Bool = arguments["enableLogging"] as? Bool {
+                if let enableLogging: Bool = options["enableLogging"] as? Bool {
                     config.enableLogging = enableLogging
                 }
-                instances[newIndex] = AdharaSocket.getInstance(registrar, config)
+                instances[currentIndex] = AdharaSocket.getInstance(registrar, config)
+                result(currentIndex)
                 currentIndex += 1
-                result(newIndex)
-            case "clearInstance":
+            case AdharaSocketIoPlatformMethod.clearInstance:
                 if(arguments["id"] == nil){
                     result(FlutterError(code: "400", message: "Invalid instance identifier provided", details: nil))
                 }else{
                     let socketIndex = arguments["id"] as! Int
                     if (instances[socketIndex] != nil) {
                         instances[socketIndex]?.socket.disconnect()
-                        instances[socketIndex] = nil;
+                        instances[socketIndex] = nil
                         result(nil)
                     } else {
                         result(FlutterError(code: "403", message: "Instance not found", details: nil))

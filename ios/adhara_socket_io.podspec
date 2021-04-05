@@ -10,7 +10,7 @@ socket.io for flutter by adhara
                        DESC
   s.homepage         = 'https://github.com/infitio/flutter_socket_io/'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Infitio' => 'rr.16566@gmail.com' }
+  s.author           = { 'Rohit' => 'rr.16566@gmail.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
@@ -21,4 +21,3 @@ socket.io for flutter by adhara
   s.swift_version = '5.0'
   s.ios.deployment_target = '9.0'
 end
-

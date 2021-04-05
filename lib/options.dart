@@ -1,7 +1,20 @@
-enum Transports { WEB_SOCKET, POLLING }
+import 'generated/platform_constants.dart';
 
+/// transport modes
+enum Transports {
+  /// to use web socket transport mode
+  webSocket,
+
+  /// use http polling as transport mode
+  polling
+}
+
+/// options to create a socket instance
 class SocketOptions {
+  /// socket URI
   final String uri;
+
+  /// Query params for socket URI
   final Map<String, String> query;
 
   ///Enable debug logging
@@ -14,7 +27,7 @@ class SocketOptions {
   int timeout = 20000;
 
   ///Namespace parameter
-  String nameSpace;
+  String namespace;
 
   ///Path parameter if socket.io runs on a different endpoint
   String path;
@@ -46,29 +59,30 @@ class SocketOptions {
 //        public int port = -1;
 //        public int policyPort = -1;
 
-  SocketOptions(this.uri,
-      {this.query: const {},
-      this.enableLogging: false,
-      this.transports: const [Transports.WEB_SOCKET, Transports.POLLING],
-      this.nameSpace = "/",
-      this.path = '/socket.io'})
-      : assert(nameSpace.startsWith("/"),
+  /// constructor
+  SocketOptions(
+    this.uri, {
+    this.query = const {},
+    this.enableLogging = false,
+    this.transports = const [Transports.webSocket, Transports.polling],
+    this.namespace = '/',
+    this.path = '/socket.io',
+  }) : assert(namespace.startsWith('/'),
             "Namespace must be a non null string and should start with a '/'");
 
-  Map asMap() {
-    return {
-      "uri": uri,
-      "query": query,
-      "path": path,
-      "enableLogging": enableLogging,
-      "namespace": nameSpace,
-      "transports": transports.map((Transports t) {
-        return {
-          Transports.WEB_SOCKET: "websocket",
-          Transports.POLLING: "polling"
-        }[t];
-      }).toList(),
-      "timeout": timeout
-    };
-  }
+  /// convert options to a Map
+  Map<String, dynamic> asMap() => {
+        'uri': uri,
+        'query': query,
+        'path': path,
+        'enableLogging': enableLogging,
+        'namespace': namespace,
+        'transports': transports
+            .map((t) => {
+                  Transports.webSocket: TxTransportModes.websocket,
+                  Transports.polling: TxTransportModes.polling,
+                }[t])
+            .toList(),
+        'timeout': timeout
+      };
 }
