@@ -105,7 +105,10 @@ Future runPublishWithACKTest(
 ) async {
   final message = TestControlMessage(TestName.ack, payload: data);
   final response = TestControlMessage.fromJsonEncoded(
-    await driver.requestData(message.toJsonEncoded()),
+    await driver.requestData(
+      message.toJsonEncoded(),
+      timeout: const Duration(seconds: 120),
+    ),
   );
 
   expect(response.testName, message.testName);

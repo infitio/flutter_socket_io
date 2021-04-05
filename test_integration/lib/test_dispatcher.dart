@@ -72,6 +72,11 @@ class _TestDispatcherState extends State<TestDispatcher> {
             reporter: reporter,
             payload: reporter.message.payload,
           )
+              .timeout(
+                // test driver timeout is 30s by default
+                //  and max configured is 120s
+                const Duration(seconds: 100),
+              )
               .then((response) => reporter?.reportTestCompletion(response))
               .catchError(
                 (error, stack) => reporter.reportTestCompletion({
