@@ -85,6 +85,9 @@ class SocketIO {
   Object _encodeArgument(Object argument) =>
       Platform.isIOS ? argument : SocketMessage(argument).toPlatform();
 
+  List<Object> _encodeMessages(List messages) =>
+      messages.map(_encodeArgument).toList(growable: false);
+
   ///listen to an event
   Stream<dynamic> on(String eventName) =>
       _streamsChannel.receiveBroadcastStream(<String, dynamic>{
@@ -96,7 +99,7 @@ class SocketIO {
   Future<void> emit(String eventName, List<dynamic> arguments) async {
     await _channel.invokeMethod(PlatformMethod.emit, <String, dynamic>{
       'eventName': eventName,
-      'arguments': arguments.map(_encodeArgument).toList(growable: false),
+      'arguments': _encodeMessages(arguments),
     });
   }
 
@@ -107,7 +110,7 @@ class SocketIO {
       PlatformMethod.emit,
       {
         'eventName': eventName,
-        'arguments': arguments,
+        'arguments': _encodeMessages(arguments),
         'reqId': reqId,
       },
     );
