@@ -4,6 +4,10 @@
 
 supports both Android and iOS
 
+socket.io version supported: v2
+development in progress for v3 and v4
+
+> If you are using v3/v4 socket on server side, you may face connection issues, please downgrade and try in such scenario.
 
 Usage:
 
