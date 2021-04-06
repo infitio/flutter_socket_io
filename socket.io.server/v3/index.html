@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head><title>Adhara Socket IO integration test example</title></head>
+<body>
+<div id="console"></div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+	let cd = document.getElementById("console");
+	function ptoc(){
+		let a = Array.prototype.slice.apply(arguments);
+		a = a.map(_=>{
+			if(_ instanceof Object) return JSON.stringify(_);
+			return _;
+		})
+		cd.innerHTML += `<br />${a.join(', ')}`;
+		console.log(arguments);
+	}
+	ptoc("connecting...");
+	const socket = io({transports:["websocket"]});
+	socket.on("connect", (data)=>{
+		ptoc("connected", data);
+	});
+	var disconnected = false;
+	socket.on("disconnect", (data)=>{
+		ptoc("disconnected", data);
+	});
+	socket.emit("ack-message", "hey yo!", function(ackmsg){
+		ptoc(`ACK::${ackmsg}`);
+	});
+	socket.on('counter', ptoc);
+	var intervalId = setInterval(() => {
+		if (disconnected) {
+			stopInterval(intervalId);
+		} else {
+			socket.emit('next');
+		}
+	}, 500);
+	setTimeout(() => {
+		socket.disconnect();
+	}, 10000);
+</script>
+</body>
+</html>
