@@ -11,7 +11,7 @@ Usage:
 
 ```dart
 	final SOCKET_SERVER = 'http://192.168.1.2:7070/';	//To be modified accordingly
-    SocketIO socket;
+        SocketIO socket;
 	StreamSubscription connectSubscription;
 	StreamSubscription echoSubscription;
 
@@ -21,51 +21,57 @@ Usage:
         	SocketOptions(SOCKET_SERVER),
         );
 
-		// Listen to a socket event
-		subscription = socket.onConnect.listen((data){   //listen to socket connect event
-		  print('connected: $data');
-		  socket.emit('message', ['Hello world!']);
-		});
+	// Listen to socket connect event
+	subscription = socket.onConnect.listen((data){
+	  print('connected: $data');
+	  socket.emit('message', ['Hello world!']);
+	});
 
-        // Listen to an custom event
-		echoSubscription = socket.on('echo', (data){   //listen to 'news' event
-		  print("news event recieved with data: $data");
-		});
+        // Listen to an custom ("news") event
+	echoSubscription = socket.on('echo', (data){
+  	    print("news event recieved with data: $data");
+	});
 
-        // connect to socket server - will initialize connection,
+	// There are 2 ways to connect to socket server
+	//  - normal: doesn't wait for connectio success
+	//  - sync: ensures connection or errors out on failure
+
+        // normal:
+        //  connect to socket server - will initialize connection,
         //  but not ensure the connection yet.
         //  If this method used to connect to server, then emit events should be sent
         //  only after ensuring connection to socket server is successful by listening
         //  to onConnect events
-		// await socket.connect();
+	// await socket.connect();
 
-        // This API will ensure connection to server is successful
+	// sync:
+        //  This API will ensure connection to server is successful
         //  or will throw error on connect error
         await socket.connectSync();
 
         // publish data - will publish to server, won't ensure the delivery
-		await socket.emit('echo', ['hello']);
+	await socket.emit('echo', ['hello']);
 
         // emit with acknowledgement - will publish to server
         //  and ensure delivery with ack if ack is implemented in server
         dynamic ackData = await socket.emitWithAck('echo', ['hello']);
-        print('acknowledgement recieved from server: $ackData');
-	}
+            print('acknowledgement recieved from server: $ackData');
+    	}
 
-    Future<void> dispose() async {
-    	// cancel echo and onConnect subscriptions
+	Future<void> dispose() async {
+	    // cancel echo and onConnect subscriptions
 	    await echoSubscription.cancel();
 	    await connectSubscription.cancel();
 
-        // clear socket instance from manager
-    	await SocketIOManager().clearInstance(socket);
-    }
+            // clear socket instance from manager
+            await SocketIOManager().clearInstance(socket);
+        }
 
 	// register liteners, connect to a socket, and publish data
 	demonstrateSocket();
 
-    // will dispose listeners and socket
-    dispose();
+	// will dispose listeners and socket
+	dispose();
 ```
 
 
