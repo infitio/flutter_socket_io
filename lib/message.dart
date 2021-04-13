@@ -12,7 +12,7 @@ String _getType(Object object) {
   }
 }
 
-Object _decodeMessage(Object argument) {
+Object? _decodeMessage(Object argument) {
   try {
     return json.decode(argument as String);
     // ignore: avoid_catches_without_on_clauses
@@ -23,10 +23,10 @@ Object _decodeMessage(Object argument) {
 
 /// Handles messages and their data types
 class SocketMessage {
-  String _type;
+  String? _type;
 
   /// original/json-encoded message
-  final Object message;
+  final Object? message;
 
   /// Create socket message from a socekt payload
   SocketMessage(Object object)

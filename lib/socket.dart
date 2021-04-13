@@ -11,7 +11,7 @@ import 'streams_channel.dart';
 /// A socket instance internally used by the [SocketIOManager]
 class SocketIO {
   /// Socket -or- Connection identifier
-  final int id;
+  final int? id;
 
   ///Store Completer(s) for pending Acknowledgements
   final _pendingAcknowledgements = <String, Completer>{};
@@ -28,24 +28,24 @@ class SocketIO {
         ) {
     _channel.setMethodCallHandler((call) async {
       if (call.method == PlatformMethod.incomingAck) {
-        var arguments = call.arguments['args'] as List<dynamic>;
-        final reqId = call.arguments['reqId'] as String;
+        var arguments = call.arguments['args'] as List<dynamic>?;
+        final reqId = call.arguments['reqId'] as String?;
         if (reqId == null || !_pendingAcknowledgements.containsKey(reqId)) {
           return;
         }
-        final completer = _pendingAcknowledgements.remove(reqId);
-        arguments = arguments.map(_decodeArgument).toList();
+        final completer = _pendingAcknowledgements.remove(reqId)!;
+        arguments = arguments!.map(_decodeArgument).toList();
         completer.complete(arguments);
       }
     });
   }
 
-  Completer _connectSyncCompleter;
+  Completer? _connectSyncCompleter;
 
   Future<void> _connectSync() async {
     _connectSyncCompleter = Completer();
-    StreamSubscription onConnectSubscription;
-    StreamSubscription onConnectErrorSubscription;
+    late StreamSubscription onConnectSubscription;
+    late StreamSubscription onConnectErrorSubscription;
     void cleanup() {
       onConnectSubscription.cancel();
       onConnectErrorSubscription.cancel();
@@ -53,11 +53,11 @@ class SocketIO {
     }
 
     onConnectSubscription = onConnect.listen((args) {
-      _connectSyncCompleter.complete();
+      _connectSyncCompleter!.complete();
       cleanup();
     });
     onConnectErrorSubscription = onConnect.listen((args) {
-      _connectSyncCompleter.completeError(args);
+      _connectSyncCompleter!.completeError(args as Object);
       cleanup();
     });
     await connect();
@@ -69,14 +69,14 @@ class SocketIO {
     if (_connectSyncCompleter == null) {
       _connectSync();
     }
-    return _connectSyncCompleter.future;
+    return _connectSyncCompleter!.future;
   }
 
   ///connect this socket to server
   Future<void> connect() => _channel.invokeMethod<void>(PlatformMethod.connect);
 
-  Object _decodeArgument(Object argument) =>
-      SocketMessage.fromPlatform(argument).message;
+  Object? _decodeArgument(Object? argument) =>
+      SocketMessage.fromPlatform(argument!).message;
 
   /// Encodes data to platform understandable
   ///
@@ -85,7 +85,7 @@ class SocketIO {
   Object _encodeArgument(Object argument) =>
       Platform.isIOS ? argument : SocketMessage(argument).toPlatform();
 
-  List<Object> _encodeMessages(List messages) =>
+  List<Object> _encodeMessages(List<Object> messages) =>
       messages.map(_encodeArgument).toList(growable: false);
 
   ///listen to an event
@@ -96,7 +96,7 @@ class SocketIO {
       }).map((arguments) => arguments.map(_decodeArgument).toList());
 
   ///send data to socket server
-  Future<void> emit(String eventName, List<dynamic> arguments) async {
+  Future<void> emit(String eventName, List<Object> arguments) async {
     await _channel.invokeMethod(PlatformMethod.emit, <String, dynamic>{
       'eventName': eventName,
       'arguments': _encodeMessages(arguments),
@@ -104,7 +104,7 @@ class SocketIO {
   }
 
   ///send data to socket server, return expected Ack as a Future
-  Future emitWithAck(String eventName, List<dynamic> arguments) async {
+  Future emitWithAck(String eventName, List<Object> arguments) async {
     final reqId = (++_reqCounter).toString();
     await _channel.invokeMethod(
       PlatformMethod.emit,
@@ -120,7 +120,7 @@ class SocketIO {
   }
 
   /// checks whether connection is alive
-  Future<bool> isConnected() => _channel.invokeMethod(
+  Future<bool?> isConnected() => _channel.invokeMethod(
         PlatformMethod.isConnected,
       );
 

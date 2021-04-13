@@ -33,7 +33,7 @@ class SocketIOManager {
     MethodChannelNames.streamsChannel,
   );
 
-  final _sockets = <int, SocketIO>{};
+  final _sockets = <int?, SocketIO>{};
 
   ///Create a [SocketIO] instance
   ///[options] - Options object to initialize socket instance
