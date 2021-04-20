@@ -12,7 +12,7 @@ String _getType(Object object) {
   }
 }
 
-Object? _decodeMessage(Object argument) {
+Object? _decodeMessage(Object? argument) {
   try {
     return json.decode(argument as String);
     // ignore: avoid_catches_without_on_clauses
@@ -41,5 +41,5 @@ class SocketMessage {
       };
 
   /// decodes message from platform and stores in message
-  SocketMessage.fromPlatform(Object object) : message = _decodeMessage(object);
+  SocketMessage.fromPlatform(Object? object) : message = _decodeMessage(object);
 }

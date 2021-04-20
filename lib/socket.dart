@@ -76,7 +76,7 @@ class SocketIO {
   Future<void> connect() => _channel.invokeMethod<void>(PlatformMethod.connect);
 
   Object? _decodeArgument(Object? argument) =>
-      SocketMessage.fromPlatform(argument!).message;
+      SocketMessage.fromPlatform(argument).message;
 
   /// Encodes data to platform understandable
   ///
