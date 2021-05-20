@@ -1,3 +1,7 @@
+## 1.0.1 - 20th May, 2021
+
+* Fix ios dependency versions
+
 ## 1.0.0 - 3rd Apr, 2020
 
 #### Breaking changes
