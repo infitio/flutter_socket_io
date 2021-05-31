@@ -1,6 +1,6 @@
 # adhara_socket_io
 
-[![.github/workflows/flutter_integration.yaml](https://github.com/infitio/flutter_socket_io/actions/workflows/flutter_integration.yaml/badge.svg?branch=master)](https://github.com/infitio/flutter_socket_io/actions/workflows/flutter_integration.yaml)
+[![.github/workflows/flutter_integration.yaml](https://github.com/infitio/flutter_socket_io/actions/workflows/flutter_integration.yaml/badge.svg?branch=main)](https://github.com/infitio/flutter_socket_io/actions/workflows/flutter_integration.yaml)
 
 [socket.io](https://socket.io/) for flutter by [adhara](https://github.com/infitio/)
 
