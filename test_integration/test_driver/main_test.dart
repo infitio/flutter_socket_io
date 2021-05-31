@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
@@ -28,7 +30,7 @@ void main() {
     });
 
     test('server running', () async {
-      final response = await http.get(socketURL);
+      final response = await http.get(Uri.parse(socketURL));
       expect(response.statusCode, 200);
     });
 
