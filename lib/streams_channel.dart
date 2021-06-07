@@ -24,21 +24,21 @@ class StreamsChannel {
 
   /// registers a listener on platform side and manages the listener
   /// with incremental identifiers
-  Stream<T> receiveBroadcastStream<T>([Object arguments]) {
+  Stream<T?> receiveBroadcastStream<T>([Object? arguments]) {
     final methodChannel = MethodChannel(name, codec);
 
     final id = ++_lastId;
     final handlerName = '$name#$id';
 
-    StreamController<T> controller;
-    controller = StreamController<T>.broadcast(onListen: () async {
-      ServicesBinding.instance.defaultBinaryMessenger
+    late StreamController<T?> controller;
+    controller = StreamController<T?>.broadcast(onListen: () async {
+      ServicesBinding.instance!.defaultBinaryMessenger
           .setMessageHandler(handlerName, (reply) async {
         if (reply == null) {
           await controller.close();
         } else {
           try {
-            controller.add(codec.decodeEnvelope(reply) as T);
+            controller.add(codec.decodeEnvelope(reply) as T?);
           } on PlatformException catch (pe) {
             controller.addError(pe);
           }
@@ -59,7 +59,7 @@ class StreamsChannel {
         ));
       }
     }, onCancel: () async {
-      ServicesBinding.instance.defaultBinaryMessenger
+      ServicesBinding.instance!.defaultBinaryMessenger
           .setMessageHandler(handlerName, null);
       try {
         await methodChannel.invokeMethod('cancel#$id', arguments);
