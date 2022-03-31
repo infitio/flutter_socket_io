@@ -3,14 +3,12 @@ import 'dart:async';
 import 'package:adhara_socket_io/adhara_socket_io.dart';
 
 SocketOptions getSocketOptions(Map<String, dynamic> payload) {
-  final _options = Map.castFrom<dynamic, dynamic, String, dynamic>(
-    payload['options'] as Map,
-  );
+  final _options = payload['options'] as Map?;
   print('socket options: $_options');
-  final socketURL = _options['url'] as String;
+  final socketURL = _options?['url'] as String? ?? '/';
   return SocketOptions(
     socketURL,
-    namespace: _options['namespace'] as String ?? '/',
+    namespace: _options?['namespace'] as String? ?? '/',
     enableLogging: true,
   );
 }
@@ -23,12 +21,12 @@ Future<SocketIO> createSocket(Map<String, dynamic> payload) async {
   final errorListener = socket.onError.listen((args) {
     print('error event received $args');
   });
-  _socketSubscriptions[socket.id] = errorListener;
+  _socketSubscriptions[socket.id!] = errorListener;
   return socket;
 }
 
 Future<void> disposeSocket(SocketIO socket) async {
-  await _socketSubscriptions[socket.id].cancel();
+  await _socketSubscriptions[socket.id]!.cancel();
   await Future.delayed(const Duration(seconds: 2));
   await SocketIOManager().clearInstance(socket);
 }

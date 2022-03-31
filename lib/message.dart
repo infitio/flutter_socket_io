@@ -2,7 +2,7 @@ import 'dart:convert' show json;
 
 import 'generated/platform_constants.dart';
 
-String _getType(Object object) {
+String _getType(Object? object) {
   if (object is Map) {
     return TxMessageDataTypes.map;
   } else if (object is List) {
@@ -12,7 +12,7 @@ String _getType(Object object) {
   }
 }
 
-Object? _decodeMessage(Object? argument) {
+dynamic _decodeMessage(Object? argument) {
   try {
     return json.decode(argument as String);
     // ignore: avoid_catches_without_on_clauses
@@ -29,7 +29,7 @@ class SocketMessage {
   final Object? message;
 
   /// Create socket message from a socekt payload
-  SocketMessage(Object object)
+  SocketMessage(Object? object)
       : message =
             (object is Map || object is List) ? json.encode(object) : object,
         _type = _getType(object);

@@ -8,12 +8,11 @@ class Reporter {
   final DispatcherController controller;
   final Completer<TestControlMessage> response;
 
-  Reporter(
-    this.message,
+  Reporter(this.message,
     this.controller,
   ) : response = Completer<TestControlMessage>();
 
-  String get testName => message?.testName;
+  String get testName => message.testName;
 
   final _log = <dynamic>[];
 

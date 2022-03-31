@@ -9,8 +9,8 @@ export 'package:test_integration/config/test_names.dart';
 
 void main() {
   group('Socket', () {
-    FlutterDriver driver;
-    String socketURL;
+    FlutterDriver? driver;
+    String? socketURL;
     const namespace = '/adhara';
 
     // Connect to the Flutter driver before running any tests.
@@ -23,51 +23,51 @@ void main() {
     // Close the connection to the driver after the tests have completed.
     tearDownAll(() async {
       if (driver != null) {
-        await driver.close();
+        await driver!.close();
       }
     });
 
     test('server running', () async {
-      final response = await http.get(socketURL);
+      final response = await http.get(Uri.parse(socketURL!));
       expect(response.statusCode, 200);
     });
 
     test(
         'basic test',
-        () => runBasicTest(driver, {
+        () => runBasicTest(driver!, {
               'options': {'url': socketURL}
             }));
 
     test(
       'listen test',
-      () => runListenTest(driver, {
+      () => runListenTest(driver!, {
         'options': {'url': socketURL}
       }),
     );
 
     test(
       'events test',
-      () => runEventsTest(driver, {
+      () => runEventsTest(driver!, {
         'options': {'url': socketURL}
       }),
     );
 
     test(
       'publish test',
-      () => runPublishTest(driver, {
+      () => runPublishTest(driver!, {
         'options': {'url': socketURL}
       }),
     );
     test(
       'echo test',
-      () => runEchoTest(driver, {
+      () => runEchoTest(driver!, {
         'options': {'url': socketURL}
       }),
     );
 
     test(
       'ack test',
-      () => runPublishWithACKTest(driver, {
+      () => runPublishWithACKTest(driver!, {
         'options': {'url': socketURL}
       }),
     );
@@ -75,35 +75,35 @@ void main() {
     // namespace
     test(
       'namespace listen test',
-      () => runListenTest(driver, {
+      () => runListenTest(driver!, {
         'options': {'url': socketURL, 'namespace': namespace}
       }),
     );
 
     test(
       'namespace events test',
-      () => runEventsTest(driver, {
+      () => runEventsTest(driver!, {
         'options': {'url': socketURL, 'namespace': namespace}
       }),
     );
 
     test(
       'namespace publish test',
-      () => runPublishTest(driver, {
+      () => runPublishTest(driver!, {
         'options': {'url': socketURL, 'namespace': namespace}
       }),
     );
 
     test(
       'namespace echo test',
-      () => runEchoTest(driver, {
+      () => runEchoTest(driver!, {
         'options': {'url': socketURL, 'namespace': namespace}
       }),
     );
 
     test(
       'namespace ack test',
-      () => runPublishWithACKTest(driver, {
+      () => runPublishWithACKTest(driver!, {
         'options': {'url': socketURL, 'namespace': namespace}
       }),
     );

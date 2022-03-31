@@ -82,21 +82,30 @@ class SocketIO {
   ///
   /// Currently, not encoding data for iOS as it seems
   ///  to handle all data types just fine!
-  Object _encodeArgument(Object argument) =>
+  Object? _encodeArgument(Object? argument) =>
       Platform.isIOS ? argument : SocketMessage(argument).toPlatform();
 
-  List<Object> _encodeMessages(List<Object> messages) =>
-      messages.map(_encodeArgument).toList(growable: false);
+  List<Object?> _encodeMessages(List<Object?> messages) =>
+      messages.map<Object?>(_encodeArgument).toList(growable: false);
 
   ///listen to an event
-  Stream<dynamic> on(String eventName) =>
-      _streamsChannel.receiveBroadcastStream(<String, dynamic>{
+  Stream<dynamic> on(String eventName) {
+      var result = _streamsChannel.receiveBroadcastStream(<String, dynamic>{
         'id': id,
         'eventName': eventName,
-      }).map((arguments) => arguments.map(_decodeArgument).toList());
+      }).map((arguments) =>
+          arguments.map(_decodeArgument).toList());
+      print('IAN: $eventName, $result, ${result.runtimeType}');
+      return result;
+      }
+      // _streamsChannel.receiveBroadcastStream(<String, dynamic>{
+      //   'id': id,
+      //   'eventName': eventName,
+      // }).map((arguments) =>
+      //     arguments.map(_decodeArgument).toList() as Stream<Object?>);
 
   ///send data to socket server
-  Future<void> emit(String eventName, List<Object> arguments) async {
+  Future<void> emit(String eventName, List<Object?> arguments) async {
     await _channel.invokeMethod(PlatformMethod.emit, <String, dynamic>{
       'eventName': eventName,
       'arguments': _encodeMessages(arguments),
@@ -104,7 +113,7 @@ class SocketIO {
   }
 
   ///send data to socket server, return expected Ack as a Future
-  Future emitWithAck(String eventName, List<Object> arguments) async {
+  Future emitWithAck(String eventName, List<Object?> arguments) async {
     final reqId = (++_reqCounter).toString();
     await _channel.invokeMethod(
       PlatformMethod.emit,

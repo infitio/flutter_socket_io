@@ -15,8 +15,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  List<String> toPrint = ['trying to connect'];
-  SocketIOManager manager;
+  List<String?> toPrint = ['trying to connect'];
+  SocketIOManager? manager;
   Map<String, SocketIO> sockets = {};
   final _isProbablyConnected = <String, bool>{};
   final ScrollController _scrollController = ScrollController();
@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> initSocket(String identifier) async {
     setState(() => _isProbablyConnected[identifier] = true);
-    final socket = await manager.createInstance(SocketOptions(
+    final socket = await manager!.createInstance(SocketOptions(
       //Socket IO server URI
       uri,
       namespace: (identifier == 'namespaced') ? '/adhara' : '/',
@@ -72,8 +72,8 @@ class _MyAppState extends State<MyApp> {
         .on('type:list')
         .listen((data) => pPrint('$identifier | type:list | $data'));
     socket.on('message').listen(pPrint);
-    socket.on('echo').listen((data) =>
-        pPrint('$identifier | echo received | ${data.length} | $data'));
+    socket.on('echo').listen((data) => pPrint(
+        '$identifier | echo received | ${(data as String?)?.length} | $data'));
     socket
         .on('namespace')
         .listen((data) => pPrint('$identifier | namespace: | $data'));
@@ -86,14 +86,14 @@ class _MyAppState extends State<MyApp> {
       _isProbablyConnected[identifier] ?? false;
 
   Future<void> disconnect(String identifier) async {
-    await manager.clearInstance(sockets[identifier]);
+    await manager!.clearInstance(sockets[identifier]!);
     setState(() => _isProbablyConnected[identifier] = false);
   }
 
   void sendMessage(String identifier) {
     if (sockets[identifier] != null) {
       pPrint("sending message from '$identifier'...");
-      sockets[identifier].emit('data', messagesToPublish);
+      sockets[identifier]!.emit('data', messagesToPublish);
       pPrint("Message emitted from '$identifier'...");
     }
   }
@@ -102,10 +102,10 @@ class _MyAppState extends State<MyApp> {
     if (sockets[identifier] != null) {
       for (final message in messagesToPublish) {
         pPrint('publishing echo message $message');
-        await sockets[identifier].emit('echo', [message]);
+        await sockets[identifier]?.emit('echo', [message]);
       }
       pPrint('publishing echo message ${messagesToPublish.last}');
-      await sockets[identifier].emit('echo', messagesToPublish.last as List);
+      await sockets[identifier]?.emit('echo', messagesToPublish.last as List);
     }
   }
 
@@ -118,14 +118,14 @@ class _MyAppState extends State<MyApp> {
       {'p': 1},
       [3, 'r']
     ];
-    sockets[identifier].emitWithAck('ack-message', msg).then((data) {
+    sockets[identifier]?.emitWithAck('ack-message', msg).then((data) {
       // this callback runs when this
       // specific message is acknowledged by the server
       pPrint('$identifier | ACK received | $msg -> $data');
     });
   }
 
-  void pPrint(Object data) {
+  void pPrint(Object? data) {
     setState(() {
       if (data is Map) {
         data = json.encode(data);

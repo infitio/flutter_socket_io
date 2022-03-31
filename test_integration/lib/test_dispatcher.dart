@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'config/test_factory.dart';
 import 'driver_data_handler.dart';
@@ -13,13 +12,13 @@ enum _TestStatus { success, error, progress }
 
 /// Decodes messages from the driver, invokes the test and returns the result.
 class TestDispatcher extends StatefulWidget {
-  final Map<String, TestFactory> testFactory;
+  final Map<String, TestFactory>? testFactory;
   final DispatcherController controller;
 
   const TestDispatcher({
-    Key key,
-    this.testFactory,
-    this.controller,
+    required this.testFactory,
+    required this.controller,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -30,7 +29,7 @@ class _TestDispatcherState extends State<TestDispatcher> {
   /// A map of active test names vs reporters
   final _reporters = <String, Reporter>{};
 
-  Map<String, String> _testResults;
+  Map<String, String>? _testResults;
 
   /// stores whether a test is success/failed/pending
   /// {'restPublish': true} => basic test passed,
@@ -61,14 +60,14 @@ class _TestDispatcherState extends State<TestDispatcher> {
         return;
       }
       _reporters[reporter.testName] = reporter;
-      if (widget.testFactory.containsKey(reporter.testName)) {
+      if (widget.testFactory?.containsKey(reporter.testName)== true ) {
         // check if a test exists with that name
-        if (widget.testFactory.containsKey(reporter.testName)) {
+        if (widget.testFactory!.containsKey(reporter.testName)) {
           setState(() {
             _testStatuses[reporter.testName] = _TestStatus.progress;
           });
-          final testFunction = widget.testFactory[reporter.testName];
-          await testFunction(
+          final testFunction = widget.testFactory![reporter.testName];
+          await testFunction!(
             reporter: reporter,
             payload: reporter.message.payload,
           )
@@ -77,7 +76,7 @@ class _TestDispatcherState extends State<TestDispatcher> {
                 //  and max configured is 120s
                 const Duration(seconds: 100),
               )
-              .then((response) => reporter?.reportTestCompletion(response))
+              .then(reporter.reportTestCompletion)
               .catchError(
                 (error, stack) => reporter.reportTestCompletion({
                   TestControlMessage.errorKey: ErrorHandler.encodeException(
@@ -116,6 +115,7 @@ class _TestDispatcherState extends State<TestDispatcher> {
         return Colors.red;
       case _TestStatus.progress:
         return Colors.blue;
+      case null:
     }
     return Colors.grey;
   }
@@ -124,7 +124,9 @@ class _TestDispatcherState extends State<TestDispatcher> {
     final playIcon = IconButton(
       icon: const Icon(Icons.play_arrow),
       onPressed: () {
-        handleDriverMessage(TestControlMessage(testName)).then((_) {
+        handleDriverMessage(TestControlMessage(testName,payload: {})
+
+        ).then((_) {
           setState(() {});
         });
         setState(() {});
@@ -141,6 +143,7 @@ class _TestDispatcherState extends State<TestDispatcher> {
           height: 18,
           child: CircularProgressIndicator(),
         );
+      case null:
     }
     return playIcon;
   }
@@ -153,6 +156,7 @@ class _TestDispatcherState extends State<TestDispatcher> {
         return const Icon(Icons.warning_amber_rounded);
       case _TestStatus.progress:
         return Container();
+      case null:
     }
     return Container();
   }
@@ -177,7 +181,7 @@ class _TestDispatcherState extends State<TestDispatcher> {
                   insetPadding: const EdgeInsets.symmetric(vertical: 24),
                   content: SingleChildScrollView(
                     child: Text(
-                      _testResults[testName] ?? 'No result yet',
+                      _testResults?[testName] ?? 'No result yet',
                     ),
                   ),
                 ),
@@ -207,9 +211,9 @@ class _TestDispatcherState extends State<TestDispatcher> {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: _testResults.keys.length,
+                itemCount: _testResults?.keys.length,
                 itemBuilder: (context, idx) {
-                  final testName = _testResults.keys.toList()[idx];
+                  final testName = _testResults!.keys.toList()[idx];
                   return ListTile(subtitle: getTestRow(context, testName));
                 },
               ),
@@ -220,11 +224,11 @@ class _TestDispatcherState extends State<TestDispatcher> {
 
   void renderResponse(TestControlMessage message) {
     final testName = message.testName;
-    _testResults[testName] = message.toPrettyJson();
+    _testResults![testName] = message.toPrettyJson();
     setState(() {
       _reporters.remove(testName);
       _testStatuses[testName] =
-          message.payload.containsKey(TestControlMessage.errorKey)
+          message.payload.containsKey(TestControlMessage.errorKey)==true
               ? _TestStatus.error
               : _TestStatus.success;
     });
@@ -232,7 +236,7 @@ class _TestDispatcherState extends State<TestDispatcher> {
 }
 
 class DispatcherController {
-  _TestDispatcherState _dispatcher;
+  _TestDispatcherState? _dispatcher;
 
   // ignore: use_setters_to_change_properties
   void setDispatcher(_TestDispatcherState dispatcher) {
@@ -240,18 +244,18 @@ class DispatcherController {
     // more stuff
   }
 
-  Future<String> driveHandler(String encodedMessage) async {
-    final response = await _dispatcher.handleDriverMessage(
-      TestControlMessage.fromJson(json.decode(encodedMessage) as Map),
+  Future<String> driveHandler(String? encodedMessage) async {
+    final response = await _dispatcher?.handleDriverMessage(
+      TestControlMessage.fromJson(json.decode(encodedMessage??'{}') as Map),
     );
     return json.encode(response);
   }
 
   void logFlutterErrors(FlutterErrorDetails details) {
-    _dispatcher.logFlutterErrors(details);
+    _dispatcher?.logFlutterErrors(details);
   }
 
   void setResponse(TestControlMessage message) {
-    _dispatcher.renderResponse(message);
+    _dispatcher?.renderResponse(message);
   }
 }
