@@ -90,19 +90,18 @@ class SocketIO {
 
   ///listen to an event
   Stream<dynamic> on(String eventName) {
-      var result = _streamsChannel.receiveBroadcastStream(<String, dynamic>{
-        'id': id,
-        'eventName': eventName,
-      }).map((arguments) =>
-          arguments.map(_decodeArgument).toList());
-      print('IAN: $eventName, $result, ${result.runtimeType}');
-      return result;
-      }
-      // _streamsChannel.receiveBroadcastStream(<String, dynamic>{
-      //   'id': id,
-      //   'eventName': eventName,
-      // }).map((arguments) =>
-      //     arguments.map(_decodeArgument).toList() as Stream<Object?>);
+    var result = _streamsChannel.receiveBroadcastStream(<String, dynamic>{
+      'id': id,
+      'eventName': eventName,
+    }).map((arguments) => arguments.map(_decodeArgument).toList());
+    print('IAN: $eventName, $result, ${result.runtimeType}');
+    return result;
+  }
+  // _streamsChannel.receiveBroadcastStream(<String, dynamic>{
+  //   'id': id,
+  //   'eventName': eventName,
+  // }).map((arguments) =>
+  //     arguments.map(_decodeArgument).toList() as Stream<Object?>);
 
   ///send data to socket server
   Future<void> emit(String eventName, List<Object?> arguments) async {

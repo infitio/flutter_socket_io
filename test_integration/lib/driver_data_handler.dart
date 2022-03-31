@@ -19,7 +19,8 @@ Future<TestControlMessage> getTestResponse(
 class TestControlMessage {
   const TestControlMessage(
     this.testName, {
-    required this.payload, this.log,
+    required this.payload,
+    this.log,
   });
 
   static const testNameKey = 'testName';

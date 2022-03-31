@@ -60,7 +60,7 @@ class _TestDispatcherState extends State<TestDispatcher> {
         return;
       }
       _reporters[reporter.testName] = reporter;
-      if (widget.testFactory?.containsKey(reporter.testName)== true ) {
+      if (widget.testFactory?.containsKey(reporter.testName) == true) {
         // check if a test exists with that name
         if (widget.testFactory!.containsKey(reporter.testName)) {
           setState(() {
@@ -124,9 +124,8 @@ class _TestDispatcherState extends State<TestDispatcher> {
     final playIcon = IconButton(
       icon: const Icon(Icons.play_arrow),
       onPressed: () {
-        handleDriverMessage(TestControlMessage(testName,payload: {})
-
-        ).then((_) {
+        handleDriverMessage(TestControlMessage(testName, payload: {}))
+            .then((_) {
           setState(() {});
         });
         setState(() {});
@@ -228,7 +227,7 @@ class _TestDispatcherState extends State<TestDispatcher> {
     setState(() {
       _reporters.remove(testName);
       _testStatuses[testName] =
-          message.payload.containsKey(TestControlMessage.errorKey)==true
+          message.payload.containsKey(TestControlMessage.errorKey) == true
               ? _TestStatus.error
               : _TestStatus.success;
     });
@@ -246,7 +245,7 @@ class DispatcherController {
 
   Future<String> driveHandler(String? encodedMessage) async {
     final response = await _dispatcher?.handleDriverMessage(
-      TestControlMessage.fromJson(json.decode(encodedMessage??'{}') as Map),
+      TestControlMessage.fromJson(json.decode(encodedMessage ?? '{}') as Map),
     );
     return json.encode(response);
   }
