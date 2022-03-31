@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart';
 
+import 'exceptions.dart';
 import 'generated/platform_constants.dart';
 import 'manager.dart';
 import 'message.dart';
@@ -24,8 +25,8 @@ class SocketIO {
   ///Create a socket object with identifier received from platform APIs
   SocketIO(this.id, this._streamsChannel)
       : _channel = MethodChannel(
-          MethodChannelNames.socketMethodChannel + id.toString(),
-        ) {
+    MethodChannelNames.socketMethodChannel + id.toString(),
+  ) {
     _channel.setMethodCallHandler((call) async {
       if (call.method == PlatformMethod.incomingAck) {
         var arguments = call.arguments['args'] as List<dynamic>?;
@@ -76,7 +77,9 @@ class SocketIO {
   Future<void> connect() => _channel.invokeMethod<void>(PlatformMethod.connect);
 
   Object? _decodeArgument(Object? argument) =>
-      SocketMessage.fromPlatform(argument).message;
+      SocketMessage
+          .fromPlatform(argument)
+          .message;
 
   /// Encodes data to platform understandable
   ///
@@ -89,19 +92,11 @@ class SocketIO {
       messages.map<Object?>(_encodeArgument).toList(growable: false);
 
   ///listen to an event
-  Stream<dynamic> on(String eventName) {
-    var result = _streamsChannel.receiveBroadcastStream(<String, dynamic>{
-      'id': id,
-      'eventName': eventName,
-    }).map((arguments) => arguments.map(_decodeArgument).toList());
-    print('IAN: $eventName, $result, ${result.runtimeType}');
-    return result;
-  }
-  // _streamsChannel.receiveBroadcastStream(<String, dynamic>{
-  //   'id': id,
-  //   'eventName': eventName,
-  // }).map((arguments) =>
-  //     arguments.map(_decodeArgument).toList() as Stream<Object?>);
+  Stream<dynamic> on(String eventName) =>
+      _streamsChannel.receiveBroadcastStream(<String, dynamic>{
+        'id': id,
+        'eventName': eventName,
+      }).map((arguments) => arguments.map(_decodeArgument).toList());
 
   ///send data to socket server
   Future<void> emit(String eventName, List<Object?> arguments) async {
@@ -128,9 +123,16 @@ class SocketIO {
   }
 
   /// checks whether connection is alive
-  Future<bool?> isConnected() => _channel.invokeMethod(
-        PlatformMethod.isConnected,
-      );
+  Future<bool> isConnected() async {
+    final result = await _channel.invokeMethod(
+      PlatformMethod.isConnected,
+    );
+    if (result == null) {
+      throw InvalidNullException(
+          'PlatformMethod.isConnected returned an invalid null value.');
+    }
+    return result as bool;
+  }
 
 // Utility methods for listeners.
 // De-registering can be handled using off(eventName, fn)

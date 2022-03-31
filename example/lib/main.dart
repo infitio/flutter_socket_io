@@ -16,7 +16,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   List<String?> toPrint = ['trying to connect'];
-  SocketIOManager? manager;
+  late SocketIOManager manager;
   Map<String, SocketIO> sockets = {};
   final _isProbablyConnected = <String, bool>{};
   final ScrollController _scrollController = ScrollController();
@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> initSocket(String identifier) async {
     setState(() => _isProbablyConnected[identifier] = true);
-    final socket = await manager!.createInstance(SocketOptions(
+    final socket = await manager.createInstance(SocketOptions(
       //Socket IO server URI
       uri,
       namespace: (identifier == 'namespaced') ? '/adhara' : '/',
@@ -86,7 +86,7 @@ class _MyAppState extends State<MyApp> {
       _isProbablyConnected[identifier] ?? false;
 
   Future<void> disconnect(String identifier) async {
-    await manager!.clearInstance(sockets[identifier]!);
+    await manager.clearInstance(sockets[identifier]!);
     setState(() => _isProbablyConnected[identifier] = false);
   }
 

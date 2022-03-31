@@ -8,13 +8,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "31.0.0"
-  adhara_socket_io_example:
-    dependency: "direct dev"
-    description:
-      path: example
-      relative: true
-    source: path
-    version: "1.0.0+1"
   analyzer:
     dependency: transitive
     description:

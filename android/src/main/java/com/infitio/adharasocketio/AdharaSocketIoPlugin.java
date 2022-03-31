@@ -57,14 +57,6 @@ public class AdharaSocketIoPlugin implements FlutterPlugin,MethodCallHandler {
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
   }
 
-
-//  public static void registerWith(Registrar registrar) {
-//    final StreamsChannel streamsChannel = new StreamsChannel(registrar.messenger(), PlatformConstants.MethodChannelNames.streamsChannel);
-//    final AdharaSocketIoPlugin plugin = new AdharaSocketIoPlugin(registrar, streamsChannel);
-//    final MethodChannel channel = new MethodChannel(registrar.messenger(), PlatformConstants.MethodChannelNames.managerMethodChannel);
-//    channel.setMethodCallHandler(plugin);
-//  }
-
   void setupStreamsChannel() {
     final AdharaSocketIoPlugin s = this;
     streamsChannel.setStreamHandlerFactory(new StreamsChannel.StreamHandlerFactory() {

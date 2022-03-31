@@ -14,9 +14,6 @@ dependencies:
   pedantic: ^1.9.2
 
 dev_dependencies:
-  adhara_socket_io_example:
-    path: example
-
   flutter_test:
     sdk: flutter
   integration_test:
