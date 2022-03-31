@@ -15,8 +15,8 @@ socket.io for flutter by adhara
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-  s.dependency 'Socket.IO-Client-Swift'
-  s.dependency 'Starscream'
+  s.dependency 'Socket.IO-Client-Swift', '15.2.0'
+  s.dependency 'Starscream', '3.1.1'
 
   s.swift_version = '5.0'
   s.ios.deployment_target = '9.0'

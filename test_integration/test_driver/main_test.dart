@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';

@@ -14,7 +14,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "1.0.0"
+    version: "1.0.1"
   adhara_socket_io_example:
     dependency: "direct main"
     description:
@@ -174,7 +174,7 @@ packages:
       name: http_multi_server
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   http_parser:
     dependency: transitive
     description:
@@ -280,6 +280,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.4"
+
   pub_semver:
     dependency: transitive
     description:

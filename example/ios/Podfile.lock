@@ -1,8 +1,8 @@
 PODS:
   - adhara_socket_io (0.0.1):
     - Flutter
-    - Socket.IO-Client-Swift
-    - Starscream
+    - Socket.IO-Client-Swift (= 15.2.0)
+    - Starscream (= 3.1.1)
   - Flutter (1.0.0)
   - Socket.IO-Client-Swift (15.2.0):
     - Starscream (~> 3.1)
@@ -24,7 +24,7 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  adhara_socket_io: 7de66d78a4631172aca030e50839b29da6b42171
+  adhara_socket_io: 3c497b6b72d32b80884c02a14f78d4d2477ba5f1
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   Socket.IO-Client-Swift: 1e3e3a1f09f3312a167f0d781eb2f383d477357c
   Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
