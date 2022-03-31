@@ -24,7 +24,8 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 31
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 16
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
@@ -37,4 +38,6 @@ dependencies {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
+    compile 'com.android.support:multidex:1.0.1'
+
 }
