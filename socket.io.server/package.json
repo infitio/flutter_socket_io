@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "pm2": "^4.5.4",
-    "socket.io": "2.4.0"
+    "socket.io": "2.5.0"
   }
 }
