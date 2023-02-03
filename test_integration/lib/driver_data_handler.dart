@@ -19,9 +19,9 @@ Future<TestControlMessage> getTestResponse(
 class TestControlMessage {
   const TestControlMessage(
     this.testName, {
-    this.payload,
+    required this.payload,
     this.log,
-  }) : assert(testName != null && testName.length != null);
+  });
 
   static const testNameKey = 'testName';
   static const payloadKey = 'payload';
@@ -30,7 +30,7 @@ class TestControlMessage {
 
   final String testName;
   final Map<String, dynamic> payload;
-  final List<dynamic> log;
+  final List<dynamic>? log;
 
   factory TestControlMessage.fromJsonEncoded(String encoded) =>
       TestControlMessage.fromJson(json.decode(encoded) as Map);
@@ -38,7 +38,7 @@ class TestControlMessage {
   factory TestControlMessage.fromJson(Map jsonValue) => TestControlMessage(
         jsonValue[testNameKey] as String,
         payload: jsonValue[payloadKey] as Map<String, dynamic>,
-        log: jsonValue[logKey] as List<dynamic>,
+        log: jsonValue[logKey] as List<dynamic>?,
       );
 
   Map<String, dynamic> toJson() => {

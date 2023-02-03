@@ -1,4 +1,4 @@
-String getPrefix(Object str, [Object key]) {
+String getPrefix(Object? str, [Object? key]) {
   var overflow = false;
   if (key == null) {
     overflow = (str as String).length > 26;

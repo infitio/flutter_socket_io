@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -50,8 +51,8 @@ class AdharaSocket implements MethodCallHandler {
     socket = AdharaSocket.manager.socket(options.namespace);
   }
 
-  static AdharaSocket getInstance(Registrar registrar, Options options) throws URISyntaxException {
-    final MethodChannel channel = new MethodChannel(registrar.messenger(), PlatformConstants.MethodChannelNames.socketMethodChannel + String.valueOf(options.index));
+  static AdharaSocket getInstance(@NonNull FlutterPluginBinding flutterPluginBinding, Options options) throws URISyntaxException {
+    final MethodChannel channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), PlatformConstants.MethodChannelNames.socketMethodChannel + String.valueOf(options.index));
     // we create new manager instance every time here
     // because manager cannot update the uri
     AdharaSocket.manager = new Manager(new URI(options.uri), options);

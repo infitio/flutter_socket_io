@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -19,12 +20,12 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 /**
  * AdharaSocketIoPlugin
  */
-public class AdharaSocketIoPlugin implements MethodCallHandler {
+public class AdharaSocketIoPlugin implements FlutterPlugin,MethodCallHandler {
 
   SparseArray<AdharaSocket> instances;
   private int currentIndex;
-  private final Registrar registrar;
-  private final StreamsChannel streamsChannel;
+  private FlutterPluginBinding flutterPluginBinding;
+  private StreamsChannel streamsChannel;
   private static final String TAG = "Adhara:SocketIOPlugin";
   private boolean enableLogging = false;
 
@@ -34,19 +35,26 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
     }
   }
 
-  private AdharaSocketIoPlugin(Registrar registrar, StreamsChannel streamsChannel) {
+  public AdharaSocketIoPlugin() {}
+
+  private AdharaSocketIoPlugin(FlutterPluginBinding flutterPluginBinding, StreamsChannel streamsChannel) {
     this.instances = new SparseArray<>();
     this.currentIndex = 0;
-    this.registrar = registrar;
+    this.flutterPluginBinding = flutterPluginBinding;
     this.streamsChannel = streamsChannel;
     setupStreamsChannel();
   }
 
-  public static void registerWith(Registrar registrar) {
-    final StreamsChannel streamsChannel = new StreamsChannel(registrar.messenger(), PlatformConstants.MethodChannelNames.streamsChannel);
-    final AdharaSocketIoPlugin plugin = new AdharaSocketIoPlugin(registrar, streamsChannel);
-    final MethodChannel channel = new MethodChannel(registrar.messenger(), PlatformConstants.MethodChannelNames.managerMethodChannel);
+  @Override
+  public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+    final StreamsChannel streamsChannel = new StreamsChannel(flutterPluginBinding.getBinaryMessenger(), PlatformConstants.MethodChannelNames.streamsChannel);
+    final AdharaSocketIoPlugin plugin = new AdharaSocketIoPlugin(flutterPluginBinding, streamsChannel);
+    final MethodChannel channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), PlatformConstants.MethodChannelNames.managerMethodChannel);
     channel.setMethodCallHandler(plugin);
+  }
+
+  @Override
+  public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
   }
 
   void setupStreamsChannel() {
@@ -120,7 +128,7 @@ public class AdharaSocketIoPlugin implements MethodCallHandler {
           }
           options.enableLogging = this.enableLogging;
           Log.e(TAG, "Creating a new instance");
-          this.instances.put(this.currentIndex, AdharaSocket.getInstance(registrar, options));
+          this.instances.put(this.currentIndex, AdharaSocket.getInstance(flutterPluginBinding, options));
           result.success(this.currentIndex++);
         } catch (URISyntaxException use) {
           result.error(use.toString(), null, null);

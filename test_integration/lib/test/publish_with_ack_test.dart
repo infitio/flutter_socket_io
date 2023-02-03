@@ -4,8 +4,8 @@ import '../factory/reporter.dart';
 import 'utils.dart';
 
 Future<Map<String, dynamic>> publishWithACKTest({
-  Reporter reporter,
-  Map<String, dynamic> payload,
+  required Reporter reporter,
+  required Map<String, dynamic> payload,
 }) async {
   // creating socket
   final socket = await createSocket(payload);
