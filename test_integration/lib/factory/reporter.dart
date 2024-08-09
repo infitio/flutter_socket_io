@@ -13,7 +13,7 @@ class Reporter {
     this.controller,
   ) : response = Completer<TestControlMessage>();
 
-  String get testName => message?.testName;
+  String get testName => message.testName;
 
   final _log = <dynamic>[];
 

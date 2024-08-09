@@ -15,8 +15,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  List<String> toPrint = ['trying to connect'];
-  SocketIOManager manager;
+  List<String?> toPrint = ['trying to connect'];
+  late SocketIOManager manager;
   Map<String, SocketIO> sockets = {};
   final _isProbablyConnected = <String, bool>{};
   final ScrollController _scrollController = ScrollController();
@@ -72,8 +72,8 @@ class _MyAppState extends State<MyApp> {
         .on('type:list')
         .listen((data) => pPrint('$identifier | type:list | $data'));
     socket.on('message').listen(pPrint);
-    socket.on('echo').listen((data) =>
-        pPrint('$identifier | echo received | ${data.length} | $data'));
+    socket.on('echo').listen((data) => pPrint(
+        '$identifier | echo received | ${(data as String?)?.length} | $data'));
     socket
         .on('namespace')
         .listen((data) => pPrint('$identifier | namespace: | $data'));
@@ -86,14 +86,14 @@ class _MyAppState extends State<MyApp> {
       _isProbablyConnected[identifier] ?? false;
 
   Future<void> disconnect(String identifier) async {
-    await manager.clearInstance(sockets[identifier]);
+    await manager.clearInstance(sockets[identifier]!);
     setState(() => _isProbablyConnected[identifier] = false);
   }
 
   void sendMessage(String identifier) {
     if (sockets[identifier] != null) {
       pPrint("sending message from '$identifier'...");
-      sockets[identifier].emit('data', messagesToPublish);
+      sockets[identifier]!.emit('data', messagesToPublish);
       pPrint("Message emitted from '$identifier'...");
     }
   }
@@ -102,10 +102,10 @@ class _MyAppState extends State<MyApp> {
     if (sockets[identifier] != null) {
       for (final message in messagesToPublish) {
         pPrint('publishing echo message $message');
-        await sockets[identifier].emit('echo', [message]);
+        await sockets[identifier]?.emit('echo', [message]);
       }
       pPrint('publishing echo message ${messagesToPublish.last}');
-      await sockets[identifier].emit('echo', messagesToPublish.last as List);
+      await sockets[identifier]?.emit('echo', messagesToPublish.last as List);
     }
   }
 
@@ -118,14 +118,14 @@ class _MyAppState extends State<MyApp> {
       {'p': 1},
       [3, 'r']
     ];
-    sockets[identifier].emitWithAck('ack-message', msg).then((data) {
+    sockets[identifier]?.emitWithAck('ack-message', msg).then((data) {
       // this callback runs when this
       // specific message is acknowledged by the server
       pPrint('$identifier | ACK received | $msg -> $data');
     });
   }
 
-  void pPrint(Object data) {
+  void pPrint(Object? data) {
     setState(() {
       if (data is Map) {
         data = json.encode(data);
@@ -215,19 +215,21 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
             textTheme: const TextTheme(
-              headline6: TextStyle(color: Colors.white),
-              headline5: TextStyle(color: Colors.white),
-              subtitle2: TextStyle(color: Colors.white),
-              subtitle1: TextStyle(color: Colors.white),
-              bodyText2: TextStyle(color: Colors.white),
-              bodyText1: TextStyle(color: Colors.white),
-              button: TextStyle(color: Colors.white),
-              caption: TextStyle(color: Colors.white),
-              overline: TextStyle(color: Colors.white),
-              headline4: TextStyle(color: Colors.white),
-              headline3: TextStyle(color: Colors.white),
-              headline2: TextStyle(color: Colors.white),
-              headline1: TextStyle(color: Colors.white),
+              displayLarge: TextStyle(color: Colors.white),
+              displayMedium: TextStyle(color: Colors.white),
+              displaySmall: TextStyle(color: Colors.white),
+              headlineLarge: TextStyle(color: Colors.white),
+              headlineMedium: TextStyle(color: Colors.white),
+              headlineSmall: TextStyle(color: Colors.white),
+              titleLarge: TextStyle(color: Colors.white),
+              titleMedium: TextStyle(color: Colors.white),
+              titleSmall: TextStyle(color: Colors.white),
+              bodyLarge: TextStyle(color: Colors.white),
+              bodyMedium: TextStyle(color: Colors.white),
+              bodySmall: TextStyle(color: Colors.white),
+              labelLarge: TextStyle(color: Colors.white),
+              labelMedium: TextStyle(color: Colors.white),
+              labelSmall: TextStyle(color: Colors.white),
             ),
             buttonTheme: ButtonThemeData(
                 padding:

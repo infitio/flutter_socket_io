@@ -4,13 +4,13 @@ import '../factory/reporter.dart';
 import 'utils.dart';
 
 Future<Map<String, dynamic>> echoTest({
-  Reporter reporter,
-  Map<String, dynamic> payload,
+  required Reporter reporter,
+  required Map<String, dynamic> payload,
 }) async {
   // creating socket
   final socket = await createSocket(payload);
 
-  final messages = <Object>[];
+  final messages = <Object?>[];
 
   await socket.connectSync();
   final subscription = socket.on('echo').listen(messages.add);

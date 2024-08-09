@@ -2,28 +2,28 @@ import 'dart:io';
 
 import 'package:test/test.dart';
 
-Future<String> getIP() async {
+Future<String?> getIP() async {
   for (final interface in await NetworkInterface.list()) {
     return interface.addresses
         .firstWhere((address) =>
             address.rawAddress[0] == 192 || address.rawAddress[0] == 10)
-        ?.address;
+        .address;
   }
   return null;
 }
 
-void _testMessage(Object sent, Object received) {
+void _testMessage(Object? sent, Object? received) {
   if (sent is List) {
     expect(received, isA<List>());
     expect((received as List).length, equals(sent.length));
     for (var i = 0; i < sent.length; i++) {
-      _testMessage(sent[i], (received as List)[i]);
+      _testMessage(sent[i], received[i]);
     }
   } else if (sent is Map) {
     for (final entry in sent.entries) {
       expect(received, isA<Map>());
       expect((received as Map).containsKey(entry.key), true);
-      _testMessage(entry.value, (received as Map)[entry.key]);
+      _testMessage(entry.value, received[entry.key]);
     }
   } else {
     expect(sent, equals(received));

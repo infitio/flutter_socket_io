@@ -2,7 +2,7 @@ import '../factory/reporter.dart';
 import 'utils.dart';
 
 Future<Map<String, dynamic>> eventsTest(
-    {Reporter reporter, Map<String, dynamic> payload}) async {
+    {required Reporter reporter, required Map<String, dynamic> payload}) async {
   // creating socket
   final socket = await createSocket(payload);
 

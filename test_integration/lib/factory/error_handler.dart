@@ -11,13 +11,13 @@ class ErrorHandler {
     return {
       'exceptionType': '${details.exception.runtimeType}',
       'exception': details.exceptionAsString(),
-      'context': details.context?.toDescription(),
-      'library': details.library,
+      'context': details.context!.toDescription(),
+      'library': details.library!,
       'stackTrace': '${details.stack}',
     };
   }
 
-  static Map<String, String> encodeException(Object error, StackTrace stack) {
+  static Map<String, String> encodeException(Object? error, StackTrace stack) {
     print(error);
     print(stack);
     print('Caught Exception::\n'

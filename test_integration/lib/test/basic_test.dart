@@ -2,8 +2,8 @@ import '../factory/reporter.dart';
 import 'utils.dart';
 
 Future<Map<String, dynamic>> basicTest({
-  Reporter reporter,
-  Map<String, dynamic> payload,
+  required Reporter reporter,
+  required Map<String, dynamic> payload,
 }) async {
   // creating socket
   final socket = await createSocket(payload);
@@ -20,8 +20,8 @@ Future<Map<String, dynamic>> basicTest({
 }
 
 Future<Map<String, dynamic>> listenTest({
-  Reporter reporter,
-  Map<String, dynamic> payload,
+  required Reporter reporter,
+  required Map<String, dynamic> payload,
 }) async {
   // creating socket
   final socket = await createSocket(payload);

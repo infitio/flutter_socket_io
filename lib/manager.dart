@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 
+import 'exceptions.dart';
 import 'generated/platform_constants.dart';
 import 'options.dart';
 import 'socket.dart';
@@ -46,9 +47,13 @@ class SocketIOManager {
         'clear': _clearExisting,
       },
     );
+    if (index == null) {
+      InvalidNullException(
+          'PlatformMethod.newInstance returned an unexpected null value.');
+    }
     _clearExisting = false;
     final socket = SocketIO(index, _streamsChannel);
-    _sockets[index] = socket;
+    _sockets[index!] = socket;
     return socket;
   }
 
